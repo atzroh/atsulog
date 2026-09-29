@@ -1,0 +1,94 @@
+import { NextResponse } from "next/server";
+import { getArticleBySlug, getArticles } from "@/app/lib/article-repository";
+import type { ArticleDetail } from "@/app/lib/article-types";
+import { sortArticles } from "@/app/lib/article-utils";
+import { renderFeedMarkdown } from "@/app/lib/markdown-rendering";
+import { siteConfig } from "@/app/lib/site-config";
+
+const SITE_URL = `${siteConfig.url}/`;
+const FEED_URL = `${siteConfig.url}/feed.xml`;
+
+/** Characters XML 1.0 does not allow, even when escaped. */
+const INVALID_XML_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g;
+
+const XML_ESCAPES: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&apos;",
+};
+
+/** Escapes a value for use in XML text or a quoted attribute. */
+function escapeXml(value: string): string {
+  return value
+    .replace(INVALID_XML_CHARS, "")
+    .replace(/[&<>"']/g, (char) => XML_ESCAPES[char]);
+}
+
+/** Normalizes a stored date to the RFC 3339 form Atom requires. */
+function toRfc3339(value: string | number): string {
+  return new Date(value).toISOString();
+}
+
+/** Renders one article as an Atom entry, with its full body as HTML. */
+function renderEntry({ metadata, content }: ArticleDetail): string {
+  const url = `${siteConfig.url}/articles/${metadata.slug}`;
+  const terms = [...new Set([metadata.category, ...metadata.tags])].filter(
+    Boolean,
+  );
+
+  return [
+    "  <entry>",
+    `    <id>${escapeXml(url)}</id>`,
+    `    <title>${escapeXml(metadata.title)}</title>`,
+    `    <link rel="alternate" type="text/html" href="${escapeXml(url)}"/>`,
+    `    <published>${toRfc3339(metadata.createdAt)}</published>`,
+    `    <updated>${toRfc3339(metadata.modifiedAt)}</updated>`,
+    ...terms.map((term) => `    <category term="${escapeXml(term)}"/>`),
+    `    <content type="html">${escapeXml(renderFeedMarkdown(content, url))}</content>`,
+    "  </entry>",
+  ].join("\n");
+}
+
+/**
+ * Route handler for the Atom feed of the latest published articles.
+ * URL pattern: /feed.xml
+ */
+export async function GET() {
+  const articles = await getArticles();
+  const latest = sortArticles(
+    articles.filter((a) => a.published && a.slug !== siteConfig.aboutSlug),
+    "createdAt",
+  ).slice(0, siteConfig.feedEntriesCount);
+
+  const details = await Promise.all(
+    latest.map((article) => getArticleBySlug(articles, article.slug)),
+  );
+  const entries = details.filter(
+    (detail): detail is ArticleDetail => detail !== null,
+  );
+
+  // The feed changes whenever its newest-modified entry does.
+  const updated = latest.length
+    ? toRfc3339(Math.max(...latest.map((a) => Date.parse(a.modifiedAt))))
+    : toRfc3339(Date.now());
+
+  const xml = [
+    '<?xml version="1.0" encoding="utf-8"?>',
+    `<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="${siteConfig.htmlLang}">`,
+    `  <id>${escapeXml(SITE_URL)}</id>`,
+    `  <title>${escapeXml(siteConfig.title)}</title>`,
+    `  <updated>${updated}</updated>`,
+    `  <author><name>${escapeXml(siteConfig.title)}</name></author>`,
+    `  <link rel="alternate" type="text/html" href="${escapeXml(SITE_URL)}"/>`,
+    `  <link rel="self" type="application/atom+xml" href="${escapeXml(FEED_URL)}"/>`,
+    ...entries.map(renderEntry),
+    "</feed>",
+    "",
+  ].join("\n");
+
+  return new NextResponse(xml, {
+    headers: { "Content-Type": "application/atom+xml; charset=utf-8" },
+  });
+}

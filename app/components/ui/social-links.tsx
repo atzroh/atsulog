@@ -43,6 +43,25 @@ function GitHubIcon({ className }: IconProps) {
 }
 
 /**
+ * The RSS mark, standing for the site's Atom feed. Taken from the envelope's
+ * set, as it leaves the same margin: Simple Icons' mark fills the whole box and
+ * looks a size larger than its neighbours.
+ * Path from Material Design Icons 7.4.47 (Apache-2.0).
+ */
+function FeedIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M6.18,15.64A2.18,2.18 0 0,1 8.36,17.82C8.36,19 7.38,20 6.18,20C5,20 4,19 4,17.82A2.18,2.18 0 0,1 6.18,15.64M4,4.44A15.56,15.56 0 0,1 19.56,20H16.73A12.73,12.73 0 0,0 4,7.27V4.44M4,10.1A9.9,9.9 0 0,1 13.9,20H11.07A7.07,7.07 0 0,0 4,12.93V10.1Z" />
+    </svg>
+  );
+}
+
+/**
  * A filled envelope, kept solid so it sits evenly beside the two brand marks —
  * both of which only exist as filled silhouettes.
  * Path from Material Design Icons 7.4.47 (Apache-2.0).
@@ -84,10 +103,17 @@ const links = [
     Icon: MailIcon,
     external: true,
   },
+  {
+    href: "/feed.xml",
+    label: "Feed",
+    Icon: FeedIcon,
+    external: false,
+  },
 ];
 
 /**
- * A row of icon links to the author's Twitter, GitHub, and email address.
+ * A row of icon links to the author's Twitter, GitHub, and email address, and
+ * to the site's feed.
  * Rendered above the copyright line in the site footer.
  *
  * The icons carry no visible label, so each link is named by aria-label and the

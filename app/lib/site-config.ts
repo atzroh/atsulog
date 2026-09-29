@@ -27,5 +27,6 @@ export const siteConfig = {
   // Article listing
   articlesPerPage: 6,
   recentArticlesCount: 3,
+  feedEntriesCount: 20,
   aboutSlug: "about",
 } as const;
