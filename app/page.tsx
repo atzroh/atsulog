@@ -1,5 +1,5 @@
 import { siteConfig } from "@/app/lib/site-config";
-import { getArticles } from "@/app/lib/article-repository";
+import { getArticles } from "@/app/lib/article/article-repository";
 import { RecentArticles } from "@/app/components/article/recent-articles";
 import { HeroTitle } from "@/app/components/home/hero-title";
 import { SiteStats } from "@/app/components/home/site-stats";

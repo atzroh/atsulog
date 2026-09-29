@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/app/lib/site-config";
-import { isAuthenticated } from "@/app/lib/auth";
+import { isAuthenticated } from "@/app/lib/auth/auth";
 import { LogoutButton } from "@/app/components/ui/logout-button";
 import { SocialLinks } from "@/app/components/ui/social-links";
 import "./globals.css";

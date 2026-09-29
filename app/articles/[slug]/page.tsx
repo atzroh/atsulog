@@ -7,8 +7,8 @@ import {
   getArticles,
   getArticleBySlug,
   incrementViewCount,
-} from "@/app/lib/article-repository";
-import { isAuthenticated } from "@/app/lib/auth";
+} from "@/app/lib/article/article-repository";
+import { isAuthenticated } from "@/app/lib/auth/auth";
 import { ArticleMeta } from "@/app/components/article/article-meta";
 import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 import { SeriesNavigation } from "@/app/components/article/series-navigation";

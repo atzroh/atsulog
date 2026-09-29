@@ -9,8 +9,8 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
-import type { ArticleSearchParams } from "@/app/lib/article-types";
-import { buildArticleSearchUrl } from "@/app/lib/article-utils";
+import type { ArticleSearchParams } from "@/app/lib/article/article-types";
+import { buildArticleSearchUrl } from "@/app/lib/article/article-utils";
 
 type PaginationNavProps = {
   currentPage: number;

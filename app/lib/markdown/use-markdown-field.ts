@@ -1,12 +1,12 @@
 import { useCallback, useRef, useState } from "react";
-import { uploadImageAction } from "@/app/lib/image-actions";
+import { uploadImageAction } from "@/app/lib/image/image-actions";
 import {
   continueList,
   escapeAltText,
   indentList,
   insertAround,
   type EditResult,
-} from "@/app/lib/markdown-editing";
+} from "@/app/lib/markdown/markdown-editing";
 
 /**
  * Valid modes for the editor.

@@ -3,8 +3,14 @@ import "server-only";
 import { mkdir, readFile, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 
-import type { ArticleMetadata, ArticleDetail } from "@/app/lib/article-types";
-import { getNextSeriesOrder, generateSlug } from "./article-utils";
+import type {
+  ArticleMetadata,
+  ArticleDetail,
+} from "@/app/lib/article/article-types";
+import {
+  getNextSeriesOrder,
+  generateSlug,
+} from "@/app/lib/article/article-utils";
 
 // --- Constants ---
 

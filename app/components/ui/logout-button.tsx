@@ -1,5 +1,5 @@
 import { LogOut } from "lucide-react";
-import { logoutAction } from "@/app/lib/auth-actions";
+import { logoutAction } from "@/app/lib/auth/auth-actions";
 
 /**
  * A reusable logout button component.

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "@/app/lib/auth";
+import { decrypt } from "@/app/lib/auth/auth";
 import { siteConfig } from "@/app/lib/site-config";
 
 /**

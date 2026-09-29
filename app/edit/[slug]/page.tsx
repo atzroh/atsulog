@@ -6,9 +6,9 @@ import {
   getArticleBySlug,
   getArticles,
   saveArticle,
-} from "@/app/lib/article-repository";
+} from "@/app/lib/article/article-repository";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
-import { getTaxonomies } from "@/app/lib/article-utils";
+import { getTaxonomies } from "@/app/lib/article/article-utils";
 
 type EditArticlePageProps = {
   params: Promise<{ slug: string }>;

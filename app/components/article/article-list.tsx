@@ -1,6 +1,6 @@
 import { SearchX } from "lucide-react";
 import Link from "next/link";
-import type { ArticleMetadata } from "@/app/lib/article-types";
+import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { ArticleMeta } from "@/app/components/article/article-meta";
 import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 

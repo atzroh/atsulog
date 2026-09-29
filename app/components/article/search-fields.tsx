@@ -3,9 +3,9 @@ import { FormField } from "@/app/components/ui/form-field";
 import type {
   ArticleSearchParams,
   TaxonomyCandidates,
-} from "@/app/lib/article-types";
-import { getParam } from "@/app/lib/article-utils";
-import { useTagInput } from "@/app/lib/use-tag-input";
+} from "@/app/lib/article/article-types";
+import { getParam } from "@/app/lib/article/article-utils";
+import { useTagInput } from "@/app/lib/editor/use-tag-input";
 
 type SearchFieldsProps = {
   searchParams: ArticleSearchParams;

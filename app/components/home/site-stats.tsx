@@ -2,9 +2,9 @@
 
 import { useSyncExternalStore } from "react";
 import { Newspaper, BookOpen, Folder, Tag, Calendar, Eye } from "lucide-react";
-import { getTaxonomies } from "@/app/lib/article-utils";
+import { getTaxonomies } from "@/app/lib/article/article-utils";
 import { siteConfig } from "@/app/lib/site-config";
-import type { ArticleMetadata } from "@/app/lib/article-types";
+import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
 /** Latest clock reading shared by every subscriber. Empty until the first tick. */
 let clockSnapshot = "";

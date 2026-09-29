@@ -4,8 +4,8 @@ import { PaginationNav } from "@/app/components/article/pagination-nav";
 import type {
   ArticleMetadata,
   ArticleSearchParams,
-} from "@/app/lib/article-types";
-import { getParam } from "@/app/lib/article-utils";
+} from "@/app/lib/article/article-types";
+import { getParam } from "@/app/lib/article/article-utils";
 import { siteConfig } from "@/app/lib/site-config";
 
 // --- Types ---

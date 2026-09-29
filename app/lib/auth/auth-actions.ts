@@ -1,6 +1,6 @@
 "use server";
 
-import { createSession, deleteSession } from "@/app/lib/auth";
+import { createSession, deleteSession } from "@/app/lib/auth/auth";
 import { redirect } from "next/navigation";
 
 /**

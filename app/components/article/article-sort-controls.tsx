@@ -7,11 +7,14 @@ import {
   RotateCcw,
   type LucideIcon,
 } from "lucide-react";
-import type { ArticleSearchParams, SortBy } from "@/app/lib/article-types";
+import type {
+  ArticleSearchParams,
+  SortBy,
+} from "@/app/lib/article/article-types";
 import {
   buildArticleSearchUrl,
   getSortConfig,
-} from "@/app/lib/article-utils";
+} from "@/app/lib/article/article-utils";
 
 // --- Types ---
 

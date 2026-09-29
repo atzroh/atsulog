@@ -5,7 +5,7 @@ import {
   ModeToggle,
 } from "@/app/components/markdown/markdown-toolbar";
 import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
-import { useMarkdownField } from "@/app/lib/use-markdown-field";
+import { useMarkdownField } from "@/app/lib/markdown/use-markdown-field";
 
 // --- Types ---
 

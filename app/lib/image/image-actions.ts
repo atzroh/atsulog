@@ -2,13 +2,13 @@
 
 import { writeFile, mkdir, access } from "node:fs/promises";
 import { join, parse } from "node:path";
-import { isAuthenticated } from "@/app/lib/auth";
+import { isAuthenticated } from "@/app/lib/auth/auth";
 import {
   formatDateCompact,
   generateSlug,
   sanitizeFileName,
-} from "./article-utils";
-import { extensionForMimeType } from "./image-mime";
+} from "@/app/lib/article/article-utils";
+import { extensionForMimeType } from "@/app/lib/image/image-mime";
 
 /**
  * Handles image upload from the Markdown editor.

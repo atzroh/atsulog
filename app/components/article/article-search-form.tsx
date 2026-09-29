@@ -8,7 +8,7 @@ import { Button } from "@/app/components/ui/button";
 import type {
   ArticleSearchParams,
   TaxonomyCandidates,
-} from "@/app/lib/article-types";
+} from "@/app/lib/article/article-types";
 
 type ArticleSearchFormProps = {
   searchParams: ArticleSearchParams;

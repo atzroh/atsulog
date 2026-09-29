@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { sortArticles } from "@/app/lib/article-utils";
+import { sortArticles } from "@/app/lib/article/article-utils";
 import {
   ArticleList,
   type ArticleListProps,

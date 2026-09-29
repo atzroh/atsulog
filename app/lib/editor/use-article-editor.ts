@@ -2,9 +2,9 @@ import { useState, useCallback } from "react";
 import type {
   ArticleMetadata,
   TaxonomyCandidates,
-} from "@/app/lib/article-types";
-import { useNavigationGuard } from "./use-navigation-guard";
-import { useTagInput } from "./use-tag-input";
+} from "@/app/lib/article/article-types";
+import { useNavigationGuard } from "@/app/lib/editor/use-navigation-guard";
+import { useTagInput } from "@/app/lib/editor/use-tag-input";
 
 /**
  * Hook to manage the state and logic for the article editor.

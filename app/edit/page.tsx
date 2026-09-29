@@ -1,4 +1,4 @@
-import { getArticles } from "@/app/lib/article-repository";
+import { getArticles } from "@/app/lib/article/article-repository";
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import { DraftArticleList } from "@/app/components/editor/draft-article-list";
 import {
@@ -6,10 +6,10 @@ import {
   getTaxonomies,
   filterArticles,
   getSortConfig,
-} from "@/app/lib/article-utils";
+} from "@/app/lib/article/article-utils";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
 import { CreateArticleSection } from "@/app/components/editor/create-article-section";
-import type { ArticleSearchParams } from "@/app/lib/article-types";
+import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 
 /**
  * Renders the page for article management with search and filtering.

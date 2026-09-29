@@ -12,11 +12,11 @@ import {
 import type {
   ArticleMetadata,
   TaxonomyCandidates,
-} from "@/app/lib/article-types";
+} from "@/app/lib/article/article-types";
 import { FormField } from "@/app/components/ui/form-field";
 import { MarkdownField } from "@/app/components/markdown/markdown-field";
 import { Button } from "@/app/components/ui/button";
-import { useArticleEditor } from "@/app/lib/use-article-editor";
+import { useArticleEditor } from "@/app/lib/editor/use-article-editor";
 
 // --- Types ---
 

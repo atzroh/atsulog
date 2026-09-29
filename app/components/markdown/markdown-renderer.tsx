@@ -1,4 +1,4 @@
-import { renderMarkdown } from "@/app/lib/markdown-rendering";
+import { renderMarkdown } from "@/app/lib/markdown/markdown-rendering";
 
 // Imported here so only the routes with an article body load it.
 // swap: math shows in a fallback font until KaTeX's fonts arrive.

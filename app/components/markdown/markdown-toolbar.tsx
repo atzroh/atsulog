@@ -6,7 +6,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { toolbarGroups } from "@/app/components/markdown/toolbar-items";
-import type { EditMode } from "@/app/lib/use-markdown-field";
+import type { EditMode } from "@/app/lib/markdown/use-markdown-field";
 
 const BUTTON_STYLES =
   "p-[0.375rem] hover:text-black hover:bg-gray-100 rounded-md transition-colors";

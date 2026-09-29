@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { ArticleMetadata } from "@/app/lib/article-types";
+import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
 /**
  * Props for the SeriesNavigation component.

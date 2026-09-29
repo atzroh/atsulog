@@ -1,4 +1,4 @@
-import { loginAction } from "@/app/lib/auth-actions";
+import { loginAction } from "@/app/lib/auth/auth-actions";
 import { FormField } from "@/app/components/ui/form-field";
 import { Button } from "@/app/components/ui/button";
 import { LogIn } from "lucide-react";

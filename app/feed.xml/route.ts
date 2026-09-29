@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
-import { getArticleBySlug, getArticles } from "@/app/lib/article-repository";
-import type { ArticleDetail } from "@/app/lib/article-types";
-import { sortArticles } from "@/app/lib/article-utils";
-import { renderFeedMarkdown } from "@/app/lib/markdown-rendering";
+import {
+  getArticleBySlug,
+  getArticles,
+} from "@/app/lib/article/article-repository";
+import type { ArticleDetail } from "@/app/lib/article/article-types";
+import { sortArticles } from "@/app/lib/article/article-utils";
+import { renderFeedMarkdown } from "@/app/lib/markdown/markdown-rendering";
 import { siteConfig } from "@/app/lib/site-config";
 
 const SITE_URL = `${siteConfig.url}/`;

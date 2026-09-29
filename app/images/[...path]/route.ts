@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve, sep } from "node:path";
 import { type NextRequest, NextResponse } from "next/server";
-import { mimeTypeForExtension } from "@/app/lib/image-mime";
+import { mimeTypeForExtension } from "@/app/lib/image/image-mime";
 
 /** Root the served files must stay within. */
 const IMAGES_ROOT = resolve(process.cwd(), "data", "images");

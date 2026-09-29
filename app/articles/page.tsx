@@ -1,14 +1,14 @@
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import type { Metadata } from "next";
-import { getArticles } from "@/app/lib/article-repository";
+import { getArticles } from "@/app/lib/article/article-repository";
 import {
   sortArticles,
   getTaxonomies,
   filterArticles,
   getSortConfig,
-} from "@/app/lib/article-utils";
+} from "@/app/lib/article/article-utils";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
-import type { ArticleSearchParams } from "@/app/lib/article-types";
+import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 import { siteConfig } from "@/app/lib/site-config";
 
 export const metadata: Metadata = {

@@ -1,4 +1,4 @@
-import type { ArticleMetadata } from "@/app/lib/article-types";
+import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { Tag } from "@/app/components/ui/tag";
 
 /**

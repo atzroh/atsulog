@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ArticleMetadata } from "@/app/lib/article-types";
+import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
 // --- Types ---
 

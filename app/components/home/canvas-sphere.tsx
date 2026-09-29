@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { generateIcosphere } from "@/app/lib/icosphere";
+import { generateIcosphere } from "@/app/lib/home/icosphere";
 
 // --- Constants ---
 

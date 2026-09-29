@@ -4,7 +4,7 @@ import type {
   ArticleSearchParams,
   SortBy,
   SortOrder,
-} from "./article-types";
+} from "@/app/lib/article/article-types";
 
 /**
  * Extracts the first string value from a search parameter.

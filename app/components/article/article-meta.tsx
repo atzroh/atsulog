@@ -1,7 +1,7 @@
 import { Calendar, RotateCcw, Eye } from "lucide-react";
 import Link from "next/link";
-import { formatDate } from "@/app/lib/article-utils";
-import type { ArticleMetadata } from "@/app/lib/article-types";
+import { formatDate } from "@/app/lib/article/article-utils";
+import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
 /**
  * Props for the ArticleMeta component.
