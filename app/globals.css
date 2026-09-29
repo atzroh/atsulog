@@ -87,7 +87,7 @@ body {
     /* Tables — rules between rows only, no outer frame.
        `uppercase` is deliberately absent: it does nothing to Japanese headers
        and would make English-only tables look like a different component.
-       `.table-scroll` is the wrapper markdown-renderer.tsx puts around every
+       `.table-scroll` is the wrapper markdown-rendering.ts puts around every
        table: remark-gfm emits a bare <table>, which has no way to contain
        itself once the columns outgrow the column width. The margin lives on
        the wrapper so it stays outside the scrolling box.
