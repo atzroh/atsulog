@@ -1,5 +1,7 @@
 import "server-only";
 
+import { decodeNamedCharacterReference } from "decode-named-character-reference";
+
 import type { LinkCard } from "@/app/lib/link-card/link-card-types";
 import { siteConfig } from "@/app/lib/site-config";
 
@@ -30,17 +32,18 @@ const HEAD_END = /<\/head|<body/i;
 const CARRY = 8;
 const CHARSET = /charset\s*=\s*["']?([\w-]+)/i;
 
+const YOUTUBE_HOSTS = new Set([
+  "youtube.com",
+  "www.youtube.com",
+  "m.youtube.com",
+  "music.youtube.com",
+  "youtu.be",
+]);
+const YOUTUBE_OEMBED = "https://www.youtube.com/oembed";
+const YOUTUBE_FAVICON = "https://www.youtube.com/favicon.ico";
+
 const PRIVATE_HOST =
   /^(localhost|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|\[?::1\]?$)/i;
-
-const ENTITIES: Record<string, string> = {
-  amp: "&",
-  lt: "<",
-  gt: ">",
-  quot: '"',
-  apos: "'",
-  nbsp: " ",
-};
 
 // --- Public API ---
 
@@ -50,6 +53,11 @@ const ENTITIES: Record<string, string> = {
  */
 export async function fetchLinkCard(url: string): Promise<LinkCard> {
   if (isPrivateHost(url)) return errorCard(url);
+
+  // No falling back to the page: a YouTube URL oEmbed will not describe is
+  // one the page answers with "- YouTube" and its generic blurb, which on a
+  // card reads worse than the URL itself.
+  if (isYouTube(url)) return fetchYouTubeCard(url);
 
   try {
     const response = await fetch(url, {
@@ -66,18 +74,89 @@ export async function fetchLinkCard(url: string): Promise<LinkCard> {
     const contentType = response.headers.get("content-type");
     if (!response.ok || !isHtml(contentType)) {
       await response.body?.cancel();
-      return errorCard(url);
+      // A page that is not HTML will not be HTML tomorrow either; a 503 might.
+      return errorCard(url, response.ok ? false : isTransientStatus(response.status));
     }
 
     const bytes = await readHead(response);
     // Redirects move the base every relative URL resolves against.
     return parseCard(url, decode(bytes, contentType), response.url);
   } catch {
-    return errorCard(url);
+    // A timeout, a refused connection, a DNS miss — all worth trying again.
+    return errorCard(url, true);
   }
 }
 
+/** Worth another go: the server is struggling or is asking us to slow down. */
+function isTransientStatus(status: number): boolean {
+  return status >= 500 || status === 408 || status === 429;
+}
+
 // --- Fetching ---
+
+function isYouTube(url: string): boolean {
+  try {
+    return YOUTUBE_HOSTS.has(new URL(url).hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * YouTube answers some callers with a stripped page — no og:image, and a
+ * title of just "- YouTube" — and which callers seems to go by address, so it
+ * reads fine here and not from the server. Its oEmbed endpoint has no such
+ * mood, and costs 1KB where the page costs 780KB.
+ *
+ * Covers videos, shorts and playlists. Returns null for the rest — a channel
+ * page, or a video that is gone.
+ */
+async function fetchYouTubeCard(url: string): Promise<LinkCard> {
+  const endpoint = `${YOUTUBE_OEMBED}?url=${encodeURIComponent(url)}&format=json`;
+
+  try {
+    const response = await fetch(endpoint, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+    });
+    const json = /^\s*application\/json/i.test(
+      response.headers.get("content-type") ?? "",
+    );
+    if (!response.ok || !json) {
+      await response.body?.cancel();
+      // 400 and 404 are oEmbed saying it does not cover this URL.
+      return errorCard(url, isTransientStatus(response.status));
+    }
+
+    const data: unknown = await response.json();
+    if (typeof data !== "object" || data === null) return errorCard(url);
+    const { title, author_name, thumbnail_url } = data as Record<string, unknown>;
+
+    const name = clean(typeof title === "string" ? title : undefined, MAX_TITLE);
+    if (!name) return errorCard(url);
+
+    return {
+      url,
+      status: "ok",
+      fetchedAt: new Date().toISOString(),
+      title: name,
+      // The channel, which is what a viewer wants from a video alongside it.
+      description: clean(
+        typeof author_name === "string" ? author_name : undefined,
+        MAX_DESCRIPTION,
+      ),
+      siteName: "YouTube",
+      image: httpsUrl(
+        typeof thumbnail_url === "string" ? thumbnail_url : undefined,
+        endpoint,
+      ),
+      favicon: YOUTUBE_FAVICON,
+    };
+  } catch {
+    return errorCard(url, true);
+  }
+}
 
 function isHtml(contentType: string | null): boolean {
   return /^\s*(text\/html|application\/xhtml\+xml)/i.test(contentType ?? "");
@@ -231,14 +310,23 @@ function faviconOf(head: string, finalUrl: string): string | undefined {
 
 // --- Helpers ---
 
-/** The output is re-escaped on render, so an undecoded `&amp;` would show through. */
+/**
+ * The output is re-escaped on render, so an undecoded `&amp;` shows through.
+ * Named references go through the full HTML5 table — a title carrying
+ * `&mdash;` is not rare, and they are case sensitive.
+ */
 function decodeEntities(value: string): string {
-  return value.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, body: string) => {
-    const lower = body.toLowerCase();
-    if (lower.startsWith("#x")) return codePoint(parseInt(lower.slice(2), 16)) ?? match;
-    if (lower.startsWith("#")) return codePoint(parseInt(lower.slice(1), 10)) ?? match;
-    return ENTITIES[lower] ?? match;
-  });
+  return value.replace(
+    /&(#[xX][0-9a-fA-F]+|#\d+|[a-zA-Z][a-zA-Z0-9]*);/g,
+    (match, body: string) => {
+      if (body.startsWith("#")) {
+        const hex = body[1] === "x" || body[1] === "X";
+        const digits = body.slice(hex ? 2 : 1);
+        return codePoint(parseInt(digits, hex ? 16 : 10)) ?? match;
+      }
+      return decodeNamedCharacterReference(body) || match;
+    },
+  );
 }
 
 function codePoint(value: number): string | undefined {
@@ -276,6 +364,11 @@ function isPrivateHost(url: string): boolean {
   }
 }
 
-function errorCard(url: string): LinkCard {
-  return { url, status: "error", fetchedAt: new Date().toISOString() };
+function errorCard(url: string, transient = false): LinkCard {
+  return {
+    url,
+    status: "error",
+    fetchedAt: new Date().toISOString(),
+    ...(transient && { transient }),
+  };
 }

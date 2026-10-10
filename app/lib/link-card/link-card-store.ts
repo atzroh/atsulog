@@ -18,6 +18,9 @@ const LINK_CARDS_DIR = path.join(PROJECT_ROOT, "data", "link-cards");
 const OK_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 /** A dead link should cost one timeout a day, not one per view. */
 const ERROR_TTL_MS = 24 * 60 * 60 * 1000;
+/** A failure that may not repeat is worth retrying sooner — but not on every
+ *  view, since a host that hangs costs the whole fetch timeout each time. */
+const TRANSIENT_TTL_MS = 10 * 60 * 1000;
 
 /** How long a render waits; a slower fetch still lands in the cache. */
 const DEADLINE_MS = 3_000;
@@ -126,7 +129,12 @@ async function writeCard(card: LinkCard): Promise<void> {
 // --- Helpers ---
 
 function isFresh(card: LinkCard): boolean {
-  const ttl = card.status === "ok" ? OK_TTL_MS : ERROR_TTL_MS;
+  const ttl =
+    card.status === "ok"
+      ? OK_TTL_MS
+      : card.transient
+        ? TRANSIENT_TTL_MS
+        : ERROR_TTL_MS;
   const age = Date.now() - Date.parse(card.fetchedAt);
   return Number.isFinite(age) && age < ttl;
 }
