@@ -75,7 +75,7 @@ export async function fetchLinkCard(url: string): Promise<LinkCard> {
     if (!response.ok || !isHtml(contentType)) {
       await response.body?.cancel();
       // A page that is not HTML will not be HTML tomorrow either; a 503 might.
-      return errorCard(url, response.ok ? false : isTransientStatus(response.status));
+      return errorCard(url, isTransientStatus(response.status));
     }
 
     const bytes = await readHead(response);
@@ -244,7 +244,7 @@ function parseCard(url: string, html: string, finalUrl: string): LinkCard {
 
 /** Everything a card needs is in the head. */
 function headOf(html: string): string {
-  const end = html.search(/<\/head|<body/i);
+  const end = html.search(HEAD_END);
   return end === -1 ? html : html.slice(0, end);
 }
 
@@ -331,11 +331,7 @@ function decodeEntities(value: string): string {
 
 function codePoint(value: number): string | undefined {
   if (!Number.isInteger(value) || value < 0 || value > 0x10ffff) return undefined;
-  try {
-    return String.fromCodePoint(value);
-  } catch {
-    return undefined;
-  }
+  return String.fromCodePoint(value);
 }
 
 function clean(value: string | undefined, max: number): string | undefined {

@@ -7,10 +7,9 @@
 
 // --- Types ---
 
-export type Vec3 = [number, number, number];
-export type Face = [number, number, number];
-export type Edge = [number, number];
-
+type Vec3 = [number, number, number];
+type Face = [number, number, number];
+type Edge = [number, number];
 
 /**
  * Generates a subdivided Icosphere wireframe.

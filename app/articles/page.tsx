@@ -1,6 +1,6 @@
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import type { Metadata } from "next";
-import { getArticles } from "@/app/lib/article/article-repository";
+import { getPublicArticles } from "@/app/lib/article/article-repository";
 import {
   sortArticles,
   getTaxonomies,
@@ -52,10 +52,7 @@ export default async function ArticlesPage({
   const resolvedSearchParams = await searchParams;
 
   // 1. Data Fetching
-  const allMetadata = await getArticles();
-  const publishedMetadata = allMetadata.filter(
-    (a) => a.published && a.slug !== siteConfig.aboutSlug,
-  );
+  const publishedMetadata = await getPublicArticles();
 
   // 2. Prepare Form Candidates
   const candidates = getTaxonomies(publishedMetadata);

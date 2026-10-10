@@ -56,16 +56,3 @@ export type TaxonomyCandidates = {
   category?: string[];
   series?: string[];
 };
-
-/**
- * Standard props for pages that handle article search parameters.
- */
-export type ArticlePageProps = {
-  params?: Promise<unknown>;
-  searchParams: Promise<ArticleSearchParams>;
-};
-
-/**
- * Raw search parameters from Next.js (Legacy/Generic).
- */
-export type RawSearchParams = Record<string, string | string[] | undefined>;

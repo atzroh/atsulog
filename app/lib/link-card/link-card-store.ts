@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import { isNotFound } from "@/app/lib/fs-utils";
 import { fetchLinkCard } from "@/app/lib/link-card/link-card-fetch";
 import type {
   LinkCard,
@@ -143,13 +144,4 @@ function isFresh(card: LinkCard): boolean {
 function filePathFor(url: string): string {
   const name = createHash("sha256").update(url).digest("hex").slice(0, 16);
   return path.join(LINK_CARDS_DIR, `${name}.json`);
-}
-
-function isNotFound(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    error.code === "ENOENT"
-  );
 }

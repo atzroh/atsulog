@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   getArticleBySlug,
-  getArticles,
+  getPublicArticles,
 } from "@/app/lib/article/article-repository";
 import type { ArticleDetail } from "@/app/lib/article/article-types";
 import { sortArticles } from "@/app/lib/article/article-utils";
@@ -13,11 +13,11 @@ import { siteConfig } from "@/app/lib/site-config";
  * URL pattern: /feed.xml
  */
 export async function GET() {
-  const articles = await getArticles();
-  const latest = sortArticles(
-    articles.filter((a) => a.published && a.slug !== siteConfig.aboutSlug),
-    "createdAt",
-  ).slice(0, siteConfig.feedEntriesCount);
+  const articles = await getPublicArticles();
+  const latest = sortArticles(articles, "createdAt").slice(
+    0,
+    siteConfig.feedEntriesCount,
+  );
 
   const details = await Promise.all(
     latest.map((article) => getArticleBySlug(articles, article.slug)),

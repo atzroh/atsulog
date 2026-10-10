@@ -8,7 +8,10 @@ import {
   saveArticle,
 } from "@/app/lib/article/article-repository";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
-import { getTaxonomies } from "@/app/lib/article/article-utils";
+import {
+  getTaxonomies,
+  parseArticleForm,
+} from "@/app/lib/article/article-utils";
 
 type EditArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -36,24 +39,17 @@ export default async function EditArticlePage({
   async function handleSave(formData: FormData) {
     "use server";
 
-    const raw = Object.fromEntries(formData) as Record<string, string>;
-    const isPublished = raw.intent === "publish";
+    const { content, isPublished, ...fields } = parseArticleForm(formData);
 
     const updatedMetadata = {
       ...detail!.metadata,
-      title: raw.title,
-      category: raw.category,
-      series: raw.series.trim() || null,
-      tags: raw.tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
+      ...fields,
       modifiedAt: new Date().toISOString(),
       published: detail!.metadata.published || isPublished,
     };
 
     // Use fresh metadata list for saving
-    await saveArticle(await getArticles(), updatedMetadata, raw.content);
+    await saveArticle(await getArticles(), updatedMetadata, content);
     redirect(`/edit/`);
   }
 

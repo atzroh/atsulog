@@ -27,11 +27,10 @@ export async function uploadImageAction(formData: FormData) {
     throw new Error("No file provided");
   }
 
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  const buffer = Buffer.from(await file.arrayBuffer());
 
   // 1. Prepare directory: data/images/YYYYMMDD
-  const dateDir = formatDateCompact(new Date());
+  const dateDir = formatDateCompact();
   const uploadDir = join(process.cwd(), "data", "images", dateDir);
 
   try {

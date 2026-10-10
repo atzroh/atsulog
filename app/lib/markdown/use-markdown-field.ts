@@ -124,12 +124,7 @@ export function useMarkdownField({
         const formData = new FormData();
         formData.append("image", file);
         const result = await uploadImageAction(formData);
-        // Insert as an image link: ![filename](/path/to/image)
-        insertMarkdown(
-          `![${escapeAltText(result.name)}](${result.url})`,
-          "",
-          "",
-        );
+        insertMarkdown(`![${escapeAltText(result.name)}](${result.url})`);
       } catch (error) {
         console.error("Upload failed:", error);
         alert("Failed to upload image.");
@@ -176,13 +171,13 @@ export function useMarkdownField({
     const file = e.target.files?.[0];
     if (file) handleImageUpload(file);
     // Reset input so the same file can be uploaded again if needed
-    if (e.target) e.target.value = "";
+    e.target.value = "";
   };
 
   const onMarkdownFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleMarkdownUpload(file);
-    if (e.target) e.target.value = "";
+    e.target.value = "";
   };
 
   const onDrop = (e: React.DragEvent) => {

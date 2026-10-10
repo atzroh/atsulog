@@ -17,6 +17,22 @@ export function getParam(
   return param ?? defaultValue;
 }
 
+/** Reads the fields shared by the create and edit forms. */
+export function parseArticleForm(formData: FormData) {
+  const raw = Object.fromEntries(formData) as Record<string, string>;
+  return {
+    title: raw.title,
+    category: raw.category,
+    series: raw.series.trim() || null,
+    tags: raw.tags
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean),
+    content: raw.content,
+    isPublished: raw.intent === "publish",
+  };
+}
+
 /**
  * Reads wall-clock fields in siteConfig.timeZone rather than the host's, so a
  * slug is the same whether it is generated locally or on the server. The

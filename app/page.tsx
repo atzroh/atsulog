@@ -1,5 +1,5 @@
 import { siteConfig } from "@/app/lib/site-config";
-import { getArticles } from "@/app/lib/article/article-repository";
+import { getPublicArticles } from "@/app/lib/article/article-repository";
 import { RecentArticles } from "@/app/components/article/recent-articles";
 import { HeroTitle } from "@/app/components/home/hero-title";
 import { SiteStats } from "@/app/components/home/site-stats";
@@ -34,10 +34,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const allArticles = await getArticles();
-  const articles = allArticles.filter(
-    (a) => a.published && a.slug !== siteConfig.aboutSlug,
-  );
+  const articles = await getPublicArticles();
 
   return (
     <div className="space-y-16">

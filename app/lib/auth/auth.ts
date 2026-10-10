@@ -14,20 +14,6 @@ const SESSION_COOKIE_NAME = siteConfig.cookie;
 const SESSION_DURATION_MS = siteConfig.sessionDurationHours * 60 * 60 * 1000;
 
 /**
- * Encrypts a payload into a JWT.
- * @param payload - The data to include in the session.
- * @param expires - When the token should stop being accepted.
- * @returns The encrypted JWT string.
- */
-async function encrypt(payload: Record<string, unknown>, expires: Date) {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(expires)
-    .sign(SECRET_KEY);
-}
-
-/**
  * Decrypts and verifies a JWT.
  * @param session - The JWT string to verify.
  * @returns The decrypted payload or null if invalid.
@@ -49,13 +35,17 @@ export async function decrypt(session: string | undefined) {
  */
 export async function createSession() {
   const expires = new Date(Date.now() + SESSION_DURATION_MS);
-  const session = await encrypt({ authenticated: true }, expires);
+  const session = await new SignJWT({ authenticated: true })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(expires)
+    .sign(SECRET_KEY);
 
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, session, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    expires: expires,
+    expires,
     sameSite: "lax",
     path: "/",
   });

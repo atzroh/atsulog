@@ -15,10 +15,8 @@ export async function loginAction(formData: FormData) {
   if (password === process.env.ADMIN_PASSWORD) {
     await createSession();
     redirect("/edit");
-  } else {
-    // Redirect with an error parameter if authentication fails.
-    redirect("/login?error=invalid");
   }
+  redirect("/login?error=invalid");
 }
 
 /**

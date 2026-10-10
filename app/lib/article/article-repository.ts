@@ -11,6 +11,8 @@ import {
   getNextSeriesOrder,
   generateSlug,
 } from "@/app/lib/article/article-utils";
+import { isNotFound } from "@/app/lib/fs-utils";
+import { siteConfig } from "@/app/lib/site-config";
 
 // --- Constants ---
 
@@ -46,6 +48,13 @@ export async function getArticles(): Promise<ArticleMetadata[]> {
   }
 }
 
+/** Published articles, excluding the about page. */
+export async function getPublicArticles(): Promise<ArticleMetadata[]> {
+  return (await getArticles()).filter(
+    (a) => a.published && a.slug !== siteConfig.aboutSlug,
+  );
+}
+
 /**
  * Retrieves an article by its slug, including its content.
  */
@@ -63,7 +72,7 @@ export async function getArticleBySlug(
 /**
  * Saves the entire list of articles.
  */
-export async function saveArticles(articles: ArticleMetadata[]): Promise<void> {
+async function saveArticles(articles: ArticleMetadata[]): Promise<void> {
   try {
     await mkdir(path.dirname(ARTICLES_JSON_PATH), { recursive: true });
     const content = JSON.stringify(articles, null, 2);
@@ -88,7 +97,7 @@ export async function saveArticle(
     (article) => article.slug === newArticle.slug,
   );
   const updatedList = [...articles];
-  const existingBeforeUpdate = index !== -1 ? updatedList[index] : null;
+  const existing = index !== -1 ? updatedList[index] : null;
 
   let articleToSave = { ...newArticle };
 
@@ -97,8 +106,8 @@ export async function saveArticle(
   // series) or its seriesOrder is missing — the old order no longer applies.
   if (
     articleToSave.series &&
-    (!existingBeforeUpdate ||
-      existingBeforeUpdate.series !== articleToSave.series ||
+    (!existing ||
+      existing.series !== articleToSave.series ||
       articleToSave.seriesOrder == null)
   ) {
     articleToSave.seriesOrder = getNextSeriesOrder(
@@ -111,9 +120,7 @@ export async function saveArticle(
 
   let oldFilePath: string | null = null;
 
-  if (index !== -1) {
-    const existing = updatedList[index];
-
+  if (existing) {
     // Transition from draft to published
     if (!existing.published && articleToSave.published) {
       const now = new Date();
@@ -140,12 +147,13 @@ export async function saveArticle(
   }
 
   if (oldFilePath && oldFilePath !== articleToSave.filePath) {
+    const draftPath = oldFilePath;
     tasks.push(
       (async () => {
         try {
-          await unlink(resolveProjectPath(oldFilePath!));
+          await unlink(resolveProjectPath(draftPath));
         } catch (e) {
-          console.error(`Failed to delete old draft file: ${oldFilePath}`, e);
+          console.error(`Failed to delete old draft file: ${draftPath}`, e);
         }
       })(),
     );
@@ -214,15 +222,6 @@ function resolveProjectPath(filePath: string): string {
     throw new TypeError("Path must point to a file inside the project.");
   }
   return resolvedPath;
-}
-
-function isNotFound(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    error.code === "ENOENT"
-  );
 }
 
 function wrapError(error: unknown, message: string): Error {

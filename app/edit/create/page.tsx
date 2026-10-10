@@ -2,7 +2,11 @@ import { redirect } from "next/navigation";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import { getArticles, saveArticle } from "@/app/lib/article/article-repository";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
-import { generateSlug, getTaxonomies } from "@/app/lib/article/article-utils";
+import {
+  generateSlug,
+  getTaxonomies,
+  parseArticleForm,
+} from "@/app/lib/article/article-utils";
 
 /**
  * Page for creating a new article.
@@ -34,8 +38,8 @@ export default async function NewArticlePage() {
   async function handleCreate(formData: FormData) {
     "use server";
 
-    const raw = Object.fromEntries(formData) as Record<string, string>;
-    const isPublished = raw.intent === "publish";
+    const { title, category, series, tags, content, isPublished } =
+      parseArticleForm(formData);
     const now = new Date();
     const isoString = now.toISOString();
 
@@ -44,14 +48,11 @@ export default async function NewArticlePage() {
 
     const newMetadata: ArticleMetadata = {
       slug,
-      title: raw.title,
-      category: raw.category,
-      series: raw.series.trim() || null,
+      title,
+      category,
+      series,
       seriesOrder: null,
-      tags: raw.tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
+      tags,
       filePath: `data/articles/${slug}.md`,
       createdAt: isoString,
       modifiedAt: isoString,
@@ -59,7 +60,7 @@ export default async function NewArticlePage() {
       published: isPublished,
     };
 
-    await saveArticle(await getArticles(), newMetadata, raw.content);
+    await saveArticle(await getArticles(), newMetadata, content);
     redirect(`/edit/`);
   }
 
