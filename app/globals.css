@@ -245,6 +245,63 @@ body {
       @apply text-sky-500 no-underline font-medium hover:underline;
     }
 
+    /* Link Cards — a paragraph holding nothing but a URL, drawn as the page it
+       points at. The frame is the same with or without Open Graph data; without
+       it the title carries the URL, which is what the editor preview shows.
+
+       Every rule names `a.link-card`, not `.link-card`: `& a:hover` above and
+       `& img` below are both (0,1,1), so a bare class loses to each. `min-w-0`
+       keeps an unbroken URL from pushing the card open, `break-words` is spelt
+       out because `& :is(p, li, ...)` never reaches a `div`, and the thumbnail
+       is sized by the frame so the card's height never waits on the image.
+
+       That frame is a fixed height whenever there is a thumbnail: an og:image
+       is as often square (X serves the author's avatar) as it is 16:9, and
+       sized by its own aspect it would set the card half again as tall as the
+       one above it, on a block of text that has not grown at all. Pinned here
+       instead, `object-cover` takes the crop and every card with a picture
+       stands the same height. A card without one keeps sizing to its text —
+       a URL and a host name do not need 9rem of frame around them. */
+    & a.link-card {
+      @apply my-8 flex items-stretch gap-4 overflow-hidden rounded-[8px]
+        border border-gray-200 bg-white no-underline font-normal text-inherit;
+      &:hover {
+        @apply no-underline border-gray-300 bg-gray-50;
+      }
+    }
+    & a.link-card:has(.link-card-image) {
+      @apply h-36;
+    }
+    & a.link-card .link-card-text {
+      @apply flex flex-1 min-w-0 flex-col justify-center gap-1 p-4;
+    }
+    & a.link-card .link-card-title {
+      @apply text-sm font-bold text-gray-900 line-clamp-2 break-words;
+    }
+    /* No title to show, so the URL is the title — and a URL has no spaces to
+       break at. */
+    & a.link-card.link-card-plain .link-card-title {
+      @apply font-medium break-all;
+    }
+    & a.link-card .link-card-description {
+      @apply text-xs text-gray-500 line-clamp-2 break-words;
+    }
+    & a.link-card .link-card-site {
+      @apply mt-1 flex min-w-0 items-center gap-1.5 text-xs text-gray-500;
+    }
+    /* One line, always: a site name wrapping to two is what would outgrow the
+       fixed height above, and on a phone "X (formerly Twitter)" does. */
+    & a.link-card .link-card-site > span {
+      @apply truncate;
+    }
+    & a.link-card .link-card-favicon {
+      @apply size-4 m-0 shrink-0 rounded-none max-h-none;
+    }
+    & a.link-card .link-card-image {
+      @apply m-0 h-full w-[9.5rem] shrink-0 rounded-none
+        object-cover max-h-none max-w-none bg-gray-100 sm:w-[13rem];
+    }
+
     /* Blockquotes
        Used as the article lead-in, not as a citation. `not-italic` is required
        because the typography plugin sets italic, and Japanese fonts have no

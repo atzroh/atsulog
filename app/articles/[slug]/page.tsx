@@ -9,6 +9,8 @@ import {
   incrementViewCount,
 } from "@/app/lib/article/article-repository";
 import { isAuthenticated } from "@/app/lib/auth/auth";
+import { getLinkCards } from "@/app/lib/link-card/link-card-store";
+import { collectLinkCardUrls } from "@/app/lib/link-card/link-card-utils";
 import { ArticleMeta } from "@/app/components/article/article-meta";
 import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 import { SeriesNavigation } from "@/app/components/article/series-navigation";
@@ -82,6 +84,9 @@ export default async function ArticlePage({
 
   const authenticated = await isAuthenticated();
 
+  // Open Graph data for the paragraphs that are nothing but a URL.
+  const cards = await getLinkCards(collectLinkCardUrls(content));
+
   // Record a view for this article (skip when the admin is viewing)
   if (!authenticated) {
     await incrementViewCount(articles, slug);
@@ -103,7 +108,7 @@ export default async function ArticlePage({
 
       {/* Main Article Content */}
       <div className="mb-16">
-        <MarkdownRenderer content={content} />
+        <MarkdownRenderer content={content} cards={cards} />
       </div>
 
       {/* Footer Navigation */}

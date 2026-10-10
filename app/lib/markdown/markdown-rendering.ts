@@ -1,5 +1,6 @@
 import type { Element, Root } from "hast";
 import { urlAttributes } from "html-url-attributes";
+import type { Root as MdastRoot } from "mdast";
 import { defaultUrlTransform } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeKatex, { type Options as KatexOptions } from "rehype-katex";
@@ -11,6 +12,38 @@ import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import type { VFile } from "vfile";
+
+import type { LinkCardMap } from "@/app/lib/link-card/link-card-types";
+import {
+  buildLinkCard,
+  fingerprintCards,
+  linkCardUrlOf,
+} from "@/app/lib/link-card/link-card-utils";
+
+// A paragraph that is nothing but a URL is drawn as the page it points at.
+// Done on mdast so the paragraph becomes the card itself, and so the test for
+// what counts is the one collectLinkCardUrls uses.
+function remarkLinkCard() {
+  return (tree: MdastRoot, file: VFile) => {
+    const cards = (file.data.cards ?? {}) as LinkCardMap;
+
+    for (const child of tree.children) {
+      if (child.type !== "paragraph") continue;
+      const url = linkCardUrlOf(child);
+      if (!url) continue;
+
+      // A fresh element per card: rehypeArticle rewrites properties in place,
+      // and to-hast assigns hChildren by reference.
+      const card = buildLinkCard(url, cards[url]);
+      child.data = {
+        ...child.data,
+        hName: card.tagName,
+        hProperties: card.properties,
+        hChildren: card.children,
+      };
+    }
+  };
+}
 
 function rehypeArticle() {
   return (tree: Root, file: VFile) => {
@@ -80,14 +113,20 @@ function wrapTable(table: Element): Element {
   };
 }
 
-function createProcessor(katexOptions?: KatexOptions) {
-  return unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkMath)
+type ProcessorOptions = {
+  katex?: KatexOptions;
+  /** Off for the feed: a reader has none of the CSS a card needs. */
+  linkCards?: boolean;
+};
+
+function createProcessor({ katex, linkCards = true }: ProcessorOptions = {}) {
+  const processor = unified().use(remarkParse).use(remarkGfm).use(remarkMath);
+  if (linkCards) processor.use(remarkLinkCard);
+
+  return processor
     .use(remarkRehype, { allowDangerousHtml: true })
     // KaTeX first: both claim ```math fences.
-    .use(rehypeKatex, katexOptions)
+    .use(rehypeKatex, katex)
     .use(rehypeHighlight)
     .use(rehypeArticle)
     .use(rehypeStringify);
@@ -106,14 +145,16 @@ const cache = new Map<string, string>();
 function render(
   processor: Processor,
   content: string,
+  cards?: LinkCardMap,
   baseUrl?: string,
 ): string {
-  const key = baseUrl ? `${baseUrl}\0${content}` : content;
+  // Keyed by the cards too: one filled in later must not hit an older entry.
+  const key = [baseUrl ?? "", fingerprintCards(cards), content].join("\0");
   const cached = cache.get(key);
   if (cached !== undefined) return cached;
 
   const html = String(
-    processor.processSync({ value: content, data: { baseUrl } }),
+    processor.processSync({ value: content, data: { baseUrl, cards } }),
   );
   if (cache.size >= CACHE_LIMIT) cache.delete(cache.keys().next().value!);
   cache.set(key, html);
@@ -121,10 +162,11 @@ function render(
 }
 
 /**
- * Renders Markdown (GFM, `$math$`) to an HTML string.
+ * Renders Markdown (GFM, `$math$`) to an HTML string. Without `cards`, a link
+ * card carries its URL alone.
  */
-export function renderMarkdown(content: string): string {
-  return render(processor, content);
+export function renderMarkdown(content: string, cards?: LinkCardMap): string {
+  return render(processor, content, cards);
 }
 
 /**
@@ -132,6 +174,9 @@ export function renderMarkdown(content: string): string {
  * KaTeX's CSS, and relative URLs are resolved against baseUrl.
  */
 export function renderFeedMarkdown(content: string, baseUrl: string): string {
-  feedProcessor ??= createProcessor({ output: "mathml" });
-  return render(feedProcessor, content, baseUrl);
+  feedProcessor ??= createProcessor({
+    katex: { output: "mathml" },
+    linkCards: false,
+  });
+  return render(feedProcessor, content, undefined, baseUrl);
 }

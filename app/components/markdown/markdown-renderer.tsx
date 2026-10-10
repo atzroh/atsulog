@@ -1,3 +1,4 @@
+import type { LinkCardMap } from "@/app/lib/link-card/link-card-types";
 import { renderMarkdown } from "@/app/lib/markdown/markdown-rendering";
 
 // Imported here so only the routes with an article body load it.
@@ -6,6 +7,8 @@ import "katex/dist/katex-swap.min.css";
 
 type MarkdownRendererProps = {
   content: string;
+  /** Open Graph data for the link cards; the editor preview has none. */
+  cards?: LinkCardMap;
   className?: string;
 };
 
@@ -14,12 +17,13 @@ type MarkdownRendererProps = {
  */
 export function MarkdownRenderer({
   content,
+  cards,
   className = "",
 }: MarkdownRendererProps) {
   return (
     <div
       className={`prose-site ${className}`}
-      dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+      dangerouslySetInnerHTML={{ __html: renderMarkdown(content, cards) }}
     />
   );
 }
