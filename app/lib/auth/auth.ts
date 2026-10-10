@@ -13,11 +13,7 @@ const SESSION_COOKIE_NAME = siteConfig.cookie;
 
 const SESSION_DURATION_MS = siteConfig.sessionDurationHours * 60 * 60 * 1000;
 
-/**
- * Decrypts and verifies a JWT.
- * @param session - The JWT string to verify.
- * @returns The decrypted payload or null if invalid.
- */
+/** Verifies a session JWT; returns its payload, or null if invalid. */
 export async function decrypt(session: string | undefined) {
   if (!session) return null;
   try {
@@ -30,9 +26,6 @@ export async function decrypt(session: string | undefined) {
   }
 }
 
-/**
- * Creates a new session and sets the session cookie.
- */
 export async function createSession() {
   const expires = new Date(Date.now() + SESSION_DURATION_MS);
   const session = await new SignJWT({ authenticated: true })
@@ -51,18 +44,11 @@ export async function createSession() {
   });
 }
 
-/**
- * Deletes the session cookie.
- */
 export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
-/**
- * Checks if the current request has a valid session.
- * @returns True if authenticated, false otherwise.
- */
 export async function isAuthenticated() {
   const cookieStore = await cookies();
   const session = cookieStore.get(SESSION_COOKIE_NAME)?.value;

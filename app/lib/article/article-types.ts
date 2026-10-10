@@ -1,6 +1,3 @@
-/**
- * Core metadata for an article.
- */
 export type ArticleMetadata = {
   slug: string;
   title: string;
@@ -15,27 +12,16 @@ export type ArticleMetadata = {
   published: boolean;
 };
 
-/**
- * Full details of an article, including its content.
- */
 export type ArticleDetail = {
   metadata: ArticleMetadata;
   content: string;
 };
 
-/**
- * Valid sort keys for articles.
- */
 export type SortBy = "created" | "modified" | "views";
 
-/**
- * Valid sort orders.
- */
 export type SortOrder = "asc" | "desc";
 
-/**
- * Standard search parameters used across article list pages.
- */
+/** Search params shared by the article list pages. */
 export type ArticleSearchParams = {
   page?: string | string[];
   keyword?: string | string[];
@@ -47,9 +33,8 @@ export type ArticleSearchParams = {
 };
 
 /**
- * Autocomplete candidates for the taxonomy fields, as produced by
- * getTaxonomies(). Every field is optional because a caller may offer
- * suggestions for only some of them.
+ * Autocomplete candidates, as produced by getTaxonomies(). All optional, since
+ * a caller may offer suggestions for only some fields.
  */
 export type TaxonomyCandidates = {
   tags?: string[];

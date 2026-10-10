@@ -33,12 +33,9 @@ const inFlight = new Map<string, Promise<LinkCard>>();
 // --- Public API ---
 
 /**
- * The cards for these URLs, keyed in the order given — markdown-rendering.ts
- * fingerprints the result, so the order is part of the contract.
- *
- * Fresh entries come from disk; missing or expired ones are fetched, but only
- * DEADLINE_MS is spent waiting. The rest render bare and are picked up by the
- * next request, which holds only because the server is a long-lived process.
+ * Keyed in the order given, since markdown-rendering.ts fingerprints the result.
+ * Stale or missing cards are fetched for up to DEADLINE_MS; the rest render bare
+ * and are picked up next request (the server is a long-lived process).
  */
 export async function getLinkCards(urls: string[]): Promise<LinkCardMap> {
   if (urls.length === 0) return {};

@@ -12,11 +12,9 @@ function isUnsafeSegment(segment: string): boolean {
 }
 
 /**
- * Resolves a requested path to an absolute file path, but only if it stays
- * inside IMAGES_ROOT. Returns null for anything that would escape the root,
- * so a crafted "../" (e.g. sent as "..%2F") cannot read arbitrary files.
- * The final containment check is the real guard; the segment check just
- * rejects obviously malformed input early.
+ * Returns the absolute path only if it stays inside IMAGES_ROOT, else null,
+ * so a crafted "../" (e.g. "..%2F") cannot read arbitrary files. The final
+ * containment check is the real guard; the segment check rejects early.
  */
 function resolveWithinImagesRoot(dateDir: string, filename: string) {
   if (isUnsafeSegment(dateDir) || isUnsafeSegment(filename)) {
@@ -31,10 +29,7 @@ function resolveWithinImagesRoot(dateDir: string, filename: string) {
   return filePath;
 }
 
-/**
- * Route handler to serve images stored in the data directory.
- * URL pattern: /images/[dateDir]/[filename]
- */
+/** Serves images from data/images at /images/[dateDir]/[filename]. */
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
@@ -54,7 +49,6 @@ export async function GET(
   try {
     const buffer = await readFile(filePath);
 
-    // Determine content type based on extension
     const ext = filename.includes(".") ? filename.split(".").pop() : "";
     const contentType = mimeTypeForExtension(ext ?? "");
 

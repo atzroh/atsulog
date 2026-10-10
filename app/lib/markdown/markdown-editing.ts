@@ -1,9 +1,6 @@
 /**
- * Text transforms behind the Markdown editor's toolbar and key handling.
- *
- * Nothing here touches React or the DOM: each function takes the current text
- * plus a selection and returns the text it should become plus where the caret
- * should land. The caller is responsible for applying both.
+ * Text transforms behind the Markdown editor's toolbar and keys. Pure: each
+ * takes text plus a selection and returns the new text and caret to apply.
  */
 
 /** A rewritten value and the selection to restore once it is applied. */
@@ -13,31 +10,23 @@ export type EditResult = {
   selectionEnd: number;
 };
 
-/** Indent / outdent step. Two spaces, matching what the toolbar's list buttons emit. */
+/** Two spaces, matching what the toolbar's list buttons emit. */
 const INDENT = "  ";
 
 /** `indent`, `marker`, `content` of a list item — `- foo`, `1. foo`, `  * foo`. */
 const LIST_ITEM = /^(\s*)([-*+]|\d+\.)\s+(.*)$/;
 
-/**
- * The text from the start of the caret's line up to the caret itself.
- * Deliberately excludes anything after the caret: a list item is only
- * "continued" or "indented" on the strength of what precedes the cursor.
- */
+/** The caret's line up to the caret: list handling goes by what precedes it. */
 function lineBeforeCursor(value: string, caret: number): string {
   const before = value.substring(0, caret);
   return before.substring(before.lastIndexOf("\n") + 1);
 }
 
-/** Collapses the caret to a single point. */
 function caretAt(value: string, position: number): EditResult {
   return { value, selectionStart: position, selectionEnd: position };
 }
 
-/**
- * Escapes the characters that would terminate a Markdown alt text early.
- * The backslash must be handled first to avoid double-escaping.
- */
+/** Escapes the characters that would end a Markdown alt text early. */
 export function escapeAltText(text: string): string {
   return text.replace(/[\\[\]]/g, "\\$&");
 }

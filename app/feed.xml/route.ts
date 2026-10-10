@@ -8,10 +8,6 @@ import { sortArticles } from "@/app/lib/article/article-utils";
 import { buildAtomFeed } from "@/app/lib/feed/atom-feed";
 import { siteConfig } from "@/app/lib/site-config";
 
-/**
- * Route handler for the Atom feed of the latest published articles.
- * URL pattern: /feed.xml
- */
 export async function GET() {
   const articles = await getPublicArticles();
   const latest = sortArticles(articles, "createdAt").slice(

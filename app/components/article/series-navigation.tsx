@@ -2,30 +2,22 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
-/**
- * Props for the SeriesNavigation component.
- */
 type SeriesNavigationProps = {
   articles: ArticleMetadata[];
   metadata: ArticleMetadata;
 };
 
-/**
- * Renders navigation links for articles within the same series.
- * Handles calculating the previous and next articles based on seriesOrder.
- */
+/** Links to the previous and next published articles in the series, by seriesOrder. */
 export function SeriesNavigation({
   articles,
   metadata,
 }: SeriesNavigationProps) {
   const { series, seriesOrder, slug } = metadata;
 
-  // Only render if the article belongs to a series
   if (!series || seriesOrder === null) {
     return null;
   }
 
-  // Filter and sort articles in the same series
   const seriesArticles = articles
     .filter((a) => a.series === series && a.published)
     .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0));
@@ -38,7 +30,6 @@ export function SeriesNavigation({
       ? seriesArticles[currentIndex + 1]
       : null;
 
-  // If there's no other article in the series, don't render
   if (!previousInSeries && !nextInSeries) {
     return null;
   }

@@ -1,12 +1,9 @@
 /**
- * Shared MIME type <-> file extension mapping for uploaded images.
- * Kept in one place so the upload action and the /images route handler can
- * never drift apart on what a stored file is called and how it is served.
+ * MIME type <-> extension mapping for uploaded images, shared so the upload
+ * action and the /images route never disagree.
  */
 
-/**
- * MIME types whose conventional extension is not simply the subtype.
- */
+/** MIME types whose conventional extension is not simply the subtype. */
 const MIME_TO_EXTENSION: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/svg+xml": "svg",
@@ -15,9 +12,7 @@ const MIME_TO_EXTENSION: Record<string, string> = {
   "image/vnd.microsoft.icon": "ico",
 };
 
-/**
- * Extensions whose Content-Type is not simply "image/<ext>".
- */
+/** Extensions whose Content-Type is not simply "image/<ext>". */
 const EXTENSION_TO_MIME: Record<string, string> = {
   jpg: "image/jpeg",
   jpeg: "image/jpeg",
@@ -27,25 +22,17 @@ const EXTENSION_TO_MIME: Record<string, string> = {
   ico: "image/x-icon",
 };
 
-/** Content-Type used when a stored file carries no usable extension. */
 const FALLBACK_MIME = "image/png";
-
-/** Extension used when a MIME type yields nothing usable. */
 const FALLBACK_EXTENSION = "png";
 
-/**
- * Strips parameters and casing from a MIME type, e.g. "IMAGE/PNG; q=1" -> "image/png".
- */
+/** e.g. "IMAGE/PNG; q=1" -> "image/png". */
 function normalizeMimeType(mimeType: string): string {
   return mimeType.split(";")[0].trim().toLowerCase();
 }
 
 /**
- * Derives the stored file extension (without a leading dot) for a MIME type.
- * Falls back to the subtype itself so newer formats such as image/avif work
- * without needing an entry in the table.
- * @param mimeType - The browser-reported MIME type of the uploaded file.
- * @returns A lowercase, dot-less extension.
+ * The dot-less extension to store a file under. Falls back to the subtype so
+ * newer formats such as image/avif need no table entry.
  */
 export function extensionForMimeType(mimeType: string): string {
   const normalized = normalizeMimeType(mimeType);
@@ -59,11 +46,7 @@ export function extensionForMimeType(mimeType: string): string {
   return cleaned || FALLBACK_EXTENSION;
 }
 
-/**
- * Resolves the Content-Type to serve a stored file with, based on its extension.
- * @param extension - Extension with or without a leading dot.
- * @returns A Content-Type header value.
- */
+/** The Content-Type for a stored file's extension (with or without a dot). */
 export function mimeTypeForExtension(extension: string): string {
   const cleaned = extension.replace(/^\./, "").toLowerCase();
   if (!cleaned) return FALLBACK_MIME;

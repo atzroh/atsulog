@@ -16,9 +16,6 @@ import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 import { SeriesNavigation } from "@/app/components/article/series-navigation";
 import { siteConfig } from "@/app/lib/site-config";
 
-/**
- * Generates dynamic metadata for the article page.
- */
 export async function generateMetadata({
   params,
 }: {
@@ -63,10 +60,6 @@ export async function generateMetadata({
   };
 }
 
-/**
- * Renders an individual article detail page.
- * Increments the view count on every render, except when the admin is authenticated.
- */
 export default async function ArticlePage({
   params,
 }: {
@@ -99,21 +92,16 @@ export default async function ArticlePage({
           {metadata.title}
         </h1>
 
-        {/* Article Metadata (Dates, Views) */}
         <ArticleMeta metadata={metadata} className="mb-6" />
 
-        {/* Taxonomy Links (Category, Series, Tags) */}
         <ArticleTaxonomies metadata={metadata} />
       </header>
 
-      {/* Main Article Content */}
       <div className="mb-16">
         <MarkdownRenderer content={content} cards={cards} />
       </div>
 
-      {/* Footer Navigation */}
       <div className="mt-16">
-        {/* Series Navigation (Previous/Next) */}
         <SeriesNavigation metadata={metadata} articles={articles} />
 
         <nav

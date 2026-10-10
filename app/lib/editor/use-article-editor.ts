@@ -6,9 +6,6 @@ import type {
 import { useNavigationGuard } from "@/app/lib/editor/use-navigation-guard";
 import { useTagInput } from "@/app/lib/editor/use-tag-input";
 
-/**
- * Hook to manage the state and logic for the article editor.
- */
 export function useArticleEditor({
   metadata,
   initialContent,
@@ -34,7 +31,6 @@ export function useArticleEditor({
   } = useTagInput(metadata.tags.join(", "), candidates?.tags);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Check if the form is "dirty" (has unsaved changes)
   const isDirty =
     (currentContent !== initialContent ||
       title !== metadata.title ||
@@ -43,7 +39,6 @@ export function useArticleEditor({
       tags !== metadata.tags.join(", ")) &&
     !isSubmitting;
 
-  // Use the navigation guard hook
   useNavigationGuard(isDirty);
 
   const handleSubmitAction = async (formData: FormData) => {

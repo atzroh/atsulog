@@ -1,14 +1,8 @@
 import Link from "next/link";
 import { Folder, BookOpen, Tag as TagIcon } from "lucide-react";
 
-/**
- * Valid variants for the Tag component.
- */
 type TagVariant = "tag" | "category" | "series";
 
-/**
- * Props for the Tag component.
- */
 type TagProps = {
   label: string;
   href?: string;

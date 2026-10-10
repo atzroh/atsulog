@@ -142,9 +142,8 @@ export const toolbarGroups: ToolbarItem[][] = [
       title: "Inline Math",
     },
     {
-      // The surrounding blank lines are the point of this button: without
-      // them the `$$` is swallowed by the neighbouring paragraph and the
-      // equation renders inline.
+      // Without the surrounding blank lines the `$$` is swallowed by the
+      // neighbouring paragraph and the equation renders inline.
       icon: Radical,
       prefix: "\n$$\n",
       suffix: "\n$$\n",

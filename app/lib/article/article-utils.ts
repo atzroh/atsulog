@@ -6,9 +6,7 @@ import type {
   SortOrder,
 } from "@/app/lib/article/article-types";
 
-/**
- * Extracts the first string value from a search parameter.
- */
+/** The first value of a search parameter. */
 export function getParam(
   param: string | string[] | undefined,
   defaultValue: string = "",
@@ -34,9 +32,8 @@ export function parseArticleForm(formData: FormData) {
 }
 
 /**
- * Reads wall-clock fields in siteConfig.timeZone rather than the host's, so a
- * slug is the same whether it is generated locally or on the server. The
- * locale only carries latin digits here — the field order is imposed below.
+ * siteConfig.timeZone rather than the host's, so a slug is the same locally and
+ * on the server. The locale only supplies latin digits; field order is set below.
  */
 const zonedFormatter = new Intl.DateTimeFormat("en-US", {
   timeZone: siteConfig.timeZone,
@@ -49,9 +46,7 @@ const zonedFormatter = new Intl.DateTimeFormat("en-US", {
   hourCycle: "h23",
 });
 
-/**
- * Concatenates the requested wall-clock fields of a date, zero-padded.
- */
+/** Concatenates the requested wall-clock fields, zero-padded. */
 function formatZoned(
   date: Date,
   fields: readonly Intl.DateTimeFormatPartTypes[],
@@ -63,17 +58,12 @@ function formatZoned(
   return fields.map((field) => values.get(field) ?? "").join("");
 }
 
-/**
- * Formats a date into a compact YYYYMMDD string.
- */
+/** YYYYMMDD. */
 export function formatDateCompact(date: Date = new Date()): string {
   return formatZoned(date, ["year", "month", "day"]);
 }
 
-/**
- * Generates a timestamp-based slug from the current date (YYYYMMDDHHMMSS).
- * Used for transitioning articles from draft to published.
- */
+/** YYYYMMDDHHMMSS, given to a draft when it is published. */
 export function generateSlug(date: Date = new Date()): string {
   return formatZoned(date, [
     "year",
@@ -89,12 +79,8 @@ export function generateSlug(date: Date = new Date()): string {
 const MAX_FILENAME_STEM_LENGTH = 100;
 
 /**
- * Normalizes a file name stem so it is safe inside a Markdown image URL.
- * Everything outside [a-z0-9._-] — spaces, symbols and non-ASCII alike —
- * collapses into "-", which keeps the URL free of characters that would
- * terminate a Markdown link destination early.
- * Returns an empty string when nothing usable remains, so the caller can
- * fall back to a generated name.
+ * Collapses everything outside [a-z0-9._-] into "-", so the stem cannot end a
+ * Markdown link destination early. Empty when nothing usable remains.
  */
 export function sanitizeFileName(stem: string): string {
   return stem
@@ -106,10 +92,7 @@ export function sanitizeFileName(stem: string): string {
     .replace(/[-.]+$/g, "");
 }
 
-/**
- * Calculates the sorting configuration based on search parameters.
- * Defaults to "createdAt" descending, or "seriesOrder" ascending if a series is selected.
- */
+/** Defaults to createdAt descending, or seriesOrder ascending within a series. */
 export function getSortConfig(params: ArticleSearchParams): {
   field: keyof ArticleMetadata;
   order: SortOrder;
@@ -132,10 +115,7 @@ export function getSortConfig(params: ArticleSearchParams): {
     sortBy: "created",
   };
 
-  // Determine sort order
-  // - Modified and Views always default to descending
-  // - Series filtering defaults to ascending (oldest first)
-  // - Otherwise, default to descending (newest first)
+  // Modified and views are always descending; a series reads oldest first.
   const order =
     field === "modifiedAt" || field === "viewCount"
       ? "desc"
@@ -144,10 +124,6 @@ export function getSortConfig(params: ArticleSearchParams): {
   return { field, order, sortBy };
 }
 
-/**
- * Sorts an array of article metadata.
- * Supports dates, numbers, and string-based fields.
- */
 export function sortArticles(
   articles: ArticleMetadata[],
   field: keyof ArticleMetadata = "createdAt",
@@ -158,13 +134,12 @@ export function sortArticles(
     let aVal = a[field];
     let bVal = b[field];
 
-    // Handle date strings
     if (field === "createdAt" || field === "modifiedAt") {
       aVal = Date.parse(aVal as string);
       bVal = Date.parse(bVal as string);
     }
 
-    // Handle null/undefined values (push to the end)
+    // Missing values go last in either order.
     if (aVal === null || aVal === undefined) return 1;
     if (bVal === null || bVal === undefined) return -1;
 
@@ -174,9 +149,6 @@ export function sortArticles(
   });
 }
 
-/**
- * Formats an ISO date string into a localized, user-friendly format.
- */
 export function formatDate(value: string): string {
   return new Date(value).toLocaleString(siteConfig.locale, {
     dateStyle: "medium",
@@ -186,7 +158,8 @@ export function formatDate(value: string): string {
 }
 
 /**
- * Extracts unique taxonomy values (tags, categories, series) and the oldest creation date (launchedAt) from a list of articles.
+ * Sorted unique tags, categories and series, plus launchedAt (the oldest
+ * createdAt) and the total view count.
  */
 export function getTaxonomies(articles: ArticleMetadata[]) {
   const tagsSet = new Set<string>();
@@ -218,9 +191,6 @@ export function getTaxonomies(articles: ArticleMetadata[]) {
   };
 }
 
-/**
- * Determines the next seriesOrder index for a new article in a given series.
- */
 export function getNextSeriesOrder(
   seriesName: string,
   articles: ArticleMetadata[],
@@ -235,9 +205,6 @@ export function getNextSeriesOrder(
   return maxOrder + 1;
 }
 
-/**
- * Filters article metadata based on the provided search parameters.
- */
 export function filterArticles(
   articles: ArticleMetadata[],
   params: ArticleSearchParams,
@@ -252,7 +219,6 @@ export function filterArticles(
   }
 
   return articles.filter((article) => {
-    // Keyword search across multiple fields
     if (query) {
       const matches =
         article.title.toLowerCase().includes(query) ||
@@ -263,7 +229,7 @@ export function filterArticles(
       if (!matches) return false;
     }
 
-    // Tag filtering (supports comma-separated tags)
+    // Comma-separated; an article must carry every tag.
     if (tag) {
       const searchTags = tag
         .split(",")
@@ -273,7 +239,6 @@ export function filterArticles(
       if (!searchTags.every((st) => articleTags.includes(st))) return false;
     }
 
-    // Series and Category filtering
     if (series && article.series?.toLowerCase() !== series) return false;
     if (category && article.category.toLowerCase() !== category) return false;
 
@@ -281,9 +246,7 @@ export function filterArticles(
   });
 }
 
-/**
- * Constructs a URL with article search parameters, preserving existing ones.
- */
+/** Existing params with `updates` applied; null or undefined removes a key. */
 export function buildArticleSearchUrl(
   basePath: string,
   searchParams: ArticleSearchParams,
@@ -291,7 +254,6 @@ export function buildArticleSearchUrl(
 ): string {
   const params = new URLSearchParams();
 
-  // 1. Copy existing params
   Object.entries(searchParams).forEach(([key, value]) => {
     if (!value) return;
     if (Array.isArray(value)) {
@@ -301,7 +263,6 @@ export function buildArticleSearchUrl(
     }
   });
 
-  // 2. Apply updates
   Object.entries(updates).forEach(([key, value]) => {
     if (value === null || value === undefined) {
       params.delete(key);

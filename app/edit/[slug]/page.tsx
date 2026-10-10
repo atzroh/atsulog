@@ -17,9 +17,6 @@ type EditArticlePageProps = {
   params: Promise<{ slug: string }>;
 };
 
-/**
- * Article Edit Page.
- */
 export default async function EditArticlePage({
   params,
 }: EditArticlePageProps) {
@@ -33,9 +30,6 @@ export default async function EditArticlePage({
 
   const taxonomies = getTaxonomies(articles);
 
-  /**
-   * Server Action to handle the update of an article.
-   */
   async function handleSave(formData: FormData) {
     "use server";
 

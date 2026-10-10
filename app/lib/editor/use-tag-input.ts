@@ -1,10 +1,6 @@
 import { useState, useCallback } from "react";
 
-/**
- * Hook to manage comma-separated tag input with autocomplete suggestions.
- * @param initialValue Initial value for the input field.
- * @param candidates All available tags for suggestions.
- */
+/** Comma-separated tag input whose suggestions complete the last tag. */
 export function useTagInput(initialValue: string, candidates: string[] = []) {
   const [value, setValue] = useState(initialValue);
   const [suggestions, setSuggestions] = useState<string[]>(candidates);

@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 
-/**
- * An organism component that provides a heading and a link to create a new article.
- * Designed for the management dashboard.
- */
+/** The dashboard's heading with a link to create a new article. */
 export function CreateArticleSection() {
   return (
     <section>

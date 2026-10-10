@@ -48,9 +48,7 @@ function renderEntry({ metadata, content }: ArticleDetail): string {
   ].join("\n");
 }
 
-/**
- * Builds the Atom feed document for the given articles, in the order given.
- */
+/** The Atom feed document for these articles, in the order given. */
 export function buildAtomFeed(entries: ArticleDetail[]): string {
   // The feed changes whenever its newest-modified entry does.
   const updated = entries.length

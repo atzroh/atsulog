@@ -1,11 +1,7 @@
 import { LogOut } from "lucide-react";
 import { logoutAction } from "@/app/lib/auth/auth-actions";
 
-/**
- * A reusable logout button component.
- * Uses a server action to handle the logout process.
- * @returns The logout button element.
- */
+/** A logout button that submits the logout server action. */
 export function LogoutButton() {
   return (
     <form action={logoutAction}>

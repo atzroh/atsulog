@@ -1,8 +1,5 @@
 import type { LucideIcon } from "lucide-react";
 
-/**
- * Props for a single form field.
- */
 type FormFieldProps = {
   id: string;
   name?: string;

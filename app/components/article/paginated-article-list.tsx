@@ -8,31 +8,21 @@ import type {
 import { getParam } from "@/app/lib/article/article-utils";
 import { siteConfig } from "@/app/lib/site-config";
 
-// --- Types ---
-
 type PaginatedArticleListProps = {
   articles: ArticleMetadata[];
   searchParams: ArticleSearchParams;
   basePath?: string;
 };
 
-// --- Main Component ---
-
-/**
- * Organism component that renders a list of articles with pagination navigation and a title.
- * @param props - Component props.
- * @returns A section containing the title, article list, and pagination controls.
- */
+/** Renders the article list with its heading, sort controls and pagination. */
 export function PaginatedArticleList({
   articles,
   searchParams,
   basePath = "/articles",
 }: PaginatedArticleListProps) {
-  // Parse current page
   const rawPage = Number.parseInt(getParam(searchParams.page, "1"), 10);
   const requestedPage = rawPage > 0 ? rawPage : 1;
 
-  // Calculate pagination window
   const totalPages = Math.max(
     1,
     Math.ceil(articles.length / siteConfig.articlesPerPage),

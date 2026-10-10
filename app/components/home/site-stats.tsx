@@ -9,11 +9,7 @@ import type { ArticleMetadata } from "@/app/lib/article/article-types";
 /** Latest clock reading shared by every subscriber. Empty until the first tick. */
 let clockSnapshot = "";
 
-/**
- * Subscribes to the wall clock, notifying React only when the displayed time changes.
- * @param onChange - Callback invoked when the snapshot becomes stale.
- * @returns An unsubscribe function that stops the timer.
- */
+/** Subscribes to the wall clock, notifying React only when the displayed time changes. */
 function subscribeToClock(onChange: () => void) {
   const tick = () => {
     const next = new Date().toLocaleTimeString("en-GB", {
@@ -30,9 +26,8 @@ function subscribeToClock(onChange: () => void) {
 }
 
 /**
- * Reads the current time on the client. Renders empty on the server and during
- * hydration so the markup stays identical on both sides.
- * @returns The current time as HH:MM, or an empty string before hydration.
+ * The current time as HH:MM. Empty on the server and during hydration so the
+ * markup stays identical on both sides.
  */
 function useCurrentTime() {
   return useSyncExternalStore(
@@ -42,12 +37,7 @@ function useCurrentTime() {
   );
 }
 
-/**
- * A Zsh terminal-style display for site statistics.
- * Mimics real shell output with consistent font and prompt.
- * @param props - Component props containing articles.
- * @returns A Zsh-style terminal list of statistics.
- */
+/** Site statistics styled as Zsh shell output. */
 export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
   const currentTime = useCurrentTime();
 
@@ -79,7 +69,6 @@ export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
   return (
     <section className="flex justify-center py-4 md:py-6">
       <div className="w-full font-mono text-sm md:text-base">
-        {/* Zsh Prompt Line (Creative Engineer Style) */}
         <div className="flex flex-wrap items-center gap-x-2 mb-6">
           <span className="text-sky-600 font-bold">~/mylife</span>
           <span className="text-gray-400">in</span>
@@ -95,7 +84,6 @@ export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
           )}
         </div>
 
-        {/* Shell Output Area */}
         <div className="space-y-2 pl-4">
           {stats.map((stat) => (
             <div

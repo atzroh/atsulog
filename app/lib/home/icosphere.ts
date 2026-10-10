@@ -1,8 +1,6 @@
 /**
- * Icosphere wireframe generation.
- *
- * Pure geometry: no React, no canvas. Kept out of the component so the maths
- * is readable on its own and stays outside the client bundle boundary.
+ * Icosphere wireframe geometry, kept out of the component (no React, no canvas)
+ * so the maths reads on its own and stays outside the client bundle boundary.
  */
 
 // --- Types ---
@@ -11,9 +9,6 @@ type Vec3 = [number, number, number];
 type Face = [number, number, number];
 type Edge = [number, number];
 
-/**
- * Generates a subdivided Icosphere wireframe.
- */
 export function generateIcosphere(subdivisions: number = 1): {
   vertices: Vec3[];
   edges: Edge[];

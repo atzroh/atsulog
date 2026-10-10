@@ -22,16 +22,10 @@ const initialMetadata: ArticleMetadata = {
   published: false,
 };
 
-/**
- * Page for creating a new article.
- */
 export default async function NewArticlePage() {
   const articles = await getArticles();
   const taxonomies = getTaxonomies(articles);
 
-  /**
-   * Server Action to handle the creation of a new article.
-   */
   async function handleCreate(formData: FormData) {
     "use server";
 

@@ -1,10 +1,6 @@
 import { useEffect } from "react";
 
-/**
- * A hook that warns the user when they try to navigate away with unsaved changes.
- * @param isDirty - Whether there are unsaved changes.
- * @param message - The message to show in the confirmation dialog.
- */
+/** Asks for confirmation before leaving the page with unsaved changes. */
 export function useNavigationGuard(
   isDirty: boolean,
   message = "You have unsaved changes. Are you sure you want to leave?",
@@ -12,22 +8,21 @@ export function useNavigationGuard(
   useEffect(() => {
     if (!isDirty) return;
 
-    // Handle browser refresh or tab close
+    // Refresh or tab close.
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Modern standard: call preventDefault to trigger the confirmation dialog
+      // preventDefault alone triggers the browser's own dialog.
       e.preventDefault();
     };
 
-    // Handle internal link clicks (Next.js Link, etc.)
+    // Client-side navigation (next/link) never fires beforeunload.
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = target.closest("a");
 
       if (anchor && anchor.href) {
-        // Create a URL object to normalize the href
         const url = new URL(anchor.href, window.location.origin);
 
-        // Only warn if it's a different path (internal or external)
+        // A link to this same page (a #hash, say) loses nothing.
         const isSamePath =
           url.origin === window.location.origin &&
           url.pathname === window.location.pathname &&
@@ -43,7 +38,7 @@ export function useNavigationGuard(
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-    // Use capture to intercept the click before other handlers
+    // Capture, so this runs before Link's own handler navigates.
     document.addEventListener("click", handleClick, true);
 
     return () => {

@@ -11,9 +11,8 @@ import {
 import { siteConfig } from "@/app/lib/site-config";
 
 /**
- * The author's public accounts, in the order they appear in the footer.
- * siteConfig holds the two social handles as bare identifiers, so their hosts
- * are assembled here. The email address is not a link; see SocialLinks.
+ * Footer links in display order. siteConfig holds bare handles, so hosts are
+ * added here. The email is not a link; see SocialLinks.
  */
 const links = [
   {
@@ -33,17 +32,9 @@ const links = [
 const ICON_BUTTON = "text-muted hover:text-foreground";
 
 /**
- * A row of icon links to the author's GitHub account and the site's feed, plus
- * an envelope button that opens a dialog with the email address.
- * Rendered above the copyright line in the site footer.
- *
- * The icons carry no visible label, so each link is named by aria-label and the
- * marks are drawn a step larger than the header's (size-5 vs size-4.5) to keep
- * the tap target comfortable. Hover colours transition via the `a` rule in
- * globals.css, so no transition class is needed here. The address stays in its
- * "[at]" form and is not a mailto: link; the envelope opens a dialog that shows
- * it with a copy icon instead.
- * @returns The social links navigation element.
+ * Footer icon links, plus an envelope opening a dialog with the "[at]" address
+ * and a copy button instead of a mailto: link. Icons are size-5 (header: 4.5)
+ * for the tap target; hover transitions come from the `a` rule in globals.css.
  */
 export function SocialLinks() {
   const dialogRef = useRef<HTMLDialogElement>(null);

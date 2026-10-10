@@ -103,13 +103,9 @@ function isYouTube(url: string): boolean {
 }
 
 /**
- * YouTube answers some callers with a stripped page — no og:image, and a
- * title of just "- YouTube" — and which callers seems to go by address, so it
- * reads fine here and not from the server. Its oEmbed endpoint has no such
- * mood, and costs 1KB where the page costs 780KB.
- *
- * Covers videos, shorts and playlists. Returns null for the rest — a channel
- * page, or a video that is gone.
+ * oEmbed, because YouTube serves some addresses (the server's among them) a
+ * stripped page without og:image, and it costs 1KB vs 780KB. Covers videos,
+ * shorts and playlists; channels and removed videos get an error card.
  */
 async function fetchYouTubeCard(url: string): Promise<LinkCard> {
   const endpoint = `${YOUTUBE_OEMBED}?url=${encodeURIComponent(url)}&format=json`;
@@ -283,13 +279,9 @@ function titleOf(head: string): string | undefined {
 }
 
 /**
- * The icon the page declares, `rel="icon"` ahead of the rest. An
- * apple-touch-icon is a home-screen tile, and X serves its under
- * `Cross-Origin-Resource-Policy: same-origin` — reachable from here, but a
- * browser refuses to draw it on another site, which is a broken image.
- *
- * Only a declared icon: guessing /favicon.ico draws a broken image on every
- * site that has none, and the card has no script to hide one with.
+ * A declared icon only, `rel="icon"` first: X serves apple-touch-icon as CORP
+ * same-origin, and a guessed /favicon.ico breaks on sites without one — both
+ * a broken image, with no script on the card to hide it.
  */
 function faviconOf(head: string, finalUrl: string): string | undefined {
   const fallbacks: string[] = [];
@@ -311,9 +303,8 @@ function faviconOf(head: string, finalUrl: string): string | undefined {
 // --- Helpers ---
 
 /**
- * The output is re-escaped on render, so an undecoded `&amp;` shows through.
- * Named references go through the full HTML5 table — a title carrying
- * `&mdash;` is not rare, and they are case sensitive.
+ * The output is re-escaped on render, so an undecoded `&amp;` would show.
+ * Named references use the full HTML5 table (`&mdash;` is common; case sensitive).
  */
 function decodeEntities(value: string): string {
   return value.replace(

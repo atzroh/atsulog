@@ -11,11 +11,6 @@ import { ArticleSearchForm } from "@/app/components/article/article-search-form"
 import { CreateArticleSection } from "@/app/components/editor/create-article-section";
 import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 
-/**
- * Renders the page for article management with search and filtering.
- * @param props - Route props including async search parameters.
- * @returns The article management page element.
- */
 export default async function EditDashboardPage({
   searchParams,
 }: {
@@ -23,13 +18,10 @@ export default async function EditDashboardPage({
 }) {
   const resolvedSearchParams = await searchParams;
 
-  // 1. Data Fetching
   const allMetadata = await getArticles();
 
-  // 2. Prepare Form Candidates
   const taxonomies = getTaxonomies(allMetadata);
 
-  // 3. Filtering & Sorting
   const filteredArticles = filterArticles(allMetadata, resolvedSearchParams);
 
   const drafts = filteredArticles.filter((a) => !a.published);

@@ -3,8 +3,6 @@
 import { useEffect, useRef } from "react";
 import { generateIcosphere } from "@/app/lib/home/icosphere";
 
-// --- Constants ---
-
 const COLORS = {
   STOKE: "#F97316", // Orange
   NODE: "#000000", // Black
@@ -15,8 +13,6 @@ const ROTATION_SPEEDS = {
   Y: 0.0036,
   Z: 0.0016,
 };
-
-// --- Component ---
 
 /**
  * A lightweight 3D Icosphere wireframe rendered on a 2D Canvas.
@@ -82,7 +78,6 @@ export function CanvasSphere() {
       const projected = vertices.map(
         (v): { x: number; y: number; z: number; p: number } => {
           let [x, y, z] = v;
-          // Rotation
           const x1 = x * cZ - y * sZ;
           const y1 = x * sZ + y * cZ;
           x = x1;
@@ -109,13 +104,11 @@ export function CanvasSphere() {
       // Maps depth z [-1, 1] to opacity [0, 1]
       const getOpacity = (z: number) => (z + 1) / 2;
 
-      // Draw Wireframe
       ctx.lineWidth = remToPx(0.0625) * scale;
       for (const [v1, v2] of edges) {
         const p1 = projected[v1];
         const p2 = projected[v2];
 
-        // Average depth for the edge
         const avgZ = (p1.z + p2.z) / 2;
         ctx.globalAlpha = getOpacity(avgZ);
         ctx.strokeStyle = COLORS.STOKE;
@@ -126,7 +119,6 @@ export function CanvasSphere() {
         ctx.stroke();
       }
 
-      // Draw Nodes
       const nodeR = remToPx(0.09375) * scale;
       for (const p of projected) {
         ctx.globalAlpha = getOpacity(p.z);
@@ -137,7 +129,7 @@ export function CanvasSphere() {
         ctx.fill();
       }
 
-      ctx.globalAlpha = 1.0; // Reset
+      ctx.globalAlpha = 1.0;
       animationFrameId = requestAnimationFrame(render);
     };
 

@@ -29,10 +29,8 @@ let parser: ReturnType<typeof createParser> | undefined;
 const collectCache = new Map<string, string[]>();
 
 /**
- * Returns the URL a paragraph should be drawn as a card for, or null. A
- * paragraph holding nothing but a link whose text is the URL itself points
- * somewhere else rather than reading as prose. Shared with
- * collectLinkCardUrls so fetching and rendering agree on what counts.
+ * The card URL for a paragraph that is only a link whose text is its URL, or
+ * null. Shared with collectLinkCardUrls so fetching and rendering agree.
  */
 export function linkCardUrlOf(node: Paragraph): string | null {
   // A trailing space leaves an empty text node beside the link.
@@ -156,10 +154,7 @@ export function buildLinkCard(url: string, card?: LinkCard): Element {
   );
 }
 
-/**
- * Identifies the card data a render used, for the HTML cache key in
- * markdown-rendering.ts.
- */
+/** Identifies the card data a render used, for markdown-rendering.ts's cache key. */
 export function fingerprintCards(cards?: LinkCardMap): string {
   if (!cards) return "";
   return Object.entries(cards)

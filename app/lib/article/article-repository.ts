@@ -21,9 +21,6 @@ const ARTICLES_JSON_PATH = path.join(PROJECT_ROOT, "data", "articles.json");
 
 // --- Public API ---
 
-/**
- * Retrieves all article metadata.
- */
 export async function getArticles(): Promise<ArticleMetadata[]> {
   try {
     const content = await readFile(ARTICLES_JSON_PATH, "utf8");
@@ -55,9 +52,6 @@ export async function getPublicArticles(): Promise<ArticleMetadata[]> {
   );
 }
 
-/**
- * Retrieves an article by its slug, including its content.
- */
 export async function getArticleBySlug(
   articles: ArticleMetadata[],
   slug: string,
@@ -69,9 +63,7 @@ export async function getArticleBySlug(
   return { metadata, content };
 }
 
-/**
- * Saves the entire list of articles.
- */
+/** Overwrites articles.json with the whole list. */
 async function saveArticles(articles: ArticleMetadata[]): Promise<void> {
   try {
     await mkdir(path.dirname(ARTICLES_JSON_PATH), { recursive: true });
@@ -85,9 +77,7 @@ async function saveArticles(articles: ArticleMetadata[]): Promise<void> {
   }
 }
 
-/**
- * Updates or creates an article.
- */
+/** Creates or updates an article; publishing a draft gives it a new slug. */
 export async function saveArticle(
   articles: ArticleMetadata[],
   newArticle: ArticleMetadata,
@@ -121,7 +111,7 @@ export async function saveArticle(
   let oldFilePath: string | null = null;
 
   if (existing) {
-    // Transition from draft to published
+    // Draft to published: re-slugged and re-dated to the moment of publishing.
     if (!existing.published && articleToSave.published) {
       const now = new Date();
       const isoString = now.toISOString();
@@ -162,9 +152,6 @@ export async function saveArticle(
   await Promise.all(tasks);
 }
 
-/**
- * Increments the view count of an article.
- */
 export async function incrementViewCount(
   articles: ArticleMetadata[],
   slug: string,

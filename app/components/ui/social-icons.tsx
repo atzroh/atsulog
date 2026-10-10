@@ -20,9 +20,8 @@ export function GitHubIcon({ className }: IconProps) {
 }
 
 /**
- * The RSS mark, standing for the site's Atom feed. Taken from the envelope's
- * set, as it leaves the same margin: Simple Icons' mark fills the whole box and
- * looks a size larger than its neighbours.
+ * The RSS mark for the Atom feed, from the envelope's set for the same margin;
+ * Simple Icons' fills the whole box and looks a size larger.
  * Path from Material Design Icons 7.4.47 (Apache-2.0).
  */
 export function FeedIcon({ className }: IconProps) {
@@ -39,8 +38,7 @@ export function FeedIcon({ className }: IconProps) {
 }
 
 /**
- * A filled envelope, kept solid so it sits evenly beside the two brand marks —
- * both of which only exist as filled silhouettes.
+ * A filled envelope, to match the brand marks that only exist as silhouettes.
  * Path from Material Design Icons 7.4.47 (Apache-2.0).
  */
 export function MailIcon({ className }: IconProps) {

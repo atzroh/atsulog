@@ -35,7 +35,6 @@ export default async function RootLayout({
       <body className="min-h-screen flex flex-col">
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
           <div className="max-w-3xl mx-auto px-[1.5rem] py-[1rem] flex items-center justify-between">
-            {/* Left: Title & Admin Actions */}
             <div className="flex items-center space-x-4">
               <Link
                 href="/"
@@ -59,7 +58,6 @@ export default async function RootLayout({
               )}
             </div>
 
-            {/* Right: Navigation */}
             <div className="flex items-center space-x-6">
               <NavLink href="/" icon={Home} label="Home" />
               <NavLink href="/articles" icon={Newspaper} label="Articles" />

@@ -20,9 +20,8 @@ type PaginationNavProps = {
 };
 
 /**
- * The two kinds of control in the row. `edge` jumps to the first or last page
- * and is icon-only; `step` moves one page and carries a label. They differ in
- * their resting colour, so the split is not merely cosmetic.
+ * `edge` (first/last, icon-only) and `step` (prev/next, labelled) also differ
+ * in resting colour, so the split is not merely cosmetic.
  */
 const VARIANTS = {
   edge: {
@@ -38,9 +37,8 @@ const VARIANTS = {
 };
 
 /**
- * One pagination control. Renders a Link when the target page exists and an
- * inert span when it does not, so a disabled control still occupies its slot
- * and the row never reflows as you page through.
+ * A Link, or an inert span when the target page does not exist, so a disabled
+ * control keeps its slot and the row never reflows.
  */
 function PageLink({
   href,
@@ -72,10 +70,7 @@ function PageLink({
   );
 }
 
-/**
- * Renders pagination links that are valid for the current position.
- * Allows clicking on the page indicator to input a specific page number to jump to.
- */
+/** Pagination links; clicking the page indicator lets you type a page to jump to. */
 export function PaginationNav({
   currentPage,
   totalPages,

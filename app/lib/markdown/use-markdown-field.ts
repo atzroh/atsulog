@@ -8,16 +8,11 @@ import {
   type EditResult,
 } from "@/app/lib/markdown/markdown-editing";
 
-/**
- * Valid modes for the editor.
- */
 export type EditMode = "edit" | "preview";
 
 /**
- * Hook to manage the state and logic for the Markdown field.
- * The text transforms themselves live in markdown-editing.ts; what is here is
- * the part that needs a live textarea — the selection, the caret, and the
- * file inputs.
+ * The Markdown field's live-textarea side (selection, caret, file inputs);
+ * the text transforms live in markdown-editing.ts.
  */
 export function useMarkdownField({
   value,
@@ -33,18 +28,9 @@ export function useMarkdownField({
   const markdownInputRef = useRef<HTMLInputElement>(null);
 
   /**
-   * Pushes an edit up and restores the caret afterwards. The timeout is what
-   * makes it stick: the textarea is controlled, so setting the selection before
-   * React has re-rendered the new value would simply be overwritten.
-   *
-   * A zero delay is enough because every caller reaches here from a discrete
-   * event — a keydown, or a click on a toolbar button — and React commits those
-   * updates synchronously, so the DOM already carries the new value by the time
-   * the next macrotask runs. That is the whole of the guarantee, and it is worth
-   * naming because it is not a property of the timeout itself: move this call
-   * behind a transition or any async path and the wait stops being long enough.
-   * Switch it to `flushSync` around the `onChange`, or park the selection in a
-   * ref and restore it from a `useLayoutEffect`, before doing so.
+   * The timeout lets the controlled textarea re-render first. Zero suffices only
+   * because callers are discrete events React commits synchronously; on an
+   * async path, switch to flushSync or a layout effect.
    */
   const applyEdit = useCallback(
     (result: EditResult, refocus = false) => {
@@ -170,7 +156,7 @@ export function useMarkdownField({
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleImageUpload(file);
-    // Reset input so the same file can be uploaded again if needed
+    // Lets the same file be picked again.
     e.target.value = "";
   };
 
@@ -191,9 +177,8 @@ export function useMarkdownField({
       mode,
       isUploading,
     },
-    // Refs stay at the top level rather than in a group of their own: reaching
-    // one through a property access reads to the react-hooks/refs lint rule as
-    // touching a ref during render.
+    // Top level, not grouped: react-hooks/refs reads a ref behind a property
+    // access as touching it during render.
     textareaRef,
     fileInputRef,
     markdownInputRef,
