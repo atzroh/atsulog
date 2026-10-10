@@ -20,16 +20,14 @@ export default async function LoginPage({
     <main className="min-h-[70vh] flex items-center justify-center py-[3rem] px-[1rem] sm:px-[1.5rem] lg:px-[2rem]">
       <div className="max-w-md w-full space-y-[2rem] bg-white p-[2.5rem]">
         <div className="flex flex-col items-center">
-          <div className="mb-[1.5rem] relative">
-            <div className="relative w-[5rem] h-[5rem] bg-white rounded-3xl shadow-[0_1.25rem_3.125rem_-0.75rem_rgba(0,0,0,0.2)] flex items-center justify-center border border-gray-100">
-              <Image
-                src="/favicon.ico"
-                alt="Site Icon"
-                width={48}
-                height={48}
-                className="w-[3rem] h-[3rem]"
-              />
-            </div>
+          <div className="mb-[1.5rem] relative w-[5rem] h-[5rem] bg-white rounded-3xl shadow-[0_1.25rem_3.125rem_-0.75rem_rgba(0,0,0,0.2)] flex items-center justify-center border border-gray-100">
+            <Image
+              src="/favicon.ico"
+              alt="Site Icon"
+              width={48}
+              height={48}
+              className="w-[3rem] h-[3rem]"
+            />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
             Admin Login
@@ -40,14 +38,12 @@ export default async function LoginPage({
         </div>
 
         <form action={loginAction} className="mt-[2rem] space-y-[1.5rem]">
-          <div className="space-y-[1rem]">
-            <FormField
-              id="password"
-              type="password"
-              defaultValue=""
-              placeholder="Enter admin password"
-            />
-          </div>
+          <FormField
+            id="password"
+            type="password"
+            defaultValue=""
+            placeholder="Enter admin password"
+          />
 
           {error && (
             <div className="bg-red-50 border border-red-100 rounded-lg p-[0.75rem]">

@@ -8,29 +8,26 @@ import {
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
 
+const initialMetadata: ArticleMetadata = {
+  slug: "",
+  title: "",
+  category: "",
+  series: null,
+  seriesOrder: null,
+  tags: [],
+  filePath: "",
+  createdAt: "",
+  modifiedAt: "",
+  viewCount: 0,
+  published: false,
+};
+
 /**
  * Page for creating a new article.
  */
 export default async function NewArticlePage() {
   const articles = await getArticles();
   const taxonomies = getTaxonomies(articles);
-
-  /**
-   * Initial metadata for a brand new article.
-   */
-  const initialMetadata: ArticleMetadata = {
-    slug: "",
-    title: "",
-    category: "",
-    series: null,
-    seriesOrder: null,
-    tags: [],
-    filePath: "",
-    createdAt: "",
-    modifiedAt: "",
-    viewCount: 0,
-    published: false,
-  };
 
   /**
    * Server Action to handle the creation of a new article.

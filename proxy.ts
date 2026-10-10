@@ -14,20 +14,13 @@ export async function proxy(request: NextRequest) {
   const isProtectedRoute = pathname.startsWith("/edit");
   const isPublicAuthRoute = pathname === "/login";
 
-  // Retrieve the session cookie
-  const cookieName = siteConfig.cookie;
-  const session = request.cookies.get(cookieName)?.value;
-
-  // Decrypt and verify the session
-  const payload = await decrypt(session);
-  const isAuthenticated = !!payload;
+  const isAuthenticated = !!(await decrypt(
+    request.cookies.get(siteConfig.cookie)?.value,
+  ));
 
   // Redirect to login if a protected route is accessed without authentication
   if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
-    // Optionally preserve the intended destination
-    // loginUrl.searchParams.set("from", pathname);
-    return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // Redirect to edit if an authenticated user accesses the login page

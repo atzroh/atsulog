@@ -39,10 +39,9 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
 ) {
-  const resolvedParams = await params;
-  const pathParts = resolvedParams.path;
+  const { path: pathParts } = await params;
 
-  if (!pathParts || pathParts.length < 2) {
+  if (pathParts.length < 2) {
     return new NextResponse("Not Found", { status: 404 });
   }
 

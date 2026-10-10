@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `Articles`,
+    title: "Articles",
     description: `Browse all articles on ${siteConfig.title}.`,
     creator: `@${siteConfig.twitter}`,
     images: [siteConfig.shareImage],

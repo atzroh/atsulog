@@ -1,4 +1,10 @@
-import { Home, Newspaper, Pencil, User } from "lucide-react";
+import {
+  Home,
+  Newspaper,
+  Pencil,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -55,35 +61,15 @@ export default async function RootLayout({
 
             {/* Right: Navigation */}
             <div className="flex items-center space-x-6">
-              <Link
-                href="/"
-                className="text-sm font-medium text-gray-500 hover:text-black transition-colors flex items-center"
-              >
-                <Home className="size-4.5 md:size-4 md:mr-1.5" />
-                <span className="hidden md:inline">Home</span>
-              </Link>
-              <Link
-                href="/articles"
-                className="text-sm font-medium text-gray-500 hover:text-black transition-colors flex items-center"
-              >
-                <Newspaper className="size-4.5 md:size-4 md:mr-1.5" />
-                <span className="hidden md:inline">Articles</span>
-              </Link>
-              <Link
+              <NavLink href="/" icon={Home} label="Home" />
+              <NavLink href="/articles" icon={Newspaper} label="Articles" />
+              <NavLink
                 href={`/articles/${siteConfig.aboutSlug}`}
-                className="text-sm font-medium text-gray-500 hover:text-black transition-colors flex items-center"
-              >
-                <User className="size-4.5 md:size-4 md:mr-1.5" />
-                <span className="hidden md:inline">About</span>
-              </Link>
+                icon={User}
+                label="About"
+              />
               {authenticated && (
-                <Link
-                  href="/edit"
-                  className="text-sm font-medium text-gray-500 hover:text-black transition-colors flex items-center"
-                >
-                  <Pencil className="size-4.5 md:size-4 md:mr-1.5" />
-                  <span className="hidden md:inline">Edit</span>
-                </Link>
+                <NavLink href="/edit" icon={Pencil} label="Edit" />
               )}
             </div>
           </div>
@@ -98,5 +84,25 @@ export default async function RootLayout({
         </footer>
       </body>
     </html>
+  );
+}
+
+function NavLink({
+  href,
+  icon: Icon,
+  label,
+}: {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="text-sm font-medium text-gray-500 hover:text-black transition-colors flex items-center"
+    >
+      <Icon className="size-4.5 md:size-4 md:mr-1.5" />
+      <span className="hidden md:inline">{label}</span>
+    </Link>
   );
 }
