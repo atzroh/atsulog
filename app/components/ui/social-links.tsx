@@ -16,12 +16,6 @@ import { siteConfig } from "@/app/lib/site-config";
  * are assembled here. The email address is not a link; see SocialLinks.
  */
 const links = [
-  // {
-  //   href: `https://twitter.com/${siteConfig.twitter}`,
-  //   label: "Twitter",
-  //   Icon: TwitterIcon,
-  //   external: true,
-  // },
   {
     href: `https://github.com/${siteConfig.github}`,
     label: "GitHub",
@@ -35,6 +29,8 @@ const links = [
     external: false,
   },
 ];
+
+const ICON_BUTTON = "text-muted hover:text-foreground";
 
 /**
  * A row of icon links to the author's GitHub account and the site's feed, plus
@@ -75,7 +71,7 @@ export function SocialLinks() {
           aria-label="Email"
           aria-haspopup="dialog"
           onClick={() => dialogRef.current?.showModal()}
-          className="text-muted hover:text-foreground cursor-pointer"
+          className={`${ICON_BUTTON} cursor-pointer`}
         >
           <MailIcon className="size-5" />
         </button>
@@ -98,7 +94,7 @@ export function SocialLinks() {
               type="button"
               aria-label="Copy email address"
               onClick={copyEmail}
-              className="text-muted hover:text-foreground cursor-pointer"
+              className={`${ICON_BUTTON} cursor-pointer`}
             >
               {copied ? (
                 <Check className="size-4" />
@@ -122,7 +118,7 @@ function renderLink({ href, label, Icon, external }: (typeof links)[number]) {
       key={label}
       href={href}
       aria-label={label}
-      className="text-muted hover:text-foreground"
+      className={ICON_BUTTON}
       {...(external && { target: "_blank", rel: "noopener noreferrer" })}
     >
       <Icon className="size-5" />

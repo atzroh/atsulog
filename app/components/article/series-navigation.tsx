@@ -56,34 +56,48 @@ export function SeriesNavigation({
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {previousInSeries && (
-          <Link
-            href={`/articles/${previousInSeries.slug}`}
-            className="group block p-4 bg-white border border-gray-100 rounded-lg hover:border-gray-300 transition-colors"
-          >
-            <div className="flex items-center text-xs text-gray-400 mb-2">
-              <ChevronLeft className="size-3 mr-1" />
-              Previous Part
-            </div>
-            <div className="font-medium group-hover:text-sky-600 transition-colors">
-              {previousInSeries.title}
-            </div>
-          </Link>
+          <SeriesLink article={previousInSeries} direction="previous" />
         )}
-        {nextInSeries && (
-          <Link
-            href={`/articles/${nextInSeries.slug}`}
-            className="group block p-4 bg-white border border-gray-100 rounded-lg hover:border-gray-300 transition-colors"
-          >
-            <div className="flex items-center text-xs text-gray-400 mb-2 justify-end">
-              Next Part
-              <ChevronRight className="size-3 ml-1" />
-            </div>
-            <div className="font-medium group-hover:text-sky-600 transition-colors text-right">
-              {nextInSeries.title}
-            </div>
-          </Link>
-        )}
+        {nextInSeries && <SeriesLink article={nextInSeries} direction="next" />}
       </div>
     </section>
+  );
+}
+
+function SeriesLink({
+  article,
+  direction,
+}: {
+  article: ArticleMetadata;
+  direction: "previous" | "next";
+}) {
+  const isNext = direction === "next";
+
+  return (
+    <Link
+      href={`/articles/${article.slug}`}
+      className="group block p-4 bg-white border border-gray-100 rounded-lg hover:border-gray-300 transition-colors"
+    >
+      <div
+        className={`flex items-center text-xs text-gray-400 mb-2${isNext ? " justify-end" : ""}`}
+      >
+        {isNext ? (
+          <>
+            Next Part
+            <ChevronRight className="size-3 ml-1" />
+          </>
+        ) : (
+          <>
+            <ChevronLeft className="size-3 mr-1" />
+            Previous Part
+          </>
+        )}
+      </div>
+      <div
+        className={`font-medium group-hover:text-sky-600 transition-colors${isNext ? " text-right" : ""}`}
+      >
+        {article.title}
+      </div>
+    </Link>
   );
 }

@@ -18,11 +18,6 @@ import { MarkdownField } from "@/app/components/markdown/markdown-field";
 import { Button } from "@/app/components/ui/button";
 import { useArticleEditor } from "@/app/lib/editor/use-article-editor";
 
-// --- Types ---
-
-/**
- * Props for the EditArticleForm component.
- */
 type EditArticleFormProps = {
   metadata: ArticleMetadata;
   content: string;
@@ -31,21 +26,25 @@ type EditArticleFormProps = {
   candidates?: TaxonomyCandidates;
 };
 
-// --- Main Component ---
-
 /**
- * Form component for editing article details with preview support.
- * @param props - Component props.
- * @returns The form element.
+ * Form for editing article details with preview support.
  */
-export function EditArticleForm(props: EditArticleFormProps) {
+export function EditArticleForm({
+  metadata,
+  content,
+  action,
+  articles,
+  candidates,
+}: EditArticleFormProps) {
   const { states, setters, handlers } = useArticleEditor({
-    metadata: props.metadata,
-    initialContent: props.content,
-    action: props.action,
-    articles: props.articles,
-    candidates: props.candidates,
+    metadata,
+    initialContent: content,
+    action,
+    articles,
+    candidates,
   });
+  const { published } = metadata;
+  const publishLabel = published ? "Save Changes" : "Publish";
 
   return (
     <form
@@ -58,7 +57,7 @@ export function EditArticleForm(props: EditArticleFormProps) {
           value={states.series}
           onChange={handlers.handleSeriesChange}
           required={false}
-          candidates={props.candidates?.series}
+          candidates={candidates?.series}
           placeholder="Optional series name"
           icon={BookOpen}
         />
@@ -73,7 +72,7 @@ export function EditArticleForm(props: EditArticleFormProps) {
           id="category"
           value={states.category}
           onChange={(e) => setters.setCategory(e.target.value)}
-          candidates={props.candidates?.category}
+          candidates={candidates?.category}
           placeholder="e.g. Technology"
           icon={Folder}
         />
@@ -95,7 +94,7 @@ export function EditArticleForm(props: EditArticleFormProps) {
       />
 
       <div className="pt-[1.5rem] border-t border-gray-100 flex justify-end space-x-4">
-        {!props.metadata.published && (
+        {!published && (
           <Button
             type="submit"
             name="intent"
@@ -112,16 +111,12 @@ export function EditArticleForm(props: EditArticleFormProps) {
           type="submit"
           name="intent"
           value="publish"
-          icon={props.metadata.published ? Save : Check}
+          icon={published ? Save : Check}
           variant="primary"
           className="px-[2.5rem] py-[0.75rem]"
           disabled={states.isSubmitting}
         >
-          {states.isSubmitting
-            ? "Saving..."
-            : props.metadata.published
-              ? "Save Changes"
-              : "Publish"}
+          {states.isSubmitting ? "Saving..." : publishLabel}
         </Button>
       </div>
     </form>

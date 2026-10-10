@@ -12,21 +12,13 @@ type TagVariant = "tag" | "category" | "series";
 type TagProps = {
   label: string;
   href?: string;
-  className?: string;
   variant?: TagVariant;
 };
 
 /**
- * A reusable tag component for displaying categories, series, or search tags.
- * It supports different visual variants and can act as a link.
+ * A tag for categories, series or search tags, optionally rendered as a link.
  */
-export function Tag({
-  label,
-  href,
-  className = "",
-  variant = "tag",
-}: TagProps) {
-  // Define styles for each variant
+export function Tag({ label, href, variant = "tag" }: TagProps) {
   const variants = {
     tag: "bg-sky-50 text-sky-600 border-sky-100/50 hover:bg-sky-500 hover:text-white hover:border-sky-500",
     category:
@@ -35,7 +27,6 @@ export function Tag({
       "bg-violet-50 text-violet-600 border-violet-100/50 hover:bg-violet-500 hover:text-white hover:border-violet-500",
   };
 
-  // Define icons for each variant
   const icons = {
     tag: TagIcon,
     category: Folder,
@@ -44,12 +35,8 @@ export function Tag({
 
   const Icon = icons[variant];
 
-  const baseStyles =
-    "inline-flex items-center px-[0.625rem] py-[0.125rem] rounded-full text-xs font-medium border transition-all duration-200";
-  const combinedStyles =
-    `${baseStyles} ${variants[variant]} ${className}`.trim();
+  const combinedStyles = `inline-flex items-center px-[0.625rem] py-[0.125rem] rounded-full text-xs font-medium border transition-all duration-200 ${variants[variant]}`;
 
-  // Content shared between link and span versions
   const content = (
     <>
       <Icon className="size-3 mr-1" aria-hidden="true" />

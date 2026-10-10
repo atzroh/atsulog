@@ -49,7 +49,7 @@ export default async function EditDashboardPage({
       />
 
       <div className="space-y-16">
-        <DraftArticleList articles={drafts} basePath="/edit" />
+        <DraftArticleList articles={drafts} />
 
         <PaginatedArticleList
           articles={sortedPublished}

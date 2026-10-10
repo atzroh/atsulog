@@ -6,19 +6,17 @@ type ButtonVariant = "primary" | "outline";
 type ButtonProps = {
   children: ReactNode;
   onClick?: () => void;
-  type?: "button" | "submit" | "reset";
+  type?: "button" | "submit";
   name?: string;
   value?: string;
   variant?: ButtonVariant;
   icon?: LucideIcon;
   disabled?: boolean;
   className?: string;
-  title?: string;
 };
 
 /**
- * A reusable button component with consistent styling.
- * Supports primary and outline variants.
+ * A button with the site's primary and outline styles.
  */
 export function Button({
   children,
@@ -28,9 +26,8 @@ export function Button({
   value,
   variant = "primary",
   icon: Icon,
-  disabled = false,
+  disabled,
   className = "",
-  title,
 }: ButtonProps) {
   const baseStyles =
     "flex items-center justify-center space-x-[0.5rem] px-[1rem] py-[0.5rem] text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
@@ -49,7 +46,6 @@ export function Button({
       value={value}
       onClick={onClick}
       disabled={disabled}
-      title={title}
       className={`${baseStyles} ${variants[variant]} ${className}`}
     >
       {Icon && <Icon className="size-4" />}

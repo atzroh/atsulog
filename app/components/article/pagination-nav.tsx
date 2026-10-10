@@ -15,8 +15,8 @@ import { buildArticleSearchUrl } from "@/app/lib/article/article-utils";
 type PaginationNavProps = {
   currentPage: number;
   totalPages: number;
-  basePath?: string;
-  searchParams?: ArticleSearchParams;
+  basePath: string;
+  searchParams: ArticleSearchParams;
 };
 
 /**
@@ -79,8 +79,8 @@ function PageLink({
 export function PaginationNav({
   currentPage,
   totalPages,
-  basePath = "/articles",
-  searchParams = {},
+  basePath,
+  searchParams,
 }: PaginationNavProps) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -101,14 +101,13 @@ export function PaginationNav({
 
   const handleJump = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const page = parseInt(inputPage);
-    if (!isNaN(page) && page >= 1 && page <= totalPages) {
+    const page = Number.parseInt(inputPage, 10);
+    if (page >= 1 && page <= totalPages) {
       router.push(pageHref(page));
-      setIsEditing(false);
     } else {
       setInputPage(currentPage.toString());
-      setIsEditing(false);
     }
+    setIsEditing(false);
   };
 
   return (

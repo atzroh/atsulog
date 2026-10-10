@@ -52,7 +52,7 @@ export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
   const currentTime = useCurrentTime();
 
   const taxonomies = getTaxonomies(articles);
-  const launchedAt = taxonomies.launchedAt;
+  const { launchedAt } = taxonomies;
   const commandName = siteConfig.title.toLowerCase();
 
   const stats = [
@@ -75,8 +75,6 @@ export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
     { label: "categories", value: taxonomies.category.length, icon: Folder },
     { label: "tags", value: taxonomies.tags.length, icon: Tag },
   ];
-
-  const separator = "=";
 
   return (
     <section className="flex justify-center py-4 md:py-6">
@@ -109,11 +107,11 @@ export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
                 <span className="whitespace-nowrap">{stat.label}</span>
               </div>
               <div className="flex-1 overflow-hidden whitespace-nowrap text-gray-200 px-2 select-none tracking-widest">
-                {separator.repeat(100)}
+                {"=".repeat(100)}
               </div>
-              <div className="shrink-0">
-                <span className="text-emerald-600 font-bold">{stat.value}</span>
-              </div>
+              <span className="shrink-0 text-emerald-600 font-bold">
+                {stat.value}
+              </span>
             </div>
           ))}
         </div>

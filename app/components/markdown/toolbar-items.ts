@@ -21,7 +21,7 @@ import {
  * One toolbar button: the syntax it wraps the selection in, and the text it
  * falls back to when nothing is selected.
  */
-export type ToolbarItem = {
+type ToolbarItem = {
   icon: LucideIcon;
   prefix: string;
   suffix: string;

@@ -1,25 +1,11 @@
 import Link from "next/link";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
-// --- Types ---
-
-type DraftArticleListProps = {
-  articles: ArticleMetadata[];
-  basePath?: string;
-};
-
-// --- Main Component ---
-
 /**
- * Organism component that renders a plain list of draft article links.
- * Unlike PaginatedArticleList, this has no sorting or pagination.
- * @param props - Component props.
- * @returns A section containing the drafts heading and a list of links.
+ * A plain list of draft links, without the sorting and pagination of
+ * PaginatedArticleList.
  */
-export function DraftArticleList({
-  articles,
-  basePath = "/edit",
-}: DraftArticleListProps) {
+export function DraftArticleList({ articles }: { articles: ArticleMetadata[] }) {
   return (
     <section>
       <h1 className="text-3xl font-bold tracking-tight mb-8">
@@ -33,7 +19,7 @@ export function DraftArticleList({
           {articles.map((article) => (
             <li key={article.slug}>
               <Link
-                href={`${basePath}/${article.slug}`}
+                href={`/edit/${article.slug}`}
                 className="text-sky-600 hover:text-sky-700 hover:underline transition-colors"
               >
                 {article.title}

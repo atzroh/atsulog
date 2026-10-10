@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 /**
  * Props for a single form field.
  */
-export type FormFieldProps = {
+type FormFieldProps = {
   id: string;
   name?: string;
   defaultValue?: string;

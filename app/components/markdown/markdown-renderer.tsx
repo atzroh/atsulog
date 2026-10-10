@@ -9,20 +9,15 @@ type MarkdownRendererProps = {
   content: string;
   /** Open Graph data for the link cards; the editor preview has none. */
   cards?: LinkCardMap;
-  className?: string;
 };
 
 /**
  * Renders Markdown as one HTML string, styled by .prose-site.
  */
-export function MarkdownRenderer({
-  content,
-  cards,
-  className = "",
-}: MarkdownRendererProps) {
+export function MarkdownRenderer({ content, cards }: MarkdownRendererProps) {
   return (
     <div
-      className={`prose-site ${className}`}
+      className="prose-site"
       dangerouslySetInnerHTML={{ __html: renderMarkdown(content, cards) }}
     />
   );

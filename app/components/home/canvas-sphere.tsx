@@ -35,13 +35,9 @@ export function CanvasSphere() {
 
     const { vertices, edges } = generateIcosphere(2);
 
-    const remToPx = (rem: number) => {
-      if (typeof window === "undefined") return rem * 16;
-      return (
-        rem *
-        parseFloat(getComputedStyle(document.documentElement).fontSize || "16")
-      );
-    };
+    const remToPx = (rem: number) =>
+      rem *
+      parseFloat(getComputedStyle(document.documentElement).fontSize || "16");
 
     const resize = () => {
       width = canvas.parentElement?.clientWidth || window.innerWidth;
@@ -104,17 +100,14 @@ export function CanvasSphere() {
           return {
             x: centerX + x * radiusPx * p,
             y: centerY + y * radiusPx * p,
-            z: z, // Depth range approx [-1, 1]
-            p: p,
+            z, // Depth range approx [-1, 1]
+            p,
           };
         },
       );
 
-      // Helper for opacity based on depth (z: -1 to 1)
-      const getOpacity = (z: number) => {
-        // Map z [-1, 1] to opacity [0, 1]
-        return (z + 1) / 2;
-      };
+      // Maps depth z [-1, 1] to opacity [0, 1]
+      const getOpacity = (z: number) => (z + 1) / 2;
 
       // Draw Wireframe
       ctx.lineWidth = remToPx(0.0625) * scale;

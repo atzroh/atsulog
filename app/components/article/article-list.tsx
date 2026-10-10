@@ -4,10 +4,7 @@ import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { ArticleMeta } from "@/app/components/article/article-meta";
 import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 
-/**
- * Props for the ArticleList component.
- */
-export type ArticleListProps = {
+type ArticleListProps = {
   articles: ArticleMetadata[];
   basePath?: string;
 };
@@ -59,16 +56,13 @@ function ArticleListItem({
   return (
     <div className="group relative bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-sky-200 transition-all duration-300 flex flex-col p-[1.5rem] space-y-[1.25rem]">
       <Link href={articleHref} className="space-y-[1.25rem]">
-        {/* Article Title */}
         <h2 className="text-xl font-bold leading-tight group-hover:text-sky-600 transition-colors duration-300">
           {article.title}
         </h2>
-
-        {/* Metadata (Dates, Views) */}
         <ArticleMeta metadata={article} />
       </Link>
 
-      {/* Taxonomy Links (Category, Series, Tags) - Kept outside the main link for separate interaction */}
+      {/* Kept outside the main link so each taxonomy link works on its own */}
       <ArticleTaxonomies
         metadata={article}
         basePath={basePath}

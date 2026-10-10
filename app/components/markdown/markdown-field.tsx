@@ -7,24 +7,15 @@ import {
 import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
 import { useMarkdownField } from "@/app/lib/markdown/use-markdown-field";
 
-// --- Types ---
-
-/**
- * Props for the MarkdownField component.
- */
-export type MarkdownFieldProps = {
+type MarkdownFieldProps = {
   value: string;
   onChange: (value: string) => void;
   label?: string;
 };
 
-// --- Main Component ---
-
 /**
- * A composite component that provides a Markdown editor with a live preview toggle and toolbar.
- * The editing behaviour lives in useMarkdownField; this assembles the pieces.
- * @param props - Component props.
- * @returns The Markdown field component.
+ * A Markdown editor with a toolbar and a preview toggle; the editing behaviour
+ * lives in useMarkdownField.
  */
 export function MarkdownField({
   value,
@@ -74,76 +65,28 @@ export function MarkdownField({
         onDrop={handlers.onDrop}
       >
         {states.mode === "edit" ? (
-          <Editor
-            textareaRef={textareaRef}
+          // Fixed height with inner scroll: growing to fit the content made the
+          // page jump on every keystroke. transition-shadow animates only the
+          // focus ring, and resize-y keeps the w-full column intact.
+          <textarea
+            id="content"
+            name="content"
+            ref={textareaRef}
             value={value}
-            onChange={onChange}
+            onChange={(event) => onChange(event.target.value)}
             onKeyDown={handlers.handleKeyDown}
+            required
+            className="w-full h-[70dvh] min-h-[18rem] resize-y overflow-auto p-[1rem] bg-gray-50/50 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500/10 transition-shadow"
           />
         ) : (
-          <Preview content={value} />
+          <div className="p-[1rem] bg-white">
+            <MarkdownRenderer content={value} />
+            {/* Keeps the content in the form submission while previewing */}
+            <textarea name="content" value={value} readOnly hidden />
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-// --- Internal Sub-components ---
-
-/**
- * The actual textarea for editing Markdown.
- *
- * The height is fixed and the document scrolls inside it, the way an editor
- * pane behaves. It used to grow to fit its content from a `useEffect` in
- * useMarkdownField, which is what made the page lurch on every keystroke:
- * measuring meant setting `height: auto` first, and reading `scrollHeight` back
- * forced a layout while the document was momentarily collapsed to a fraction of
- * its height. The browser clamped `scrollY` into that shorter document and did
- * not put it back when the height was restored. `transition-all` compounded it
- * by animating the height the effect had just written, and `overflow-hidden`
- * meant the caret left the box while it did — so the window scrolled to chase
- * it. Nothing here changes the document's height any more, so there is no
- * scroll for the browser to correct: `transition-shadow` covers the focus ring
- * and nothing else, and the caret is followed inside this box.
- *
- * Dropping the measurement also hands the resize grip back — it was being
- * overwritten on every keystroke. `resize-y` keeps it to the axis that cannot
- * break the `w-full` column.
- */
-function Editor({
-  textareaRef,
-  value,
-  onChange,
-  onKeyDown,
-}: {
-  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
-  value: string;
-  onChange: (value: string) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-}) {
-  return (
-    <textarea
-      id="content"
-      name="content"
-      ref={textareaRef}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      onKeyDown={onKeyDown}
-      required
-      className="w-full h-[70dvh] min-h-[18rem] resize-y overflow-auto p-[1rem] bg-gray-50/50 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500/10 transition-shadow"
-    />
-  );
-}
-
-/**
- * The preview display for rendered Markdown.
- */
-function Preview({ content }: { content: string }) {
-  return (
-    <div className="p-[1rem] bg-white">
-      <MarkdownRenderer content={content} />
-      {/* Hidden textarea to ensure the form still submits the content even in preview mode */}
-      <textarea name="content" value={content} readOnly hidden />
-    </div>
-  );
-}
