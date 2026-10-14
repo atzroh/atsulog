@@ -78,8 +78,11 @@ export default async function RootLayout({
         <div className="flex-1 max-w-3xl mx-auto w-full px-6 py-12">
           <main>{children}</main>
         </div>
-        <footer className="max-w-3xl mx-auto w-full px-6 py-8 border-t border-gray-100 text-sm text-muted text-center lowercase">
+        <footer className="max-w-3xl mx-auto w-full px-6 py-8 border-t border-gray-100 text-sm text-muted text-center">
           <SocialLinks />
+          <Link href="/privacy" className="block mb-2 hover:text-foreground">
+            Privacy Policy
+          </Link>
           &copy; {currentYear} {siteConfig.title}
         </footer>
       </body>
