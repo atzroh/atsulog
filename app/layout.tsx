@@ -8,6 +8,7 @@ import {
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { siteConfig } from "@/app/lib/site-config";
 import { isAuthenticated } from "@/app/lib/auth/auth";
 import { LogoutButton } from "@/app/components/ui/logout-button";
@@ -29,6 +30,7 @@ export default async function RootLayout({
 }>) {
   const currentYear = new Date().getFullYear();
   const authenticated = await isAuthenticated();
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
     <html lang={siteConfig.htmlLang}>
@@ -81,6 +83,7 @@ export default async function RootLayout({
           &copy; {currentYear} {siteConfig.title}
         </footer>
       </body>
+      {gaId && !authenticated && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }
