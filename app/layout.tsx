@@ -12,6 +12,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { siteConfig } from "@/app/lib/site-config";
 import { isAuthenticated } from "@/app/lib/auth/auth";
 import { LogoutButton } from "@/app/components/ui/logout-button";
+import { GaOptOut } from "@/app/components/analytics/ga-opt-out";
 import { SocialLinks } from "@/app/components/ui/social-links";
 import "./globals.css";
 
@@ -85,6 +86,7 @@ export default async function RootLayout({
           </Link>
           &copy; {currentYear} {siteConfig.title}
         </footer>
+        {gaId && <GaOptOut gaId={gaId} disabled={authenticated} />}
       </body>
       {gaId && !authenticated && <GoogleAnalytics gaId={gaId} />}
     </html>

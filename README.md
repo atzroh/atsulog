@@ -29,6 +29,7 @@ https://atsulog.com
    ```env
    ADMIN_PASSWORD=your-secure-password
    SESSION_SECRET=your-random-session-secret
+   NEXT_PUBLIC_GA_ID=your-ga-id
    ```
 
 3. **Run locally**
