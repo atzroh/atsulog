@@ -44,7 +44,9 @@ export default async function LoginPage({
           {error && (
             <div className="bg-red-50 border border-red-100 rounded-lg p-[0.75rem]">
               <p className="text-sm text-red-600 text-center font-medium">
-                Invalid password. Please try again.
+                {error === "locked"
+                  ? "Too many failed attempts. Please try again later."
+                  : "Invalid password. Please try again."}
               </p>
             </div>
           )}

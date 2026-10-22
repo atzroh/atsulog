@@ -19,6 +19,8 @@ export const siteConfig = {
   // Session auth
   cookie: "atsulog-cookie",
   sessionDurationHours: 24,
+  loginMaxFailures: 5,
+  loginLockMinutes: 15,
 
   // Article listing
   articlesPerPage: 6,
