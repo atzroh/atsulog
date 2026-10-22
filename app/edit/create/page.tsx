@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import { getArticles, saveArticle } from "@/app/lib/article/article-repository";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
+import { isAuthenticated } from "@/app/lib/auth/auth";
 import {
   generateSlug,
   getTaxonomies,
@@ -28,6 +29,11 @@ export default async function NewArticlePage() {
 
   async function handleCreate(formData: FormData) {
     "use server";
+
+    // Actions are public endpoints; proxy.ts alone is not enough.
+    if (!(await isAuthenticated())) {
+      throw new Error("Unauthorized");
+    }
 
     const { title, category, series, tags, content, isPublished } =
       parseArticleForm(formData);
