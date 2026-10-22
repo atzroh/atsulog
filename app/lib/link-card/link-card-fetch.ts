@@ -1,6 +1,15 @@
 import "server-only";
 
+import { lookup as dnsLookup } from "node:dns";
+import { BlockList, isIP, type LookupFunction } from "node:net";
+
 import { decodeNamedCharacterReference } from "decode-named-character-reference";
+import {
+  Agent,
+  buildConnector,
+  fetch as guardedFetch,
+  type Response as GuardedResponse,
+} from "undici";
 
 import type { LinkCard } from "@/app/lib/link-card/link-card-types";
 import { siteConfig } from "@/app/lib/site-config";
@@ -42,8 +51,70 @@ const YOUTUBE_HOSTS = new Set([
 const YOUTUBE_OEMBED = "https://www.youtube.com/oembed";
 const YOUTUBE_FAVICON = "https://www.youtube.com/favicon.ico";
 
-const PRIVATE_HOST =
-  /^(localhost|127\.|10\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.|\[?::1\]?$)/i;
+/** Anything but the public internet. IPv4-mapped IPv6 matches the IPv4 rules. */
+const BLOCKED_ADDRESSES = new BlockList();
+for (const [network, prefix] of [
+  ["0.0.0.0", 8],
+  ["10.0.0.0", 8],
+  ["100.64.0.0", 10],
+  ["127.0.0.0", 8],
+  ["169.254.0.0", 16],
+  ["172.16.0.0", 12],
+  ["192.0.0.0", 24],
+  ["192.168.0.0", 16],
+  ["198.18.0.0", 15],
+  ["224.0.0.0", 4],
+  ["240.0.0.0", 4],
+] as const) {
+  BLOCKED_ADDRESSES.addSubnet(network, prefix, "ipv4");
+}
+for (const [network, prefix] of [
+  ["::", 128],
+  ["::1", 128],
+  ["64:ff9b::", 96],
+  ["fc00::", 7],
+  ["fe80::", 10],
+  ["ff00::", 8],
+] as const) {
+  BLOCKED_ADDRESSES.addSubnet(network, prefix, "ipv6");
+}
+
+class BlockedAddressError extends Error {}
+
+/** Checks what DNS returns, so a public name pointing inward is caught too. */
+const guardedLookup = ((hostname, options, callback) => {
+  dnsLookup(hostname, options, (error, address, family) => {
+    if (error) return callback(error, address, family);
+    const addresses = Array.isArray(address) ? address : [{ address, family }];
+    if (addresses.some((entry) => isBlockedAddress(entry.address))) {
+      return callback(
+        new BlockedAddressError(`Blocked address for ${hostname}`),
+        address,
+        family,
+      );
+    }
+    callback(null, address, family);
+  });
+}) as LookupFunction;
+
+const connect = buildConnector({ lookup: guardedLookup });
+
+/**
+ * Every connection, redirects included, is checked at the socket: an IP
+ * literal skips the lookup, so it is checked here directly.
+ */
+const guardedAgent = new Agent({
+  connect(options, callback) {
+    if (isIP(options.hostname) && isBlockedAddress(options.hostname)) {
+      callback(
+        new BlockedAddressError(`Blocked address ${options.hostname}`),
+        null,
+      );
+      return;
+    }
+    connect(options, callback);
+  },
+});
 
 // --- Public API ---
 
@@ -52,7 +123,7 @@ const PRIVATE_HOST =
  * "error" card, which the store keeps so the next render does not retry.
  */
 export async function fetchLinkCard(url: string): Promise<LinkCard> {
-  if (isPrivateHost(url)) return errorCard(url);
+  if (!URL.canParse(url)) return errorCard(url);
 
   // No falling back to the page: a YouTube URL oEmbed will not describe is
   // one the page answers with "- YouTube" and its generic blurb, which on a
@@ -60,7 +131,8 @@ export async function fetchLinkCard(url: string): Promise<LinkCard> {
   if (isYouTube(url)) return fetchYouTubeCard(url);
 
   try {
-    const response = await fetch(url, {
+    const response = await guardedFetch(url, {
+      dispatcher: guardedAgent,
       redirect: "follow",
       cache: "no-store",
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
@@ -81,9 +153,11 @@ export async function fetchLinkCard(url: string): Promise<LinkCard> {
     const bytes = await readHead(response);
     // Redirects move the base every relative URL resolves against.
     return parseCard(url, decode(bytes, contentType), response.url);
-  } catch {
+  } catch (error) {
     // A timeout, a refused connection, a DNS miss — all worth trying again.
-    return errorCard(url, true);
+    // A blocked address is not.
+    const blocked = error instanceof Error && error.cause instanceof BlockedAddressError;
+    return errorCard(url, !blocked);
   }
 }
 
@@ -159,7 +233,7 @@ function isHtml(contentType: string | null): boolean {
 }
 
 /** Reads at most MAX_HTML_BYTES, and stops as soon as the head is in hand. */
-async function readHead(response: Response): Promise<Uint8Array> {
+async function readHead(response: GuardedResponse): Promise<Uint8Array> {
   const reader = response.body?.getReader();
   if (!reader) return new Uint8Array();
 
@@ -343,12 +417,10 @@ function httpsUrl(value: string | undefined, base: string): string | undefined {
   }
 }
 
-function isPrivateHost(url: string): boolean {
-  try {
-    return PRIVATE_HOST.test(new URL(url).hostname);
-  } catch {
-    return true;
-  }
+function isBlockedAddress(address: string): boolean {
+  const family = isIP(address);
+  if (family === 0) return true;
+  return BLOCKED_ADDRESSES.check(address, family === 6 ? "ipv6" : "ipv4");
 }
 
 function errorCard(url: string, transient = false): LinkCard {
