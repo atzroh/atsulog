@@ -82,7 +82,7 @@ export default async function ArticlePage({
 
   // Record a view for this article (skip when the admin is viewing)
   if (!authenticated) {
-    await incrementViewCount(articles, slug);
+    await incrementViewCount(slug);
   }
 
   return (

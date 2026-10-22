@@ -1,6 +1,6 @@
 import "server-only";
 
-import { mkdir, readFile, writeFile, unlink } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 
 import type {
@@ -18,6 +18,15 @@ import { siteConfig } from "@/app/lib/site-config";
 
 const PROJECT_ROOT = process.cwd();
 const ARTICLES_JSON_PATH = path.join(PROJECT_ROOT, "data", "articles.json");
+
+/** Serializes read-modify-write of articles.json. Per process only. */
+let articlesQueue: Promise<unknown> = Promise.resolve();
+
+function withArticlesLock<T>(task: () => Promise<T>): Promise<T> {
+  const result = articlesQueue.then(task);
+  articlesQueue = result.catch(() => {});
+  return result;
+}
 
 // --- Public API ---
 
@@ -65,10 +74,13 @@ export async function getArticleBySlug(
 
 /** Overwrites articles.json with the whole list. */
 async function saveArticles(articles: ArticleMetadata[]): Promise<void> {
+  // Every page reads this file, so never leave a torn one.
+  const temporaryPath = `${ARTICLES_JSON_PATH}.${process.pid}.tmp`;
   try {
     await mkdir(path.dirname(ARTICLES_JSON_PATH), { recursive: true });
     const content = JSON.stringify(articles, null, 2);
-    await writeFile(ARTICLES_JSON_PATH, `${content}\n`, "utf8");
+    await writeFile(temporaryPath, `${content}\n`, "utf8");
+    await rename(temporaryPath, ARTICLES_JSON_PATH);
   } catch (error: unknown) {
     throw wrapError(
       error,
@@ -78,7 +90,17 @@ async function saveArticles(articles: ArticleMetadata[]): Promise<void> {
 }
 
 /** Creates or updates an article; publishing a draft gives it a new slug. */
-export async function saveArticle(
+export function saveArticle(
+  newArticle: ArticleMetadata,
+  content?: string,
+): Promise<void> {
+  // Read inside the lock, so a concurrent write is never undone.
+  return withArticlesLock(async () =>
+    applyArticle(await getArticles(), newArticle, content),
+  );
+}
+
+async function applyArticle(
   articles: ArticleMetadata[],
   newArticle: ArticleMetadata,
   content?: string,
@@ -152,20 +174,20 @@ export async function saveArticle(
   await Promise.all(tasks);
 }
 
-export async function incrementViewCount(
-  articles: ArticleMetadata[],
-  slug: string,
-): Promise<void> {
-  const index = articles.findIndex((article) => article.slug === slug);
-  if (index === -1) return;
+export function incrementViewCount(slug: string): Promise<void> {
+  return withArticlesLock(async () => {
+    const articles = await getArticles();
+    const index = articles.findIndex((article) => article.slug === slug);
+    if (index === -1) return;
 
-  const updatedList = [...articles];
-  updatedList[index] = {
-    ...updatedList[index],
-    viewCount: (updatedList[index].viewCount ?? 0) + 1,
-  };
+    const updatedList = [...articles];
+    updatedList[index] = {
+      ...updatedList[index],
+      viewCount: (updatedList[index].viewCount ?? 0) + 1,
+    };
 
-  await saveArticles(updatedList);
+    await saveArticles(updatedList);
+  });
 }
 
 // --- Helpers ---

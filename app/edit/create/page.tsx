@@ -57,7 +57,7 @@ export default async function NewArticlePage() {
       published: isPublished,
     };
 
-    await saveArticle(await getArticles(), newMetadata, content);
+    await saveArticle(newMetadata, content);
     redirect(`/edit/`);
   }
 

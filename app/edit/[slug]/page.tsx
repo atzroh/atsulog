@@ -48,8 +48,7 @@ export default async function EditArticlePage({
       published: detail!.metadata.published || isPublished,
     };
 
-    // Use fresh metadata list for saving
-    await saveArticle(await getArticles(), updatedMetadata, content);
+    await saveArticle(updatedMetadata, content);
     redirect(`/edit/`);
   }
 
