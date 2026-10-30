@@ -3,7 +3,6 @@ import {
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,
   Calendar,
-  Eye,
   RotateCcw,
   type LucideIcon,
 } from "lucide-react";
@@ -35,15 +34,9 @@ const SORT_KEYS: Record<
   modified: {
     icon: RotateCcw,
     label: "Modified",
-    next: "views",
+    next: "created",
     styles:
       "bg-emerald-50 border-emerald-100 text-emerald-700 hover:bg-emerald-100",
-  },
-  views: {
-    icon: Eye,
-    label: "Views",
-    next: "created",
-    styles: "bg-amber-50 border-amber-100 text-amber-700 hover:bg-amber-100",
   },
 };
 
@@ -51,8 +44,8 @@ const TOGGLE_STYLES =
   "flex items-center space-x-[0.5rem] px-[0.75rem] py-[0.375rem] text-sm font-medium rounded-lg transition-all border";
 
 /**
- * A button cycling Created -> Modified -> Views, plus an order toggle shown
- * only for Created (the other two are newest-first only).
+ * A button toggling Created <-> Modified, plus an order toggle shown only for
+ * Created (Modified is newest-first only).
  */
 export function ArticleSortControls({
   searchParams,
@@ -70,7 +63,7 @@ export function ArticleSortControls({
       <Link
         href={buildArticleSearchUrl(basePath, searchParams, {
           sortBy: current.next,
-          // Modified and Views only make sense newest-first.
+          // Modified only makes sense newest-first.
           ...(current.next === "created" ? {} : { order: "desc" }),
         })}
         className={`${TOGGLE_STYLES} ${current.styles}`}

@@ -19,7 +19,6 @@ const initialMetadata: ArticleMetadata = {
   filePath: "",
   createdAt: "",
   modifiedAt: "",
-  viewCount: 0,
   published: false,
 };
 
@@ -53,7 +52,6 @@ export default async function NewArticlePage() {
       filePath: `data/articles/${slug}.md`,
       createdAt: isoString,
       modifiedAt: isoString,
-      viewCount: 0,
       published: isPublished,
     };
 

@@ -1,4 +1,4 @@
-import { Calendar, RotateCcw, Eye } from "lucide-react";
+import { Calendar, RotateCcw } from "lucide-react";
 import { formatDate } from "@/app/lib/article/article-utils";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
@@ -8,7 +8,7 @@ type ArticleMetaProps = {
 };
 
 /**
- * Displays article metadata (dates and view counts).
+ * Displays article metadata (created and modified dates).
  */
 export function ArticleMeta({ metadata, className = "" }: ArticleMetaProps) {
   const items = [
@@ -21,11 +21,6 @@ export function ArticleMeta({ metadata, className = "" }: ArticleMetaProps) {
       Icon: RotateCcw,
       text: formatDate(metadata.modifiedAt),
       title: "Modified At",
-    },
-    {
-      Icon: Eye,
-      text: `${metadata.viewCount.toLocaleString()} views`,
-      title: "View Count",
     },
   ];
 

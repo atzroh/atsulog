@@ -174,22 +174,6 @@ async function applyArticle(
   await Promise.all(tasks);
 }
 
-export function incrementViewCount(slug: string): Promise<void> {
-  return withArticlesLock(async () => {
-    const articles = await getArticles();
-    const index = articles.findIndex((article) => article.slug === slug);
-    if (index === -1) return;
-
-    const updatedList = [...articles];
-    updatedList[index] = {
-      ...updatedList[index],
-      viewCount: (updatedList[index].viewCount ?? 0) + 1,
-    };
-
-    await saveArticles(updatedList);
-  });
-}
-
 // --- Helpers ---
 
 async function readContent(filePath: string): Promise<string> {

@@ -8,7 +8,6 @@ export type ArticleMetadata = {
   series: string | null;
   seriesOrder: number | null;
   category: string;
-  viewCount: number;
   published: boolean;
 };
 
@@ -17,7 +16,7 @@ export type ArticleDetail = {
   content: string;
 };
 
-export type SortBy = "created" | "modified" | "views";
+export type SortBy = "created" | "modified";
 
 export type SortOrder = "asc" | "desc";
 

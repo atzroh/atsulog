@@ -6,7 +6,6 @@ import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
 import {
   getArticles,
   getArticleBySlug,
-  incrementViewCount,
 } from "@/app/lib/article/article-repository";
 import { isAuthenticated } from "@/app/lib/auth/auth";
 import { getLinkCards } from "@/app/lib/link-card/link-card-store";
@@ -79,11 +78,6 @@ export default async function ArticlePage({
 
   // Open Graph data for the paragraphs that are nothing but a URL.
   const cards = await getLinkCards(collectLinkCardUrls(content));
-
-  // Record a view for this article (skip when the admin is viewing)
-  if (!authenticated) {
-    await incrementViewCount(slug);
-  }
 
   return (
     <article className="py-10">

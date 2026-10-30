@@ -107,7 +107,6 @@ export function getSortConfig(params: ArticleSearchParams): {
     { field: keyof ArticleMetadata; sortBy: SortBy }
   > = {
     modified: { field: "modifiedAt", sortBy: "modified" },
-    views: { field: "viewCount", sortBy: "views" },
   };
 
   const { field, sortBy } = configMap[sortByParam] ?? {
@@ -115,9 +114,9 @@ export function getSortConfig(params: ArticleSearchParams): {
     sortBy: "created",
   };
 
-  // Modified and views are always descending; a series reads oldest first.
+  // Modified is always descending; a series reads oldest first.
   const order =
-    field === "modifiedAt" || field === "viewCount"
+    field === "modifiedAt"
       ? "desc"
       : orderParam || (hasSeries ? "asc" : "desc");
 
@@ -159,7 +158,7 @@ export function formatDate(value: string): string {
 
 /**
  * Sorted unique tags, categories and series, plus launchedAt (the oldest
- * createdAt) and the total view count.
+ * createdAt).
  */
 export function getTaxonomies(articles: ArticleMetadata[]) {
   const tagsSet = new Set<string>();
@@ -167,13 +166,11 @@ export function getTaxonomies(articles: ArticleMetadata[]) {
   const seriesSet = new Set<string>();
   let oldestDate: Date | null = null;
   let launchedAt: string | null = null;
-  let totalViews = 0;
 
   for (const article of articles) {
     article.tags.forEach((t) => tagsSet.add(t));
     categorySet.add(article.category);
     if (article.series) seriesSet.add(article.series);
-    totalViews += article.viewCount;
 
     const createdAt = new Date(article.createdAt);
     if (!oldestDate || createdAt < oldestDate) {
@@ -187,7 +184,6 @@ export function getTaxonomies(articles: ArticleMetadata[]) {
     category: Array.from(categorySet).sort(),
     series: Array.from(seriesSet).sort(),
     launchedAt,
-    totalViews,
   };
 }
 
