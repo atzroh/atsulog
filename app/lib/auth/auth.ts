@@ -55,3 +55,10 @@ export async function isAuthenticated() {
   const payload = await verifySession(session);
   return !!payload;
 }
+
+/** Throws unless signed in. Actions are public endpoints; proxy.ts alone is not enough. */
+export async function requireAuth() {
+  if (!(await isAuthenticated())) {
+    throw new Error("Unauthorized");
+  }
+}

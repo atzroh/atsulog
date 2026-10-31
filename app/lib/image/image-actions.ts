@@ -2,7 +2,7 @@
 
 import { writeFile, mkdir, access } from "node:fs/promises";
 import { join, parse } from "node:path";
-import { isAuthenticated } from "@/app/lib/auth/auth";
+import { requireAuth } from "@/app/lib/auth/auth";
 import {
   formatDateCompact,
   generateSlug,
@@ -15,9 +15,7 @@ import { extensionForMimeType } from "@/app/lib/image/image-mime";
  * breaks a Markdown URL. Returns the URL and the original name for alt text.
  */
 export async function uploadImageAction(formData: FormData) {
-  if (!(await isAuthenticated())) {
-    throw new Error("Unauthorized");
-  }
+  await requireAuth();
 
   const file = formData.get("image") as File;
   if (!file) {

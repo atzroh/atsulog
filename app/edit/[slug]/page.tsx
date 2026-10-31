@@ -7,7 +7,7 @@ import {
   getArticles,
   updateArticle,
 } from "@/app/lib/article/article-repository";
-import { isAuthenticated } from "@/app/lib/auth/auth";
+import { requireAuth } from "@/app/lib/auth/auth";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import {
   getTaxonomies,
@@ -34,10 +34,7 @@ export default async function EditArticlePage({
   async function handleSave(formData: FormData) {
     "use server";
 
-    // Actions are public endpoints; proxy.ts alone is not enough.
-    if (!(await isAuthenticated())) {
-      throw new Error("Unauthorized");
-    }
+    await requireAuth();
 
     const { content, isPublished, ...fields } = parseArticleForm(formData);
 
