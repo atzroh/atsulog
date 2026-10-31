@@ -1,10 +1,7 @@
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import type { Metadata } from "next";
 import { getPublicArticles } from "@/app/lib/article/article-repository";
-import {
-  getTaxonomies,
-  searchArticles,
-} from "@/app/lib/article/article-utils";
+import { getTaxonomies, searchArticles } from "@/app/lib/article/article-utils";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
 import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 import { siteConfig } from "@/app/lib/site-config";

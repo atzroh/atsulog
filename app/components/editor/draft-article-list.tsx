@@ -5,7 +5,11 @@ import type { ArticleMetadata } from "@/app/lib/article/article-types";
  * A plain list of draft links, without the sorting and pagination of
  * PaginatedArticleList.
  */
-export function DraftArticleList({ articles }: { articles: ArticleMetadata[] }) {
+export function DraftArticleList({
+  articles,
+}: {
+  articles: ArticleMetadata[];
+}) {
   return (
     <section>
       <h1 className="text-3xl font-bold tracking-tight mb-8">

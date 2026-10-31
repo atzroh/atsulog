@@ -32,10 +32,7 @@ export function PaginatedArticleList({
           mt-[3rem], so the section needs no space-y of its own. */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Articles</h1>
-        <ArticleSortControls
-          searchParams={searchParams}
-          basePath={basePath}
-        />
+        <ArticleSortControls searchParams={searchParams} basePath={basePath} />
       </div>
 
       <ArticleList articles={pagedArticles} basePath={basePath} />

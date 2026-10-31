@@ -51,7 +51,9 @@ export async function getLinkCards(urls: string[]): Promise<LinkCardMap> {
     }
     // Stale but usable: shown if the refetch does not land in time.
     if (card) resolved.set(url, card);
-    pending.push(refresh(url).then((fetched) => void resolved.set(url, fetched)));
+    pending.push(
+      refresh(url).then((fetched) => void resolved.set(url, fetched)),
+    );
   });
 
   if (pending.length > 0) await settleWithin(pending, DEADLINE_MS);
@@ -116,7 +118,11 @@ async function writeCard(card: LinkCard): Promise<void> {
 
   try {
     await mkdir(LINK_CARDS_DIR, { recursive: true });
-    await writeFile(temporaryPath, `${JSON.stringify(card, null, 2)}\n`, "utf8");
+    await writeFile(
+      temporaryPath,
+      `${JSON.stringify(card, null, 2)}\n`,
+      "utf8",
+    );
     await rename(temporaryPath, filePath);
   } catch (error: unknown) {
     console.error(`Failed to cache the link card for ${card.url}`, error);

@@ -1,10 +1,4 @@
-import {
-  Home,
-  Newspaper,
-  Pencil,
-  User,
-  type LucideIcon,
-} from "lucide-react";
+import { Home, Newspaper, Pencil, User, type LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";

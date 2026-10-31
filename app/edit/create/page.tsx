@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
-import { createArticle, getArticles } from "@/app/lib/article/article-repository";
+import {
+  createArticle,
+  getArticles,
+} from "@/app/lib/article/article-repository";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { requireAuth } from "@/app/lib/auth/auth";
 import {

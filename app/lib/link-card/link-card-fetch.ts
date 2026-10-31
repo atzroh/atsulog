@@ -1,7 +1,10 @@
 import "server-only";
 
 import { decodeNamedCharacterReference } from "decode-named-character-reference";
-import { fetch as guardedFetch, type Response as GuardedResponse } from "undici";
+import {
+  fetch as guardedFetch,
+  type Response as GuardedResponse,
+} from "undici";
 
 import {
   BlockedAddressError,
@@ -87,7 +90,8 @@ export async function fetchLinkCard(url: string): Promise<LinkCard> {
   } catch (error) {
     // A timeout, a refused connection, a DNS miss — all worth trying again.
     // A blocked address is not.
-    const blocked = error instanceof Error && error.cause instanceof BlockedAddressError;
+    const blocked =
+      error instanceof Error && error.cause instanceof BlockedAddressError;
     return errorCard(url, !blocked);
   }
 }
@@ -132,9 +136,15 @@ async function fetchYouTubeCard(url: string): Promise<LinkCard> {
 
     const data: unknown = await response.json();
     if (typeof data !== "object" || data === null) return errorCard(url);
-    const { title, author_name, thumbnail_url } = data as Record<string, unknown>;
+    const { title, author_name, thumbnail_url } = data as Record<
+      string,
+      unknown
+    >;
 
-    const name = clean(typeof title === "string" ? title : undefined, MAX_TITLE);
+    const name = clean(
+      typeof title === "string" ? title : undefined,
+      MAX_TITLE,
+    );
     if (!name) return errorCard(url);
 
     return {
@@ -236,7 +246,9 @@ function parseCard(url: string, html: string, finalUrl: string): LinkCard {
     ),
     siteName: clean(meta.get("og:site_name"), MAX_TITLE),
     image: httpsUrl(
-      meta.get("og:image") ?? meta.get("og:image:url") ?? meta.get("twitter:image"),
+      meta.get("og:image") ??
+        meta.get("og:image:url") ??
+        meta.get("twitter:image"),
       finalUrl,
     ),
     favicon: faviconOf(head, finalUrl),
@@ -326,7 +338,8 @@ function decodeEntities(value: string): string {
 }
 
 function codePoint(value: number): string | undefined {
-  if (!Number.isInteger(value) || value < 0 || value > 0x10ffff) return undefined;
+  if (!Number.isInteger(value) || value < 0 || value > 0x10ffff)
+    return undefined;
   return String.fromCodePoint(value);
 }
 

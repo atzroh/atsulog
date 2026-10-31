@@ -6,7 +6,8 @@ const SITE_URL = `${siteConfig.url}/`;
 const FEED_URL = `${siteConfig.url}/feed.xml`;
 
 /** Characters XML 1.0 does not allow, even when escaped. */
-const INVALID_XML_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g;
+const INVALID_XML_CHARS =
+  /[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]/g;
 
 const XML_ESCAPES: Record<string, string> = {
   "&": "&amp;",

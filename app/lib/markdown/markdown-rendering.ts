@@ -123,13 +123,15 @@ function createProcessor({ katex, linkCards = true }: ProcessorOptions = {}) {
   const processor = unified().use(remarkParse).use(remarkGfm).use(remarkMath);
   if (linkCards) processor.use(remarkLinkCard);
 
-  return processor
-    .use(remarkRehype, { allowDangerousHtml: true })
-    // KaTeX first: both claim ```math fences.
-    .use(rehypeKatex, katex)
-    .use(rehypeHighlight)
-    .use(rehypeArticle)
-    .use(rehypeStringify);
+  return (
+    processor
+      .use(remarkRehype, { allowDangerousHtml: true })
+      // KaTeX first: both claim ```math fences.
+      .use(rehypeKatex, katex)
+      .use(rehypeHighlight)
+      .use(rehypeArticle)
+      .use(rehypeStringify)
+  );
 }
 
 type Processor = ReturnType<typeof createProcessor>;
