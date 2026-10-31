@@ -24,7 +24,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
 
-  if (!article) {
+  // A draft must not leak its title, even though the page itself 404s.
+  if (!article || !article.metadata.published) {
     return {
       title: `Article Not Found | ${siteConfig.title}`,
     };
