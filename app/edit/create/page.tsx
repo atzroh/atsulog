@@ -9,7 +9,7 @@ import {
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
 
-const initialMetadata: ArticleMetadata = {
+const INITIAL_METADATA: ArticleMetadata = {
   slug: "",
   title: "",
   category: "",
@@ -42,7 +42,7 @@ export default async function NewArticlePage() {
         Create New Articles
       </h1>
       <EditArticleForm
-        metadata={initialMetadata}
+        metadata={INITIAL_METADATA}
         content=""
         action={handleCreate}
         articles={articles}
