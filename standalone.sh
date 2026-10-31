@@ -7,7 +7,6 @@ echo "Starting standalone deployment build..."
 
 # 1. Clean up old build artifacts
 echo "Cleaning up old build artifacts..."
-rm -rf data
 rm -rf .next
 rm -f deploy.tar.gz
 
