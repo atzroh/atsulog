@@ -31,9 +31,9 @@ export function MarkdownField({
     setMode,
     insertMarkdown,
     handleKeyDown,
-    onFileChange,
-    onMarkdownFileChange,
-    onDrop,
+    handleFileChange,
+    handleMarkdownFileChange,
+    handleDrop,
     openImagePicker,
     openMarkdownPicker,
   } = useMarkdownField({ value, onChange });
@@ -58,14 +58,14 @@ export function MarkdownField({
           <input
             type="file"
             ref={fileInputRef}
-            onChange={onFileChange}
+            onChange={handleFileChange}
             accept="image/*"
             className="hidden"
           />
           <input
             type="file"
             ref={markdownInputRef}
-            onChange={onMarkdownFileChange}
+            onChange={handleMarkdownFileChange}
             accept=".md,.markdown,text/markdown,text/plain"
             className="hidden"
           />
@@ -75,7 +75,7 @@ export function MarkdownField({
       <div
         className="w-full"
         onDragOver={(e) => e.preventDefault()}
-        onDrop={onDrop}
+        onDrop={handleDrop}
       >
         {mode === "edit" ? (
           // Fixed height with inner scroll: growing to fit the content made the

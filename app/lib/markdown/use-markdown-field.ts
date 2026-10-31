@@ -153,20 +153,20 @@ export function useMarkdownField({
     [onChange],
   );
 
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleImageUpload(file);
     // Lets the same file be picked again.
     e.target.value = "";
   };
 
-  const onMarkdownFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMarkdownFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleMarkdownUpload(file);
     e.target.value = "";
   };
 
-  const onDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file) handleImageUpload(file);
@@ -181,9 +181,9 @@ export function useMarkdownField({
     setMode,
     insertMarkdown,
     handleKeyDown,
-    onFileChange,
-    onMarkdownFileChange,
-    onDrop,
+    handleFileChange,
+    handleMarkdownFileChange,
+    handleDrop,
     openImagePicker: () => fileInputRef.current?.click(),
     openMarkdownPicker: () => markdownInputRef.current?.click(),
   };
