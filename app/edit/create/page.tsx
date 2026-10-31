@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
-import { getArticles, saveArticle } from "@/app/lib/article/article-repository";
+import { createArticle, getArticles } from "@/app/lib/article/article-repository";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { isAuthenticated } from "@/app/lib/auth/auth";
 import {
@@ -16,7 +16,6 @@ const initialMetadata: ArticleMetadata = {
   series: null,
   seriesOrder: null,
   tags: [],
-  filePath: "",
   createdAt: "",
   modifiedAt: "",
   published: false,
@@ -49,13 +48,12 @@ export default async function NewArticlePage() {
       series,
       seriesOrder: null,
       tags,
-      filePath: `data/articles/${slug}.md`,
       createdAt: isoString,
       modifiedAt: isoString,
       published: isPublished,
     };
 
-    await saveArticle(newMetadata, content);
+    await createArticle(newMetadata, content);
     redirect(`/edit/`);
   }
 

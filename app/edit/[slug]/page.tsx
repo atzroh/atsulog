@@ -5,7 +5,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import {
   getArticleBySlug,
   getArticles,
-  saveArticle,
+  updateArticle,
 } from "@/app/lib/article/article-repository";
 import { isAuthenticated } from "@/app/lib/auth/auth";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
@@ -23,7 +23,7 @@ export default async function EditArticlePage({
 }: EditArticlePageProps) {
   const { slug } = await params;
   const articles = await getArticles();
-  const detail = await getArticleBySlug(articles, slug);
+  const detail = await getArticleBySlug(slug);
 
   if (!detail) {
     notFound();
@@ -48,7 +48,7 @@ export default async function EditArticlePage({
       published: detail!.metadata.published || isPublished,
     };
 
-    await saveArticle(updatedMetadata, content);
+    await updateArticle(updatedMetadata, content);
     redirect(`/edit/`);
   }
 

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:restore": "rm -f data/atsulog.db data/atsulog.db-wal data/atsulog.db-shm && sqlite3 data/atsulog.db < data/atsulog.sql"
   },
   "dependencies": {
     "@next/third-parties": "^16.4.0",
@@ -34,7 +35,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24.19.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

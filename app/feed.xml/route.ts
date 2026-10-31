@@ -16,7 +16,7 @@ export async function GET() {
   );
 
   const details = await Promise.all(
-    latest.map((article) => getArticleBySlug(articles, article.slug)),
+    latest.map((article) => getArticleBySlug(article.slug)),
   );
   const entries = details.filter(
     (detail): detail is ArticleDetail => detail !== null,

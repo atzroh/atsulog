@@ -1,7 +1,8 @@
 import "server-only";
 
-import { mkdir, readFile, rename, writeFile, unlink } from "node:fs/promises";
-import path from "node:path";
+import type { DatabaseSync } from "node:sqlite";
+
+import { connection } from "next/server";
 
 import type {
   ArticleMetadata,
@@ -11,47 +12,32 @@ import {
   getNextSeriesOrder,
   generateSlug,
 } from "@/app/lib/article/article-utils";
-import { isNotFound } from "@/app/lib/fs-utils";
+import { getDb, transaction } from "@/app/lib/db/db";
 import { siteConfig } from "@/app/lib/site-config";
 
 // --- Constants ---
 
-const PROJECT_ROOT = process.cwd();
-const ARTICLES_JSON_PATH = path.join(PROJECT_ROOT, "data", "articles.json");
+const METADATA_COLUMNS = `slug, title, category, series, series_order, tags,
+  created_at, modified_at, published`;
 
-/** Serializes read-modify-write of articles.json. Per process only. */
-let articlesQueue: Promise<unknown> = Promise.resolve();
-
-function withArticlesLock<T>(task: () => Promise<T>): Promise<T> {
-  const result = articlesQueue.then(task);
-  articlesQueue = result.catch(() => {});
-  return result;
-}
+type ArticleRow = {
+  slug: string;
+  title: string;
+  category: string;
+  series: string | null;
+  series_order: number | null;
+  tags: string;
+  created_at: string;
+  modified_at: string;
+  published: number;
+};
 
 // --- Public API ---
 
 export async function getArticles(): Promise<ArticleMetadata[]> {
-  try {
-    const content = await readFile(ARTICLES_JSON_PATH, "utf8");
-    const parsed = JSON.parse(content) as unknown;
-
-    if (!Array.isArray(parsed)) {
-      throw new TypeError("data/articles.json must contain an array.");
-    }
-
-    return (parsed as ArticleMetadata[]).map((article) => ({
-      ...article,
-      published: article.published ?? true,
-    }));
-  } catch (error: unknown) {
-    if (isNotFound(error)) {
-      return [];
-    }
-    throw wrapError(
-      error,
-      `Failed to read article metadata from ${ARTICLES_JSON_PATH}`,
-    );
-  }
+  // Request time only: a build that opened the database would create it.
+  await connection();
+  return selectArticles(getDb());
 }
 
 /** Published articles, excluding the about page. */
@@ -62,164 +48,121 @@ export async function getPublicArticles(): Promise<ArticleMetadata[]> {
 }
 
 export async function getArticleBySlug(
-  articles: ArticleMetadata[],
   slug: string,
 ): Promise<ArticleDetail | null> {
-  const metadata = articles.find((article) => article.slug === slug);
-  if (!metadata) return null;
+  await connection();
+  const row = getDb()
+    .prepare(`SELECT ${METADATA_COLUMNS}, content FROM articles WHERE slug = ?`)
+    .get(slug) as (ArticleRow & { content: string }) | undefined;
+  if (!row) return null;
 
-  const content = await readContent(metadata.filePath);
-  return { metadata, content };
+  return { metadata: toMetadata(row), content: row.content };
 }
 
-/** Overwrites articles.json with the whole list. */
-async function saveArticles(articles: ArticleMetadata[]): Promise<void> {
-  // Every page reads this file, so never leave a torn one.
-  const temporaryPath = `${ARTICLES_JSON_PATH}.${process.pid}.tmp`;
-  try {
-    await mkdir(path.dirname(ARTICLES_JSON_PATH), { recursive: true });
-    const content = JSON.stringify(articles, null, 2);
-    await writeFile(temporaryPath, `${content}\n`, "utf8");
-    await rename(temporaryPath, ARTICLES_JSON_PATH);
-  } catch (error: unknown) {
-    throw wrapError(
-      error,
-      `Failed to save article metadata to ${ARTICLES_JSON_PATH}`,
-    );
-  }
-}
-
-/** Creates or updates an article; publishing a draft gives it a new slug. */
-export function saveArticle(
-  newArticle: ArticleMetadata,
-  content?: string,
+/** Fails rather than overwrite when the slug is taken. */
+export async function createArticle(
+  article: ArticleMetadata,
+  content: string,
 ): Promise<void> {
-  // Read inside the lock, so a concurrent write is never undone.
-  return withArticlesLock(async () =>
-    applyArticle(await getArticles(), newArticle, content),
-  );
+  transaction((db) => {
+    const seriesOrder = resolveSeriesOrder(article, null, selectArticles(db));
+    db.prepare(
+      `INSERT INTO articles (${METADATA_COLUMNS}, content)
+       VALUES ($slug, $title, $category, $series, $seriesOrder, $tags,
+         $createdAt, $modifiedAt, $published, $content)`,
+    ).run(toParams({ ...article, seriesOrder }, content));
+  });
 }
 
-async function applyArticle(
-  articles: ArticleMetadata[],
-  newArticle: ArticleMetadata,
-  content?: string,
+/** Updates an article; publishing a draft gives it a new slug. */
+export async function updateArticle(
+  article: ArticleMetadata,
+  content: string,
 ): Promise<void> {
-  const index = articles.findIndex(
-    (article) => article.slug === newArticle.slug,
-  );
-  const updatedList = [...articles];
-  const existing = index !== -1 ? updatedList[index] : null;
-
-  let articleToSave = { ...newArticle };
-
-  // Recalculate seriesOrder whenever the article is new to its series (created
-  // directly in one, freshly assigned to one via edit, or moved between
-  // series) or its seriesOrder is missing — the old order no longer applies.
-  if (
-    articleToSave.series &&
-    (!existing ||
-      existing.series !== articleToSave.series ||
-      articleToSave.seriesOrder == null)
-  ) {
-    articleToSave.seriesOrder = getNextSeriesOrder(
-      articleToSave.series,
-      articles.filter((article) => article.slug !== articleToSave.slug),
-    );
-  } else if (!articleToSave.series) {
-    articleToSave.seriesOrder = null;
-  }
-
-  let oldFilePath: string | null = null;
-
-  if (existing) {
-    // Draft to published: re-slugged and re-dated to the moment of publishing.
-    if (!existing.published && articleToSave.published) {
-      const now = new Date();
-      const isoString = now.toISOString();
-      const newSlug = generateSlug(now);
-
-      oldFilePath = existing.filePath;
-      articleToSave.slug = newSlug;
-      articleToSave.createdAt = isoString;
-      articleToSave.modifiedAt = isoString;
-      articleToSave.filePath = `data/articles/${newSlug}.md`;
+  transaction((db) => {
+    const articles = selectArticles(db);
+    const existing = articles.find((a) => a.slug === article.slug);
+    if (!existing) {
+      throw new Error(`Article not found: ${article.slug}`);
     }
 
-    // Preserve existing fields if not provided
-    articleToSave = { ...existing, ...articleToSave };
-    updatedList[index] = articleToSave;
-  } else {
-    updatedList.push(articleToSave);
-  }
+    const updated = {
+      ...article,
+      seriesOrder: resolveSeriesOrder(article, existing, articles),
+    };
 
-  const tasks: Promise<void>[] = [saveArticles(updatedList)];
-  if (content !== undefined) {
-    tasks.push(writeContent(articleToSave.filePath, content));
-  }
+    // Draft to published: re-slugged and re-dated to the moment of publishing.
+    if (!existing.published && updated.published) {
+      const now = new Date();
+      updated.slug = generateSlug(now);
+      updated.createdAt = now.toISOString();
+      updated.modifiedAt = updated.createdAt;
+    }
 
-  if (oldFilePath && oldFilePath !== articleToSave.filePath) {
-    const draftPath = oldFilePath;
-    tasks.push(
-      (async () => {
-        try {
-          await unlink(resolveProjectPath(draftPath));
-        } catch (e) {
-          console.error(`Failed to delete old draft file: ${draftPath}`, e);
-        }
-      })(),
-    );
-  }
-
-  await Promise.all(tasks);
+    db.prepare(
+      `UPDATE articles SET slug = $slug, title = $title, category = $category,
+         series = $series, series_order = $seriesOrder, tags = $tags,
+         created_at = $createdAt, modified_at = $modifiedAt,
+         published = $published, content = $content
+       WHERE slug = $oldSlug`,
+    ).run({ ...toParams(updated, content), oldSlug: existing.slug });
+  });
 }
 
 // --- Helpers ---
 
-async function readContent(filePath: string): Promise<string> {
-  const fullPath = resolveProjectPath(filePath);
-  if (path.extname(fullPath) !== ".md") {
-    throw new TypeError("Path must point to a markdown (.md) file.");
-  }
-
-  try {
-    return await readFile(fullPath, "utf8");
-  } catch (error: unknown) {
-    if (isNotFound(error)) {
-      throw new Error(`Article content file not found: ${fullPath}`, {
-        cause: error,
-      });
-    }
-    throw wrapError(error, `Failed to read article content from ${fullPath}`);
-  }
+function selectArticles(db: DatabaseSync): ArticleMetadata[] {
+  const rows = db
+    .prepare(`SELECT ${METADATA_COLUMNS} FROM articles`)
+    .all() as ArticleRow[];
+  return rows.map(toMetadata);
 }
 
-async function writeContent(filePath: string, content: string): Promise<void> {
-  const fullPath = resolveProjectPath(filePath);
-  try {
-    await mkdir(path.dirname(fullPath), { recursive: true });
-    await writeFile(fullPath, content, "utf8");
-  } catch (error: unknown) {
-    throw wrapError(error, `Failed to save article content to ${fullPath}`);
+/**
+ * A new order whenever the article is new to its series (created directly in
+ * one, freshly assigned to one via edit, or moved between series) or its order
+ * is missing — the old order no longer applies.
+ */
+function resolveSeriesOrder(
+  article: ArticleMetadata,
+  existing: ArticleMetadata | null,
+  articles: ArticleMetadata[],
+): number | null {
+  if (!article.series) return null;
+  if (existing?.series === article.series && article.seriesOrder != null) {
+    return article.seriesOrder;
   }
-}
-
-function resolveProjectPath(filePath: string): string {
-  const resolvedPath = path.resolve(
-    /*turbopackIgnore: true*/ PROJECT_ROOT,
-    filePath,
+  return getNextSeriesOrder(
+    article.series,
+    articles.filter((a) => a.slug !== article.slug),
   );
-  const relativePath = path.relative(PROJECT_ROOT, resolvedPath);
-
-  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
-    throw new TypeError("Path must point to a file inside the project.");
-  }
-  return resolvedPath;
 }
 
-function wrapError(error: unknown, message: string): Error {
-  if (error instanceof SyntaxError) {
-    return new Error(`${message} (Invalid JSON)`, { cause: error });
-  }
-  return new Error(message, { cause: error });
+function toMetadata(row: ArticleRow): ArticleMetadata {
+  return {
+    slug: row.slug,
+    title: row.title,
+    category: row.category,
+    series: row.series,
+    seriesOrder: row.series_order,
+    tags: JSON.parse(row.tags) as string[],
+    createdAt: row.created_at,
+    modifiedAt: row.modified_at,
+    published: row.published !== 0,
+  };
+}
+
+function toParams(article: ArticleMetadata, content: string) {
+  return {
+    slug: article.slug,
+    title: article.title,
+    category: article.category,
+    series: article.series,
+    seriesOrder: article.seriesOrder,
+    tags: JSON.stringify(article.tags),
+    createdAt: article.createdAt,
+    modifiedAt: article.modifiedAt,
+    published: article.published ? 1 : 0,
+    content,
+  };
 }

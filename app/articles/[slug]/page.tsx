@@ -21,8 +21,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const articles = await getArticles();
-  const article = await getArticleBySlug(articles, slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     return {
@@ -66,7 +65,7 @@ export default async function ArticlePage({
 }) {
   const { slug } = await params;
   const articles = await getArticles();
-  const articleDetail = await getArticleBySlug(articles, slug);
+  const articleDetail = await getArticleBySlug(slug);
 
   if (!articleDetail || !articleDetail.metadata.published) {
     notFound();
