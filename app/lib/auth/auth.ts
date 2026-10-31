@@ -14,7 +14,7 @@ const SESSION_COOKIE_NAME = siteConfig.cookie;
 const SESSION_DURATION_MS = siteConfig.sessionDurationHours * 60 * 60 * 1000;
 
 /** Verifies a session JWT; returns its payload, or null if invalid. */
-export async function decrypt(session: string | undefined) {
+export async function verifySession(session: string | undefined) {
   if (!session) return null;
   try {
     const { payload } = await jwtVerify(session, SECRET_KEY, {
@@ -52,6 +52,6 @@ export async function deleteSession() {
 export async function isAuthenticated() {
   const cookieStore = await cookies();
   const session = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  const payload = await decrypt(session);
+  const payload = await verifySession(session);
   return !!payload;
 }

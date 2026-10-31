@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "@/app/lib/auth/auth";
+import { verifySession } from "@/app/lib/auth/auth";
 import { siteConfig } from "@/app/lib/site-config";
 
 /** Protects administrative routes and handles authentication redirects. */
@@ -9,7 +9,7 @@ export async function proxy(request: NextRequest) {
   const isProtectedRoute = pathname.startsWith("/edit");
   const isPublicAuthRoute = pathname === "/login";
 
-  const isAuthenticated = !!(await decrypt(
+  const isAuthenticated = !!(await verifySession(
     request.cookies.get(siteConfig.cookie)?.value,
   ));
 
