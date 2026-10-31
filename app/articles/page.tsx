@@ -10,34 +10,16 @@ import {
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
 import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 import { siteConfig } from "@/app/lib/site-config";
+import { buildPageMetadata } from "@/app/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "Articles",
+  ogTitle: `Articles | ${siteConfig.title}`,
   description: `Browse all articles on ${siteConfig.title}.`,
-  openGraph: {
-    title: `Articles | ${siteConfig.title}`,
-    description: `Browse all articles on ${siteConfig.title}.`,
-    url: `${siteConfig.url}/articles`,
-    siteName: siteConfig.title,
-    locale: siteConfig.locale,
-    type: "website",
-    images: [
-      {
-        url: siteConfig.shareImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.title,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Articles",
-    description: `Browse all articles on ${siteConfig.title}.`,
-    creator: `@${siteConfig.twitter}`,
-    images: [siteConfig.shareImage],
-  },
-};
+  url: `${siteConfig.url}/articles`,
+  type: "website",
+  locale: siteConfig.locale,
+});
 
 export default async function ArticlesPage({
   searchParams,

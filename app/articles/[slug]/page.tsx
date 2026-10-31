@@ -14,6 +14,7 @@ import { ArticleMeta } from "@/app/components/article/article-meta";
 import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 import { SeriesNavigation } from "@/app/components/article/series-navigation";
 import { siteConfig } from "@/app/lib/site-config";
+import { buildPageMetadata } from "@/app/lib/page-metadata";
 
 export async function generateMetadata({
   params,
@@ -29,33 +30,13 @@ export async function generateMetadata({
     };
   }
 
-  return {
+  return buildPageMetadata({
     title: article.metadata.title,
     description: `Read "${article.metadata.title}" on ${siteConfig.title}.`,
-    openGraph: {
-      title: article.metadata.title,
-      description: `Read "${article.metadata.title}" on ${siteConfig.title}.`,
-      url: `${siteConfig.url}/articles/${slug}`,
-      siteName: siteConfig.title,
-      type: "article",
-      publishedTime: article.metadata.createdAt,
-      images: [
-        {
-          url: siteConfig.shareImage,
-          width: 1200,
-          height: 630,
-          alt: siteConfig.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: article.metadata.title,
-      description: `Read "${article.metadata.title}" on ${siteConfig.title}.`,
-      creator: `@${siteConfig.twitter}`,
-      images: [siteConfig.shareImage],
-    },
-  };
+    url: `${siteConfig.url}/articles/${slug}`,
+    type: "article",
+    publishedTime: article.metadata.createdAt,
+  });
 }
 
 export default async function ArticlePage({

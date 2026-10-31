@@ -1,37 +1,19 @@
 import { siteConfig } from "@/app/lib/site-config";
+import { buildPageMetadata } from "@/app/lib/page-metadata";
 import { getPublicArticles } from "@/app/lib/article/article-repository";
 import { RecentArticles } from "@/app/components/article/recent-articles";
 import { HeroTitle } from "@/app/components/home/hero-title";
 import { SiteStats } from "@/app/components/home/site-stats";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: `Home | ${siteConfig.title}`,
+  twitterTitle: "Home",
   description: `${siteConfig.title} is a personal blog.`,
-  openGraph: {
-    title: `Home | ${siteConfig.title}`,
-    description: `${siteConfig.title} is a personal blog.`,
-    url: siteConfig.url,
-    siteName: siteConfig.title,
-    locale: siteConfig.locale,
-    type: "website",
-    images: [
-      {
-        url: siteConfig.shareImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.title,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Home",
-    description: `${siteConfig.title} is a personal blog.`,
-    creator: `@${siteConfig.twitter}`,
-    images: [siteConfig.shareImage],
-  },
-};
+  url: siteConfig.url,
+  type: "website",
+  locale: siteConfig.locale,
+});
 
 export default async function Home() {
   const articles = await getPublicArticles();
