@@ -35,7 +35,7 @@ export function SearchFields({ searchParams, candidates }: SearchFieldsProps) {
         id="category"
         defaultValue={getParam(searchParams.category)}
         placeholder="e.g. Computer Science"
-        candidates={candidates?.category}
+        candidates={candidates?.categories}
         required={false}
         icon={Folder}
       />

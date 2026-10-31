@@ -83,7 +83,7 @@ export function EditArticleForm({
           id="category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          candidates={candidates?.category}
+          candidates={candidates?.categories}
           placeholder="e.g. Technology"
           icon={Folder}
         />

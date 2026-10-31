@@ -57,7 +57,7 @@ export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
       : []),
     { label: "articles", value: articles.length, icon: Newspaper },
     { label: "series", value: taxonomies.series.length, icon: BookOpen },
-    { label: "categories", value: taxonomies.category.length, icon: Folder },
+    { label: "categories", value: taxonomies.categories.length, icon: Folder },
     { label: "tags", value: taxonomies.tags.length, icon: Tag },
   ];
 

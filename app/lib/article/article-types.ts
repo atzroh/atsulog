@@ -36,6 +36,6 @@ export type ArticleSearchParams = {
  */
 export type TaxonomyCandidates = {
   tags?: string[];
-  category?: string[];
+  categories?: string[];
   series?: string[];
 };

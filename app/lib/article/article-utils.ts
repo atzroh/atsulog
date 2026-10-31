@@ -181,7 +181,7 @@ export function getTaxonomies(articles: ArticleMetadata[]) {
 
   return {
     tags: Array.from(tagsSet).sort(),
-    category: Array.from(categorySet).sort(),
+    categories: Array.from(categorySet).sort(),
     series: Array.from(seriesSet).sort(),
     launchedAt,
   };
