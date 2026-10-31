@@ -9,7 +9,7 @@ import type {
   ArticleDetail,
 } from "@/app/lib/article/article-types";
 import { getNextSeriesOrder } from "@/app/lib/article/article-utils";
-import { generateSlug } from "@/app/lib/date-format";
+import { formatDateTimeCompact } from "@/app/lib/date-format";
 import { getDb, transaction } from "@/app/lib/db/db";
 import { siteConfig } from "@/app/lib/site-config";
 
@@ -92,7 +92,7 @@ export async function updateArticle(
     // Draft to published: re-slugged and re-dated to the moment of publishing.
     if (!existing.published && updated.published) {
       const now = new Date();
-      updated.slug = generateSlug(now);
+      updated.slug = formatDateTimeCompact(now);
       updated.createdAt = now.toISOString();
       updated.modifiedAt = updated.createdAt;
     }

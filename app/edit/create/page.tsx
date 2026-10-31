@@ -7,7 +7,7 @@ import {
   getTaxonomies,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
-import { generateSlug } from "@/app/lib/date-format";
+import { formatDateTimeCompact } from "@/app/lib/date-format";
 
 const initialMetadata: ArticleMetadata = {
   slug: "",
@@ -35,7 +35,7 @@ export default async function NewArticlePage() {
     const now = new Date();
     const isoString = now.toISOString();
 
-    const timestamp = generateSlug(now);
+    const timestamp = formatDateTimeCompact(now);
     const slug = isPublished ? timestamp : `draft-${timestamp}`;
 
     const newMetadata: ArticleMetadata = {

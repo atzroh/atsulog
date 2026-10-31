@@ -3,7 +3,7 @@
 import { writeFile, mkdir, access } from "node:fs/promises";
 import { join, parse } from "node:path";
 import { requireAuth } from "@/app/lib/auth/auth";
-import { formatDateCompact, generateSlug } from "@/app/lib/date-format";
+import { formatDateCompact, formatDateTimeCompact } from "@/app/lib/date-format";
 import { sanitizeFileName } from "@/app/lib/image/image-file-name";
 import { extensionForMimeType } from "@/app/lib/image/image-mime";
 
@@ -34,7 +34,8 @@ export async function uploadImageAction(formData: FormData) {
   // ".png (1)", whose space would break the Markdown URL.
   const ext = `.${extensionForMimeType(file.type)}`;
   // A timestamp when nothing survives sanitizing.
-  const safeName = sanitizeFileName(parse(file.name).name) || generateSlug();
+  const safeName =
+    sanitizeFileName(parse(file.name).name) || formatDateTimeCompact();
   let finalFileName = `${safeName}${ext}`;
   let counter = 1;
 
