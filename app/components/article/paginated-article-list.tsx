@@ -5,7 +5,7 @@ import type {
   ArticleMetadata,
   ArticleSearchParams,
 } from "@/app/lib/article/article-types";
-import { getParam } from "@/app/lib/article/article-utils";
+import { paginate } from "@/app/lib/article/article-utils";
 import { siteConfig } from "@/app/lib/site-config";
 
 type PaginatedArticleListProps = {
@@ -20,19 +20,11 @@ export function PaginatedArticleList({
   searchParams,
   basePath = "/articles",
 }: PaginatedArticleListProps) {
-  const rawPage = Number.parseInt(getParam(searchParams.page, "1"), 10);
-  const requestedPage = rawPage > 0 ? rawPage : 1;
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(articles.length / siteConfig.articlesPerPage),
-  );
-  const currentPage = Math.min(requestedPage, totalPages);
-  const startIndex = (currentPage - 1) * siteConfig.articlesPerPage;
-  const pagedArticles = articles.slice(
-    startIndex,
-    startIndex + siteConfig.articlesPerPage,
-  );
+  const {
+    pageItems: pagedArticles,
+    currentPage,
+    totalPages,
+  } = paginate(articles, searchParams.page, siteConfig.articlesPerPage);
 
   return (
     <section>

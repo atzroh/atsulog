@@ -70,6 +70,26 @@ export function searchArticles(
   return sortArticles(filterArticles(articles, params), field, order);
 }
 
+/** The page `pageParam` asks for, clamped to the pages there are (at least one). */
+export function paginate<T>(
+  items: T[],
+  pageParam: string | string[] | undefined,
+  perPage: number,
+): { pageItems: T[]; currentPage: number; totalPages: number } {
+  const rawPage = Number.parseInt(getParam(pageParam, "1"), 10);
+  const requestedPage = rawPage > 0 ? rawPage : 1;
+
+  const totalPages = Math.max(1, Math.ceil(items.length / perPage));
+  const currentPage = Math.min(requestedPage, totalPages);
+  const startIndex = (currentPage - 1) * perPage;
+
+  return {
+    pageItems: items.slice(startIndex, startIndex + perPage),
+    currentPage,
+    totalPages,
+  };
+}
+
 export function sortArticles(
   articles: ArticleMetadata[],
   field: keyof ArticleMetadata = "createdAt",
