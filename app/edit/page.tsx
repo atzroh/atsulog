@@ -2,10 +2,9 @@ import { getArticles } from "@/app/lib/article/article-repository";
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import { DraftArticleList } from "@/app/components/editor/draft-article-list";
 import {
-  sortArticles,
-  getTaxonomies,
   filterArticles,
-  getSortConfig,
+  getTaxonomies,
+  searchArticles,
 } from "@/app/lib/article/article-utils";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
 import { CreateArticleSection } from "@/app/components/editor/create-article-section";
@@ -18,17 +17,17 @@ export default async function EditDashboardPage({
 }) {
   const resolvedSearchParams = await searchParams;
 
-  const allMetadata = await getArticles();
+  const articles = await getArticles();
 
-  const taxonomies = getTaxonomies(allMetadata);
+  const taxonomies = getTaxonomies(articles);
 
-  const filteredArticles = filterArticles(allMetadata, resolvedSearchParams);
-
-  const drafts = filteredArticles.filter((a) => !a.published);
-  const publishedArticles = filteredArticles.filter((a) => a.published);
-
-  const { field, order } = getSortConfig(resolvedSearchParams);
-  const sortedPublished = sortArticles(publishedArticles, field, order);
+  const drafts = filterArticles(articles, resolvedSearchParams).filter(
+    (a) => !a.published,
+  );
+  const sortedPublished = searchArticles(
+    articles.filter((a) => a.published),
+    resolvedSearchParams,
+  );
 
   return (
     <main className="space-y-12">

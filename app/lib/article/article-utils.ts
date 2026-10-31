@@ -61,6 +61,15 @@ export function getSortConfig(params: ArticleSearchParams): {
   return { field, order, sortBy };
 }
 
+/** The articles matching `params`, in the order they ask for. */
+export function searchArticles(
+  articles: ArticleMetadata[],
+  params: ArticleSearchParams,
+): ArticleMetadata[] {
+  const { field, order } = getSortConfig(params);
+  return sortArticles(filterArticles(articles, params), field, order);
+}
+
 export function sortArticles(
   articles: ArticleMetadata[],
   field: keyof ArticleMetadata = "createdAt",
