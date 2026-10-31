@@ -1,5 +1,5 @@
 import { Calendar, RotateCcw } from "lucide-react";
-import { formatDate } from "@/app/lib/article/article-utils";
+import { formatDate } from "@/app/lib/date-format";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
 type ArticleMetaProps = {

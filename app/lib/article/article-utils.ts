@@ -1,4 +1,3 @@
-import { siteConfig } from "@/app/lib/site-config";
 import type {
   ArticleMetadata,
   ArticleSearchParams,
@@ -29,67 +28,6 @@ export function parseArticleForm(formData: FormData) {
     content: raw.content,
     isPublished: raw.intent === "publish",
   };
-}
-
-/**
- * siteConfig.timeZone rather than the host's, so a slug is the same locally and
- * on the server. The locale only supplies latin digits; field order is set below.
- */
-const zonedFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: siteConfig.timeZone,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit",
-  hourCycle: "h23",
-});
-
-/** Concatenates the requested wall-clock fields, zero-padded. */
-function formatZoned(
-  date: Date,
-  fields: readonly Intl.DateTimeFormatPartTypes[],
-): string {
-  const values = new Map(
-    zonedFormatter.formatToParts(date).map((part) => [part.type, part.value]),
-  );
-
-  return fields.map((field) => values.get(field) ?? "").join("");
-}
-
-/** YYYYMMDD. */
-export function formatDateCompact(date: Date = new Date()): string {
-  return formatZoned(date, ["year", "month", "day"]);
-}
-
-/** YYYYMMDDHHMMSS, given to a draft when it is published. */
-export function generateSlug(date: Date = new Date()): string {
-  return formatZoned(date, [
-    "year",
-    "month",
-    "day",
-    "hour",
-    "minute",
-    "second",
-  ]);
-}
-
-/** Upper bound for a sanitized stem, leaving room for a suffix and extension. */
-const MAX_FILENAME_STEM_LENGTH = 100;
-
-/**
- * Collapses everything outside [a-z0-9._-] into "-", so the stem cannot end a
- * Markdown link destination early. Empty when nothing usable remains.
- */
-export function sanitizeFileName(stem: string): string {
-  return stem
-    .toLowerCase()
-    .replace(/[^a-z0-9._-]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^[-.]+|[-.]+$/g, "")
-    .slice(0, MAX_FILENAME_STEM_LENGTH)
-    .replace(/[-.]+$/g, "");
 }
 
 /** Defaults to createdAt descending, or seriesOrder ascending within a series. */
@@ -145,14 +83,6 @@ export function sortArticles(
     if (aVal === bVal) return 0;
     const comparison = aVal < bVal ? -1 : 1;
     return isAsc ? comparison : -comparison;
-  });
-}
-
-export function formatDate(value: string): string {
-  return new Date(value).toLocaleString(siteConfig.locale, {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: siteConfig.timeZone,
   });
 }
 

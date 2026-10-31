@@ -3,11 +3,8 @@
 import { writeFile, mkdir, access } from "node:fs/promises";
 import { join, parse } from "node:path";
 import { requireAuth } from "@/app/lib/auth/auth";
-import {
-  formatDateCompact,
-  generateSlug,
-  sanitizeFileName,
-} from "@/app/lib/article/article-utils";
+import { formatDateCompact, generateSlug } from "@/app/lib/date-format";
+import { sanitizeFileName } from "@/app/lib/image/image-file-name";
 import { extensionForMimeType } from "@/app/lib/image/image-mime";
 
 /**

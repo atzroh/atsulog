@@ -8,10 +8,8 @@ import type {
   ArticleMetadata,
   ArticleDetail,
 } from "@/app/lib/article/article-types";
-import {
-  getNextSeriesOrder,
-  generateSlug,
-} from "@/app/lib/article/article-utils";
+import { getNextSeriesOrder } from "@/app/lib/article/article-utils";
+import { generateSlug } from "@/app/lib/date-format";
 import { getDb, transaction } from "@/app/lib/db/db";
 import { siteConfig } from "@/app/lib/site-config";
 

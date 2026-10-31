@@ -4,10 +4,10 @@ import { createArticle, getArticles } from "@/app/lib/article/article-repository
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { requireAuth } from "@/app/lib/auth/auth";
 import {
-  generateSlug,
   getTaxonomies,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
+import { generateSlug } from "@/app/lib/date-format";
 
 const initialMetadata: ArticleMetadata = {
   slug: "",
