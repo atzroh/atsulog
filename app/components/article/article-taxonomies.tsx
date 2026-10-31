@@ -34,7 +34,11 @@ export function ArticleTaxonomies({
       />
 
       {tags.map((tag) => (
-        <Tag key={tag} label={tag} href={`${basePath}?tag=${tag}`} />
+        <Tag
+          key={tag}
+          label={tag}
+          href={`${basePath}?tag=${encodeURIComponent(tag)}`}
+        />
       ))}
     </div>
   );
