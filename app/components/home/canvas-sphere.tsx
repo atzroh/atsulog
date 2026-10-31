@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { generateIcosphere, projectVertices } from "@/app/lib/home/icosphere";
 
 const COLORS = {
-  STOKE: "#F97316", // Orange
+  STROKE: "#F97316", // Orange
   NODE: "#000000", // Black
 };
 
@@ -81,7 +81,7 @@ export function CanvasSphere() {
 
         const avgZ = (p1.z + p2.z) / 2;
         ctx.globalAlpha = getOpacity(avgZ);
-        ctx.strokeStyle = COLORS.STOKE;
+        ctx.strokeStyle = COLORS.STROKE;
 
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
