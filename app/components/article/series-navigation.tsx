@@ -4,15 +4,12 @@ import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
 type SeriesNavigationProps = {
   articles: ArticleMetadata[];
-  metadata: ArticleMetadata;
+  article: ArticleMetadata;
 };
 
 /** Links to the previous and next published articles in the series, by seriesOrder. */
-export function SeriesNavigation({
-  articles,
-  metadata,
-}: SeriesNavigationProps) {
-  const { series, seriesOrder, slug } = metadata;
+export function SeriesNavigation({ articles, article }: SeriesNavigationProps) {
+  const { series, seriesOrder, slug } = article;
 
   if (!series || seriesOrder === null) {
     return null;

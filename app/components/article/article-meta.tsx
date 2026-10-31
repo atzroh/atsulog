@@ -3,23 +3,23 @@ import { formatDate } from "@/app/lib/date-format";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 
 type ArticleMetaProps = {
-  metadata: ArticleMetadata;
+  article: ArticleMetadata;
   className?: string;
 };
 
 /**
  * Displays article metadata (created and modified dates).
  */
-export function ArticleMeta({ metadata, className = "" }: ArticleMetaProps) {
+export function ArticleMeta({ article, className = "" }: ArticleMetaProps) {
   const items = [
     {
       Icon: Calendar,
-      text: formatDate(metadata.createdAt),
+      text: formatDate(article.createdAt),
       title: "Created At",
     },
     {
       Icon: RotateCcw,
-      text: formatDate(metadata.modifiedAt),
+      text: formatDate(article.modifiedAt),
       title: "Modified At",
     },
   ];

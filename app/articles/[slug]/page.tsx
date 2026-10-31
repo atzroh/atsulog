@@ -52,7 +52,7 @@ export default async function ArticlePage({
     notFound();
   }
 
-  const { metadata, content } = articleDetail;
+  const { metadata: article, content } = articleDetail;
 
   const authenticated = await isAuthenticated();
 
@@ -63,12 +63,12 @@ export default async function ArticlePage({
     <article className="py-10">
       <header className="mb-12">
         <h1 className="text-3xl font-bold tracking-tight mb-4">
-          {metadata.title}
+          {article.title}
         </h1>
 
-        <ArticleMeta metadata={metadata} className="mb-6" />
+        <ArticleMeta article={article} className="mb-6" />
 
-        <ArticleTaxonomies metadata={metadata} />
+        <ArticleTaxonomies article={article} />
       </header>
 
       <div className="mb-16">
@@ -76,7 +76,7 @@ export default async function ArticlePage({
       </div>
 
       <div className="mt-16">
-        <SeriesNavigation metadata={metadata} articles={articles} />
+        <SeriesNavigation article={article} articles={articles} />
 
         <nav
           aria-label="Article navigation"

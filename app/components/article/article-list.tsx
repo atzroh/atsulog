@@ -59,12 +59,12 @@ function ArticleListItem({
         <h2 className="text-xl font-bold leading-tight group-hover:text-sky-600 transition-colors duration-300">
           {article.title}
         </h2>
-        <ArticleMeta metadata={article} />
+        <ArticleMeta article={article} />
       </Link>
 
       {/* Kept outside the main link so each taxonomy link works on its own */}
       <ArticleTaxonomies
-        metadata={article}
+        article={article}
         basePath={basePath}
         className="pt-[0.25rem]"
       />
