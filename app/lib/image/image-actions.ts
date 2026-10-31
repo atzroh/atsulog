@@ -3,6 +3,7 @@
 import { writeFile, mkdir, access } from "node:fs/promises";
 import { join, parse } from "node:path";
 import { requireAuth } from "@/app/lib/auth/auth";
+import { DATA_DIR } from "@/app/lib/fs-utils";
 import { formatDateCompact, formatDateTimeCompact } from "@/app/lib/date-format";
 import { sanitizeFileName } from "@/app/lib/image/image-file-name";
 import { extensionForMimeType } from "@/app/lib/image/image-mime";
@@ -22,7 +23,7 @@ export async function uploadImageAction(formData: FormData) {
   const buffer = Buffer.from(await file.arrayBuffer());
 
   const dateDir = formatDateCompact();
-  const uploadDir = join(process.cwd(), "data", "images", dateDir);
+  const uploadDir = join(DATA_DIR, "images", dateDir);
 
   try {
     await mkdir(uploadDir, { recursive: true });

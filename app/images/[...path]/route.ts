@@ -1,10 +1,11 @@
 import { readFile } from "node:fs/promises";
 import { resolve, sep } from "node:path";
 import { type NextRequest, NextResponse } from "next/server";
+import { DATA_DIR } from "@/app/lib/fs-utils";
 import { mimeTypeForExtension } from "@/app/lib/image/image-mime";
 
 /** Root the served files must stay within. */
-const IMAGES_ROOT = resolve(process.cwd(), "data", "images");
+const IMAGES_ROOT = resolve(DATA_DIR, "images");
 
 /** A single path segment must not contain a separator or NUL, nor navigate. */
 function isUnsafeSegment(segment: string): boolean {

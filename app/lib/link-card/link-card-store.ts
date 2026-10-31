@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { isNotFound } from "@/app/lib/fs-utils";
+import { DATA_DIR, isNotFound } from "@/app/lib/fs-utils";
 import { fetchLinkCard } from "@/app/lib/link-card/link-card-fetch";
 import type {
   LinkCard,
@@ -13,8 +13,7 @@ import type {
 
 // --- Constants ---
 
-const PROJECT_ROOT = process.cwd();
-const LINK_CARDS_DIR = path.join(PROJECT_ROOT, "data", "link-cards");
+const LINK_CARDS_DIR = path.join(DATA_DIR, "link-cards");
 
 const OK_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 /** A dead link should cost one timeout a day, not one per view. */

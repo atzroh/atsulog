@@ -3,8 +3,9 @@ import "server-only";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { DATA_DIR } from "@/app/lib/fs-utils";
 
-const DB_PATH = path.join(process.cwd(), "data", "atsulog.db");
+const DB_PATH = path.join(DATA_DIR, "atsulog.db");
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS articles (
