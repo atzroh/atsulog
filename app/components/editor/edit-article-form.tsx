@@ -36,7 +36,21 @@ export function EditArticleForm({
   articles,
   candidates,
 }: EditArticleFormProps) {
-  const { states, setters, handlers } = useArticleEditor({
+  const {
+    currentContent,
+    title,
+    series,
+    category,
+    tags,
+    tagCandidates,
+    isSubmitting,
+    setCurrentContent,
+    setTitle,
+    setCategory,
+    handleSeriesChange,
+    handleTagsChange,
+    handleSubmitAction,
+  } = useArticleEditor({
     metadata,
     initialContent: content,
     action,
@@ -47,15 +61,12 @@ export function EditArticleForm({
   const publishLabel = published ? "Save Changes" : "Publish";
 
   return (
-    <form
-      action={handlers.handleSubmitAction}
-      className="space-y-[2rem] pb-[5rem]"
-    >
+    <form action={handleSubmitAction} className="space-y-[2rem] pb-[5rem]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[1.5rem]">
         <FormField
           id="series"
-          value={states.series}
-          onChange={handlers.handleSeriesChange}
+          value={series}
+          onChange={handleSeriesChange}
           required={false}
           candidates={candidates?.series}
           placeholder="Optional series name"
@@ -63,15 +74,15 @@ export function EditArticleForm({
         />
         <FormField
           id="title"
-          value={states.title}
-          onChange={(e) => setters.setTitle(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="Article title"
           icon={Type}
         />
         <FormField
           id="category"
-          value={states.category}
-          onChange={(e) => setters.setCategory(e.target.value)}
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
           candidates={candidates?.category}
           placeholder="e.g. Technology"
           icon={Folder}
@@ -79,19 +90,16 @@ export function EditArticleForm({
         <FormField
           id="tags"
           name="tags"
-          value={states.tags}
-          onChange={handlers.handleTagsChange}
+          value={tags}
+          onChange={handleTagsChange}
           required={false}
-          candidates={states.tagCandidates}
+          candidates={tagCandidates}
           placeholder="tag1, tag2, ..."
           icon={Tag}
         />
       </div>
 
-      <MarkdownField
-        value={states.currentContent}
-        onChange={setters.setCurrentContent}
-      />
+      <MarkdownField value={currentContent} onChange={setCurrentContent} />
 
       <div className="pt-[1.5rem] border-t border-gray-100 flex justify-end space-x-4">
         {!published && (
@@ -102,9 +110,9 @@ export function EditArticleForm({
             icon={FileText}
             variant="outline"
             className="px-[2rem] py-[0.75rem]"
-            disabled={states.isSubmitting}
+            disabled={isSubmitting}
           >
-            {states.isSubmitting ? "Saving..." : "Save Draft"}
+            {isSubmitting ? "Saving..." : "Save Draft"}
           </Button>
         )}
         <Button
@@ -114,9 +122,9 @@ export function EditArticleForm({
           icon={published ? Save : Check}
           variant="primary"
           className="px-[2.5rem] py-[0.75rem]"
-          disabled={states.isSubmitting}
+          disabled={isSubmitting}
         >
-          {states.isSubmitting ? "Saving..." : publishLabel}
+          {isSubmitting ? "Saving..." : publishLabel}
         </Button>
       </div>
     </form>

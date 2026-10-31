@@ -81,24 +81,18 @@ export function useArticleEditor({
   );
 
   return {
-    states: {
-      currentContent,
-      title,
-      series,
-      category,
-      tags,
-      tagCandidates,
-      isSubmitting,
-    },
-    setters: {
-      setCurrentContent,
-      setTitle,
-      setCategory,
-    },
-    handlers: {
-      handleSeriesChange,
-      handleTagsChange,
-      handleSubmitAction,
-    },
+    currentContent,
+    title,
+    series,
+    category,
+    tags,
+    tagCandidates,
+    isSubmitting,
+    setCurrentContent,
+    setTitle,
+    setCategory,
+    handleSeriesChange,
+    handleTagsChange,
+    handleSubmitAction,
   };
 }
