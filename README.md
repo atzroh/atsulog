@@ -8,7 +8,6 @@
   - [Getting Started](#getting-started)
   - [Managing Articles](#managing-articles)
   - [Backup & Restore](#backup-restore)
-  - [Migrating from JSON & Markdown Files](#migrating-from-json-markdown-files)
   - [Customization](#customization)
 
 <!--toc:end-->
@@ -69,16 +68,6 @@ The database is backed up as a plain-text SQL dump, which diffs well in Git. The
   rm -f data/atsulog.db data/atsulog.db-wal data/atsulog.db-shm
   sqlite3 data/atsulog.db <data/atsulog.sql
   ```
-
-## Migrating from JSON & Markdown Files
-
-Earlier versions stored articles in `data/articles.json` and `data/articles/*.md`. To move them into the database:
-
-1. Stop the app.
-2. Run `node scripts/migrate-to-sqlite.mjs <path-to-data>` (the script has no dependencies, so it can be copied to the server on its own). It prints how many articles it migrated and does nothing if the database already has articles.
-3. Deploy and start the new version.
-
-The old files are left in place, so the previous version can still be started as long as no article has been edited since the migration.
 
 ## Customization
 
