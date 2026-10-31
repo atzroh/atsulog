@@ -14,7 +14,7 @@ import { siteConfig } from "@/app/lib/site-config";
  * Footer links in display order. siteConfig holds bare handles, so hosts are
  * added here. The email is not a link; see SocialLinks.
  */
-const links = [
+const LINKS = [
   {
     href: `https://github.com/${siteConfig.github}`,
     label: "GitHub",
@@ -56,7 +56,7 @@ export function SocialLinks() {
         aria-label="Social links"
         className="flex items-center justify-center gap-6 mb-4"
       >
-        {links.slice(0, 1).map(renderLink)}
+        {LINKS.slice(0, 1).map(renderLink)}
         <button
           type="button"
           aria-label="Email"
@@ -66,7 +66,7 @@ export function SocialLinks() {
         >
           <MailIcon className="size-5" />
         </button>
-        {links.slice(1).map(renderLink)}
+        {LINKS.slice(1).map(renderLink)}
       </nav>
       <dialog
         ref={dialogRef}
@@ -103,7 +103,7 @@ export function SocialLinks() {
   );
 }
 
-function renderLink({ href, label, Icon, external }: (typeof links)[number]) {
+function renderLink({ href, label, Icon, external }: (typeof LINKS)[number]) {
   return (
     <a
       key={label}

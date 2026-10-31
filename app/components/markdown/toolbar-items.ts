@@ -33,7 +33,7 @@ type ToolbarItem = {
  * Toolbar buttons, grouped. A divider is drawn between groups, so the grouping
  * is what separates inline emphasis from block syntax from links from math.
  */
-export const toolbarGroups: ToolbarItem[][] = [
+export const TOOLBAR_GROUPS: ToolbarItem[][] = [
   [
     {
       icon: Bold,

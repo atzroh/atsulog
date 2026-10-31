@@ -5,7 +5,7 @@ import {
   Loader2,
   Pencil,
 } from "lucide-react";
-import { toolbarGroups } from "@/app/components/markdown/toolbar-items";
+import { TOOLBAR_GROUPS } from "@/app/components/markdown/toolbar-items";
 import type { EditMode } from "@/app/lib/markdown/use-markdown-field";
 
 const BUTTON_STYLES =
@@ -37,7 +37,7 @@ export function MarkdownToolbar({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-[0.25rem] p-[0.25rem] bg-white border border-gray-100 rounded-lg shadow-sm w-fit mx-auto">
-      {toolbarGroups.map((group, groupIdx) => (
+      {TOOLBAR_GROUPS.map((group, groupIdx) => (
         <div key={groupIdx} className="flex items-center">
           {groupIdx > 0 && <Divider />}
           <div className="flex items-center gap-[0.125rem]">
