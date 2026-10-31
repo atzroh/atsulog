@@ -10,6 +10,7 @@ import {
 import { requireAuth } from "@/app/lib/auth/auth";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import {
+  applyArticleEdit,
   getTaxonomies,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
@@ -36,16 +37,12 @@ export default async function EditArticlePage({
 
     await requireAuth();
 
-    const { content, isPublished, ...fields } = parseArticleForm(formData);
+    const { content, ...form } = parseArticleForm(formData);
 
-    const updatedMetadata = {
-      ...detail!.metadata,
-      ...fields,
-      modifiedAt: new Date().toISOString(),
-      published: detail!.metadata.published || isPublished,
-    };
-
-    await updateArticle(updatedMetadata, content);
+    await updateArticle(
+      applyArticleEdit(detail!.metadata, form, new Date()),
+      content,
+    );
     redirect(`/edit/`);
   }
 

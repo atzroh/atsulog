@@ -4,10 +4,10 @@ import { createArticle, getArticles } from "@/app/lib/article/article-repository
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { requireAuth } from "@/app/lib/auth/auth";
 import {
+  buildNewArticle,
   getTaxonomies,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
-import { formatDateTimeCompact } from "@/app/lib/date-format";
 
 const initialMetadata: ArticleMetadata = {
   slug: "",
@@ -30,27 +30,9 @@ export default async function NewArticlePage() {
 
     await requireAuth();
 
-    const { title, category, series, tags, content, isPublished } =
-      parseArticleForm(formData);
-    const now = new Date();
-    const isoString = now.toISOString();
+    const { content, ...form } = parseArticleForm(formData);
 
-    const timestamp = formatDateTimeCompact(now);
-    const slug = isPublished ? timestamp : `draft-${timestamp}`;
-
-    const newMetadata: ArticleMetadata = {
-      slug,
-      title,
-      category,
-      series,
-      seriesOrder: null,
-      tags,
-      createdAt: isoString,
-      modifiedAt: isoString,
-      published: isPublished,
-    };
-
-    await createArticle(newMetadata, content);
+    await createArticle(buildNewArticle(form, new Date()), content);
     redirect(`/edit/`);
   }
 

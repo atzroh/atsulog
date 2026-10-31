@@ -4,6 +4,7 @@ import type {
   SortBy,
   SortOrder,
 } from "@/app/lib/article/article-types";
+import { formatDateTimeCompact } from "@/app/lib/date-format";
 
 /** The first value of a search parameter. */
 export function getParam(
@@ -27,6 +28,46 @@ export function parseArticleForm(formData: FormData) {
       .filter(Boolean),
     content: raw.content,
     isPublished: raw.intent === "publish",
+  };
+}
+
+type ArticleForm = ReturnType<typeof parseArticleForm>;
+
+/** A new article from the form, created at `now`. */
+export function buildNewArticle(
+  form: Omit<ArticleForm, "content">,
+  now: Date,
+): ArticleMetadata {
+  const timestamp = formatDateTimeCompact(now);
+  const createdAt = now.toISOString();
+
+  return {
+    slug: form.isPublished ? timestamp : `draft-${timestamp}`,
+    title: form.title,
+    category: form.category,
+    series: form.series,
+    seriesOrder: null,
+    tags: form.tags,
+    createdAt,
+    modifiedAt: createdAt,
+    published: form.isPublished,
+  };
+}
+
+/** `existing` with the form applied; a published article never reverts to a draft. */
+export function applyArticleEdit(
+  existing: ArticleMetadata,
+  form: Omit<ArticleForm, "content">,
+  now: Date,
+): ArticleMetadata {
+  return {
+    ...existing,
+    title: form.title,
+    category: form.category,
+    series: form.series,
+    tags: form.tags,
+    modifiedAt: now.toISOString(),
+    published: existing.published || form.isPublished,
   };
 }
 
