@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { generateIcosphere } from "@/app/lib/home/icosphere";
+import { generateIcosphere, projectVertices } from "@/app/lib/home/icosphere";
 
 const COLORS = {
   STOKE: "#F97316", // Orange
@@ -60,45 +60,15 @@ export function CanvasSphere() {
       ry += ROTATION_SPEEDS.Y;
       rz += ROTATION_SPEEDS.Z;
 
-      const cX = Math.cos(rx),
-        sX = Math.sin(rx);
-      const cY = Math.cos(ry),
-        sY = Math.sin(ry);
-      const cZ = Math.cos(rz),
-        sZ = Math.sin(rz);
-
       const isMobile = window.innerWidth < 768;
       const baseRadiusPx = remToPx(10);
       const radiusPx = isMobile ? remToPx(6) : baseRadiusPx;
       const scale = radiusPx / baseRadiusPx;
-      const centerX = width / 2;
-      const centerY = height / 2;
-
-      // Map to store projected positions and depths for reuse
-      const projected = vertices.map(
-        (v): { x: number; y: number; z: number; p: number } => {
-          let [x, y, z] = v;
-          const x1 = x * cZ - y * sZ;
-          const y1 = x * sZ + y * cZ;
-          x = x1;
-          y = y1;
-          const x2 = x * cY - z * sY;
-          const z2 = x * sY + z * cY;
-          x = x2;
-          z = z2;
-          const y3 = y * cX - z * sX;
-          const z3 = y * sX + z * cX;
-          y = y3;
-          z = z3;
-
-          const p = 1 / (1 - z * 0.2);
-          return {
-            x: centerX + x * radiusPx * p,
-            y: centerY + y * radiusPx * p,
-            z, // Depth range approx [-1, 1]
-            p,
-          };
-        },
+      const projected = projectVertices(
+        vertices,
+        { x: rx, y: ry, z: rz },
+        { x: width / 2, y: height / 2 },
+        radiusPx,
       );
 
       // Maps depth z [-1, 1] to opacity [0, 1]

@@ -106,3 +106,38 @@ export function generateIcosphere(subdivisions: number = 1): {
 
   return { vertices, edges };
 }
+
+/** A vertex on the canvas: `z` is its depth (about [-1, 1]), `p` its perspective scale. */
+export type ProjectedVertex = { x: number; y: number; z: number; p: number };
+
+/** Rotates about Z, then Y, then X, and projects onto the canvas with perspective. */
+export function projectVertices(
+  vertices: Vec3[],
+  rotation: { x: number; y: number; z: number },
+  center: { x: number; y: number },
+  radius: number,
+): ProjectedVertex[] {
+  const cX = Math.cos(rotation.x),
+    sX = Math.sin(rotation.x);
+  const cY = Math.cos(rotation.y),
+    sY = Math.sin(rotation.y);
+  const cZ = Math.cos(rotation.z),
+    sZ = Math.sin(rotation.z);
+
+  return vertices.map(([x, y, z]) => {
+    const x1 = x * cZ - y * sZ;
+    const y1 = x * sZ + y * cZ;
+    const x2 = x1 * cY - z * sY;
+    const z2 = x1 * sY + z * cY;
+    const y3 = y1 * cX - z2 * sX;
+    const z3 = y1 * sX + z2 * cX;
+
+    const p = 1 / (1 - z3 * 0.2);
+    return {
+      x: center.x + x2 * radius * p,
+      y: center.y + y3 * radius * p,
+      z: z3,
+      p,
+    };
+  });
+}
