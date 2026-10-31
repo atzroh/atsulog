@@ -201,6 +201,36 @@ export function getNextSeriesOrder(
   return maxOrder + 1;
 }
 
+/**
+ * Editor defaults for an article joining `series`, taken from its latest
+ * article. Only fields still empty (or auto-filled) are returned.
+ */
+export function suggestSeriesDefaults(
+  series: string,
+  articles: ArticleMetadata[],
+  current: { title: string; category: string; tags: string },
+): { title?: string; category?: string; tags?: string } {
+  const previous = articles
+    .filter((article) => article.series === series)
+    .sort((a, b) => (b.seriesOrder ?? 0) - (a.seriesOrder ?? 0))[0];
+  const suggestion: { title?: string; category?: string; tags?: string } = {};
+
+  if (current.title.trim() === "" || /#\d{3}$/.test(current.title)) {
+    const order = previous ? (previous.seriesOrder ?? 0) + 1 : 0;
+    suggestion.title = `${series}#${String(order).padStart(3, "0")}`;
+  }
+
+  if (previous) {
+    if (current.category === "" || current.category === "General") {
+      suggestion.category = previous.category;
+    }
+    if (current.tags.trim() === "") {
+      suggestion.tags = previous.tags.join(", ");
+    }
+  }
+  return suggestion;
+}
+
 export function filterArticles(
   articles: ArticleMetadata[],
   params: ArticleSearchParams,

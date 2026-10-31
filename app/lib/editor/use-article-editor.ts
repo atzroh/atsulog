@@ -3,6 +3,7 @@ import type {
   ArticleMetadata,
   TaxonomyCandidates,
 } from "@/app/lib/article/article-types";
+import { suggestSeriesDefaults } from "@/app/lib/article/article-utils";
 import { useNavigationGuard } from "@/app/lib/editor/use-navigation-guard";
 import { useTagInput } from "@/app/lib/editor/use-tag-input";
 
@@ -58,30 +59,14 @@ export function useArticleEditor({
 
       if (newSeries.trim() === "") return;
 
-      const seriesArticles = articles
-        .filter((a) => a.series === newSeries)
-        .sort((a, b) => (b.seriesOrder ?? 0) - (a.seriesOrder ?? 0));
-
-      const previousArticle = seriesArticles[0];
-      const isTitleEmpty = title.trim() === "";
-      const isTitleSeriesPattern = /#\d{3}$/.test(title);
-
-      if (isTitleEmpty || isTitleSeriesPattern) {
-        const nextOrder = previousArticle
-          ? (previousArticle.seriesOrder ?? 0) + 1
-          : 0;
-        const formattedOrder = String(nextOrder).padStart(3, "0");
-        setTitle(`${newSeries}#${formattedOrder}`);
-      }
-
-      if (previousArticle) {
-        if (category === "" || category === "General") {
-          setCategory(previousArticle.category);
-        }
-        if (tags.trim() === "") {
-          setTags(previousArticle.tags.join(", "));
-        }
-      }
+      const suggestion = suggestSeriesDefaults(newSeries, articles, {
+        title,
+        category,
+        tags,
+      });
+      if (suggestion.title !== undefined) setTitle(suggestion.title);
+      if (suggestion.category !== undefined) setCategory(suggestion.category);
+      if (suggestion.tags !== undefined) setTags(suggestion.tags);
     },
     [
       title,
