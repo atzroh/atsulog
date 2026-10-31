@@ -22,8 +22,21 @@ export function MarkdownField({
   onChange,
   label = "Content (Markdown)",
 }: MarkdownFieldProps) {
-  const { states, handlers, textareaRef, fileInputRef, markdownInputRef } =
-    useMarkdownField({ value, onChange });
+  const {
+    mode,
+    isUploading,
+    textareaRef,
+    fileInputRef,
+    markdownInputRef,
+    setMode,
+    insertMarkdown,
+    handleKeyDown,
+    onFileChange,
+    onMarkdownFileChange,
+    onDrop,
+    openImagePicker,
+    openMarkdownPicker,
+  } = useMarkdownField({ value, onChange });
 
   return (
     <div className="flex flex-col space-y-[1rem]">
@@ -31,28 +44,28 @@ export function MarkdownField({
         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
           {label}
         </label>
-        <ModeToggle mode={states.mode} onToggle={handlers.setMode} />
+        <ModeToggle mode={mode} onToggle={setMode} />
       </div>
 
-      {states.mode === "edit" && (
+      {mode === "edit" && (
         <div className="flex flex-col space-y-[0.5rem]">
           <MarkdownToolbar
-            onAction={handlers.insertMarkdown}
-            onUploadClick={handlers.openImagePicker}
-            onMarkdownUploadClick={handlers.openMarkdownPicker}
-            isUploading={states.isUploading}
+            onAction={insertMarkdown}
+            onUploadClick={openImagePicker}
+            onMarkdownUploadClick={openMarkdownPicker}
+            isUploading={isUploading}
           />
           <input
             type="file"
             ref={fileInputRef}
-            onChange={handlers.onFileChange}
+            onChange={onFileChange}
             accept="image/*"
             className="hidden"
           />
           <input
             type="file"
             ref={markdownInputRef}
-            onChange={handlers.onMarkdownFileChange}
+            onChange={onMarkdownFileChange}
             accept=".md,.markdown,text/markdown,text/plain"
             className="hidden"
           />
@@ -62,9 +75,9 @@ export function MarkdownField({
       <div
         className="w-full"
         onDragOver={(e) => e.preventDefault()}
-        onDrop={handlers.onDrop}
+        onDrop={onDrop}
       >
-        {states.mode === "edit" ? (
+        {mode === "edit" ? (
           // Fixed height with inner scroll: growing to fit the content made the
           // page jump on every keystroke. transition-shadow animates only the
           // focus ring, and resize-y keeps the w-full column intact.
@@ -74,7 +87,7 @@ export function MarkdownField({
             ref={textareaRef}
             value={value}
             onChange={(event) => onChange(event.target.value)}
-            onKeyDown={handlers.handleKeyDown}
+            onKeyDown={handleKeyDown}
             required
             className="w-full h-[70dvh] min-h-[18rem] resize-y overflow-auto p-[1rem] bg-gray-50/50 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500/10 transition-shadow"
           />
@@ -89,4 +102,3 @@ export function MarkdownField({
     </div>
   );
 }
-

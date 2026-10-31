@@ -173,24 +173,18 @@ export function useMarkdownField({
   };
 
   return {
-    states: {
-      mode,
-      isUploading,
-    },
-    // Top level, not grouped: react-hooks/refs reads a ref behind a property
-    // access as touching it during render.
+    mode,
+    isUploading,
     textareaRef,
     fileInputRef,
     markdownInputRef,
-    handlers: {
-      setMode,
-      insertMarkdown,
-      handleKeyDown,
-      onFileChange,
-      onMarkdownFileChange,
-      onDrop,
-      openImagePicker: () => fileInputRef.current?.click(),
-      openMarkdownPicker: () => markdownInputRef.current?.click(),
-    },
+    setMode,
+    insertMarkdown,
+    handleKeyDown,
+    onFileChange,
+    onMarkdownFileChange,
+    onDrop,
+    openImagePicker: () => fileInputRef.current?.click(),
+    openMarkdownPicker: () => markdownInputRef.current?.click(),
   };
 }
