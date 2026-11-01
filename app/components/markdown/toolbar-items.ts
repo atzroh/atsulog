@@ -15,6 +15,7 @@ import {
   Sigma,
   Strikethrough,
   Table,
+  Workflow,
 } from "lucide-react";
 
 /**
@@ -124,6 +125,13 @@ export const TOOLBAR_GROUPS: ToolbarItem[][] = [
       suffix: "\n```",
       placeholder: "code",
       title: "Code Block",
+    },
+    {
+      icon: Workflow,
+      prefix: "\n```mermaid\n",
+      suffix: "\n```\n",
+      placeholder: "flowchart LR\n  A --> B",
+      title: "Mermaid Diagram",
     },
     {
       icon: Table,

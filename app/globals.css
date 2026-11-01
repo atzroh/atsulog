@@ -181,6 +181,20 @@ body {
       @apply overflow-x-auto overflow-y-hidden pt-1 pb-3;
     }
 
+    /* Mermaid — the source shows in a light box until MermaidDiagrams swaps in
+       the diagram, so the swap is not a dark block turning white. A wide
+       diagram scrolls like a table. */
+    & pre:has(> code.language-mermaid) {
+      @apply bg-gray-50 border border-gray-200 text-gray-600;
+    }
+    & .mermaid-diagram {
+      @apply my-8 overflow-x-auto text-center;
+    }
+    & .mermaid-error {
+      /* Kept as written: the error points at the column with a `^` line. */
+      @apply -mt-4 text-xs text-red-600 font-mono whitespace-pre-wrap;
+    }
+
     /* Scrollbars
        The browser default is a wide grey bar with stepper arrows that reads as
        a form control dropped into the article. These stay deliberately quiet:
@@ -193,10 +207,16 @@ body {
        from the block's edges rather than against them. */
     @supports not selector(::-webkit-scrollbar) {
       /* Firefox only — see below for why the two APIs cannot both be set. */
-      & :is(pre > code, .katex-display, .table-scroll) {
+      & :is(pre > code, .katex-display, .table-scroll, .mermaid-diagram) {
         scrollbar-width: thin;
       }
-      & :is(.katex-display, .table-scroll) {
+      &
+        :is(
+          .katex-display,
+          .table-scroll,
+          .mermaid-diagram,
+          code.language-mermaid
+        ) {
         scrollbar-color: #e5e7eb transparent;
       }
       & pre > code {
@@ -207,17 +227,42 @@ body {
     /* Chrome drops every `::-webkit-scrollbar` rule as soon as `scrollbar-color`
        is set on the element, which is why the standard pair above is fenced off
        to the one engine that has no `::-webkit-scrollbar` selector. */
-    & :is(pre > code, .katex-display, .table-scroll)::-webkit-scrollbar {
+    &
+      :is(
+        pre > code,
+        .katex-display,
+        .table-scroll,
+        .mermaid-diagram
+      )::-webkit-scrollbar {
       @apply h-1.5;
     }
-    & :is(pre > code, .katex-display, .table-scroll)::-webkit-scrollbar-track {
+    &
+      :is(
+        pre > code,
+        .katex-display,
+        .table-scroll,
+        .mermaid-diagram
+      )::-webkit-scrollbar-track {
       background: transparent;
     }
-    & :is(pre > code, .katex-display, .table-scroll)::-webkit-scrollbar-button {
+    &
+      :is(
+        pre > code,
+        .katex-display,
+        .table-scroll,
+        .mermaid-diagram
+      )::-webkit-scrollbar-button {
       @apply hidden;
     }
     /* 4px is the inline radius token; on a 6px bar it clamps to a full round. */
-    & :is(.katex-display, .table-scroll)::-webkit-scrollbar-thumb {
+    /* code.language-mermaid outranks `pre > code` below: its box is light. */
+    &
+      :is(
+        .katex-display,
+        .table-scroll,
+        .mermaid-diagram,
+        code.language-mermaid
+      )::-webkit-scrollbar-thumb {
       @apply bg-gray-200 rounded-[4px];
       &:hover {
         @apply bg-gray-300;

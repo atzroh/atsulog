@@ -1,3 +1,4 @@
+import { MermaidDiagrams } from "@/app/components/markdown/mermaid-diagrams";
 import type { LinkCardMap } from "@/app/lib/link-card/link-card-types";
 import { renderMarkdown } from "@/app/lib/markdown/markdown-rendering";
 
@@ -15,10 +16,11 @@ type MarkdownRendererProps = {
  * Renders Markdown as one HTML string, styled by .prose-site.
  */
 export function MarkdownRenderer({ content, cards }: MarkdownRendererProps) {
+  const html = renderMarkdown(content, cards);
+
   return (
-    <div
-      className="prose-site"
-      dangerouslySetInnerHTML={{ __html: renderMarkdown(content, cards) }}
-    />
+    <MermaidDiagrams html={html}>
+      <div className="prose-site" dangerouslySetInnerHTML={{ __html: html }} />
+    </MermaidDiagrams>
   );
 }

@@ -128,7 +128,8 @@ function createProcessor({ katex, linkCards = true }: ProcessorOptions = {}) {
       .use(remarkRehype, { allowDangerousHtml: true })
       // KaTeX first: both claim ```math fences.
       .use(rehypeKatex, katex)
-      .use(rehypeHighlight)
+      // Left as source for MermaidDiagrams to draw in the browser.
+      .use(rehypeHighlight, { plainText: ["mermaid"] })
       .use(rehypeArticle)
       .use(rehypeStringify)
   );
