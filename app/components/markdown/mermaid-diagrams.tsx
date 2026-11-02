@@ -252,6 +252,14 @@ export function MermaidDiagrams({ html, children }: MermaidDiagramsProps) {
           const diagram = document.createElement("div");
           diagram.className = "mermaid-diagram";
           diagram.innerHTML = svg;
+
+          // Its own size, for globals.css to scale the whole drawing by.
+          const el = diagram.querySelector("svg");
+          const box = el?.viewBox.baseVal;
+          if (el && box?.width) {
+            el.style.setProperty("--mermaid-w", `${box.width}px`);
+            el.style.setProperty("--mermaid-h", `${box.height}px`);
+          }
           pre.replaceWith(diagram);
         } catch (error) {
           if (cancelled) return;
