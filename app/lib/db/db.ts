@@ -24,20 +24,20 @@ CREATE TABLE IF NOT EXISTS articles (
 
 /** Survives dev HMR, which would otherwise open a connection per reload. */
 const globalForDb = globalThis as typeof globalThis & {
-  atsulogDb?: DatabaseSync;
+  articlesDb?: DatabaseSync;
 };
 
 /** Opened on first use, so `next build` never creates the file. */
 export function getDb(): DatabaseSync {
-  if (!globalForDb.atsulogDb) {
+  if (!globalForDb.articlesDb) {
     mkdirSync(path.dirname(DB_PATH), { recursive: true });
     const db = new DatabaseSync(DB_PATH);
     db.exec("PRAGMA journal_mode = WAL");
     db.exec("PRAGMA busy_timeout = 5000");
     db.exec(SCHEMA);
-    globalForDb.atsulogDb = db;
+    globalForDb.articlesDb = db;
   }
-  return globalForDb.atsulogDb;
+  return globalForDb.articlesDb;
 }
 
 /** Runs `task` in a write transaction, rolling back if it throws. */
