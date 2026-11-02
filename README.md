@@ -54,19 +54,19 @@ https://atsulog.com
 ## Managing Articles
 
 - **Web UI**: Log in at `/login` to create and edit articles directly in your browser.
-- **Local Data**: Everything lives in the `data/` folder: articles in `data/atsulog.db` (created on first use), images in `data/images/`.
+- **Local Data**: Everything lives in the `data/` folder: articles in `data/articles.db` (created on first use), images in `data/images/`.
 - **Math**: Write `$E = mc^2$` for inline math and `$$ ... $$` for a display equation; both are typeset with KaTeX. A literal dollar sign in prose needs escaping as `\$` (inside code spans and fenced blocks it is left alone).
 
 ## Backup & Restore
 
 The database is backed up as a plain-text SQL dump, which diffs well in Git. The `sqlite3` CLI is required.
 
-- **Back up**: `sqlite3 data/atsulog.db .dump > data/atsulog.sql` (safe while the app is running)
-- **Restore**: `npm run db:restore` rebuilds `data/atsulog.db` from `data/atsulog.sql`. Stop the app first. On a standalone deployment, run the same commands from the app directory:
+- **Back up**: `sqlite3 data/articles.db .dump > data/articles.sql` (safe while the app is running)
+- **Restore**: `npm run db:restore` rebuilds `data/articles.db` from `data/articles.sql`. Stop the app first. On a standalone deployment, run the same commands from the app directory:
 
   ```bash
-  rm -f data/atsulog.db data/atsulog.db-wal data/atsulog.db-shm
-  sqlite3 data/atsulog.db <data/atsulog.sql
+  rm -f data/articles.db data/articles.db-wal data/articles.db-shm
+  sqlite3 data/articles.db <data/articles.sql
   ```
 
 ## Customization

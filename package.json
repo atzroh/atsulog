@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:restore": "rm -f data/atsulog.db data/atsulog.db-wal data/atsulog.db-shm && sqlite3 data/atsulog.db < data/atsulog.sql"
+    "db:restore": "rm -f data/articles.db data/articles.db-wal data/articles.db-shm && sqlite3 data/articles.db < data/articles.sql"
   },
   "dependencies": {
     "@next/third-parties": "^16.4.0",
