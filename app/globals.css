@@ -196,7 +196,7 @@ body {
       @apply my-8 overflow-x-auto;
     }
     & .mermaid-diagram svg {
-      @apply mx-auto max-md:[zoom:0.85];
+      @apply mx-auto max-md:[zoom:0.65];
     }
     & .mermaid-error {
       /* Kept as written: the error points at the column with a `^` line. */
