@@ -183,12 +183,20 @@ body {
 
     /* Mermaid — the source shows in a light box until MermaidDiagrams swaps in
        the diagram, so the swap is not a dark block turning white. A wide
-       diagram scrolls like a table. */
+       diagram scrolls like a table.
+
+       Preflight makes the svg a block, so it is centred with auto margins,
+       which resolve to zero once it outgrows the column and leave its left
+       edge reachable. Below `md`, the breakpoint the layout switches at, it is
+       drawn at 0.85 so more of it fits before it has to scroll. */
     & pre:has(> code.language-mermaid) {
       @apply bg-gray-50 border border-gray-200 text-gray-600;
     }
     & .mermaid-diagram {
-      @apply my-8 overflow-x-auto text-center;
+      @apply my-8 overflow-x-auto;
+    }
+    & .mermaid-diagram svg {
+      @apply mx-auto max-md:[zoom:0.85];
     }
     & .mermaid-error {
       /* Kept as written: the error points at the column with a `^` line. */
