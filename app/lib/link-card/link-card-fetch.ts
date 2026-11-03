@@ -1,10 +1,12 @@
 import "server-only";
 
-import { decodeNamedCharacterReference } from "decode-named-character-reference";
+import type { Element, Root } from "hast";
+import { fromHtml } from "hast-util-from-html";
 import {
   fetch as guardedFetch,
   type Response as GuardedResponse,
 } from "undici";
+import { visit } from "unist-util-visit";
 
 import {
   BlockedAddressError,
@@ -29,12 +31,6 @@ const USER_AGENT = `Mozilla/5.0 (compatible; AtsulogBot/1.0; +${siteConfig.url}/
 const LATIN1 = new TextDecoder("latin1");
 const UTF8 = new TextDecoder("utf-8");
 
-// Negated character classes only: the input is attacker-shaped, if only by
-// accident, and a nested quantifier here would be a stall waiting to happen.
-const META_TAG = /<meta\s[^>]*>/gi;
-const LINK_TAG = /<link\s[^>]*>/gi;
-const ATTRIBUTE = /([a-zA-Z:-]+)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/g;
-const TITLE_TAG = /<title[^>]*>([^<]*)<\/title>/i;
 const HEAD_END = /<\/head|<body/i;
 /** Both of the tags above are shorter, so neither is lost at a chunk border. */
 const CARRY = 8;
@@ -218,7 +214,7 @@ function decode(bytes: Uint8Array, contentType: string | null): string {
 // --- Parsing ---
 
 function parseCard(url: string, html: string, finalUrl: string): LinkCard {
-  const head = headOf(html);
+  const head = fromHtml(headOf(html));
   const meta = metaOf(head);
 
   return {
@@ -252,38 +248,26 @@ function headOf(html: string): string {
   return end === -1 ? html : html.slice(0, end);
 }
 
-/** Attribute order and quoting differ per site, so each tag is parsed on its own. */
-function metaOf(head: string): Map<string, string> {
+function metaOf(head: Root): Map<string, string> {
   const meta = new Map<string, string>();
 
-  for (const [tag] of head.matchAll(META_TAG)) {
-    const attributes = attributesOf(tag);
+  for (const tag of elementsOf(head, "meta")) {
     // Open Graph uses property=, Twitter Cards use name=.
     const key = (
-      attributes.get("property") ?? attributes.get("name")
+      attribute(tag, "property") ?? attribute(tag, "name")
     )?.toLowerCase();
-    const content = attributes.get("content");
+    const content = attribute(tag, "content");
     if (key && content && !meta.has(key)) meta.set(key, content);
   }
   return meta;
 }
 
-function attributesOf(tag: string): Map<string, string> {
-  const attributes = new Map<string, string>();
-  for (const [, name, raw] of tag.matchAll(ATTRIBUTE)) {
-    attributes.set(name.toLowerCase(), decodeEntities(unquote(raw)));
-  }
-  return attributes;
-}
-
-function unquote(value: string): string {
-  const quoted = value.startsWith('"') || value.startsWith("'");
-  return quoted ? value.slice(1, -1) : value;
-}
-
-function titleOf(head: string): string | undefined {
-  const title = TITLE_TAG.exec(head)?.[1];
-  return title === undefined ? undefined : decodeEntities(title);
+function titleOf(head: Root): string | undefined {
+  const [title] = elementsOf(head, "title");
+  if (!title) return undefined;
+  return title.children
+    .map((child) => (child.type === "text" ? child.value : ""))
+    .join("");
 }
 
 /**
@@ -291,16 +275,15 @@ function titleOf(head: string): string | undefined {
  * same-origin, and a guessed /favicon.ico breaks on sites without one — both
  * a broken image, with no script on the card to hide it.
  */
-function faviconOf(head: string, finalUrl: string): string | undefined {
+function faviconOf(head: Root, finalUrl: string): string | undefined {
   const fallbacks: string[] = [];
 
-  for (const [tag] of head.matchAll(LINK_TAG)) {
-    const attributes = attributesOf(tag);
-    const rel = (attributes.get("rel") ?? "").toLowerCase().split(/\s+/);
+  for (const tag of elementsOf(head, "link")) {
+    const rel = (attribute(tag, "rel") ?? "").toLowerCase().split(/\s+/);
     if (!rel.some((token) => token.includes("icon"))) continue;
 
     // A page may declare a `data:` icon, which is no use to us.
-    const href = httpsUrl(attributes.get("href"), finalUrl);
+    const href = httpsUrl(attribute(tag, "href"), finalUrl);
     if (!href) continue;
     if (rel.includes("icon")) return href;
     fallbacks.push(href);
@@ -310,28 +293,19 @@ function faviconOf(head: string, finalUrl: string): string | undefined {
 
 // --- Helpers ---
 
-/**
- * The output is re-escaped on render, so an undecoded `&amp;` would show.
- * Named references use the full HTML5 table (`&mdash;` is common; case sensitive).
- */
-function decodeEntities(value: string): string {
-  return value.replace(
-    /&(#[xX][0-9a-fA-F]+|#\d+|[a-zA-Z][a-zA-Z0-9]*);/g,
-    (match, body: string) => {
-      if (body.startsWith("#")) {
-        const hex = body[1] === "x" || body[1] === "X";
-        const digits = body.slice(hex ? 2 : 1);
-        return codePoint(parseInt(digits, hex ? 16 : 10)) ?? match;
-      }
-      return decodeNamedCharacterReference(body) || match;
-    },
-  );
+function elementsOf(tree: Root, tagName: string): Element[] {
+  const elements: Element[] = [];
+  visit(tree, "element", (node) => {
+    if (node.tagName === tagName) elements.push(node);
+  });
+  return elements;
 }
 
-function codePoint(value: number): string | undefined {
-  if (!Number.isInteger(value) || value < 0 || value > 0x10ffff)
-    return undefined;
-  return String.fromCodePoint(value);
+/** hast splits `rel` and `property` into tokens; joined back here. */
+function attribute(node: Element, name: string): string | undefined {
+  const value = node.properties[name];
+  if (Array.isArray(value)) return value.join(" ");
+  return typeof value === "string" ? value : undefined;
 }
 
 function asString(value: unknown): string | undefined {
