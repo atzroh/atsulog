@@ -26,9 +26,7 @@ type EditArticleFormProps = {
   candidates?: TaxonomyCandidates;
 };
 
-/**
- * Form for editing article details with preview support.
- */
+/** The create and edit form; MarkdownField handles the body and its preview. */
 export function EditArticleForm({
   metadata,
   content,

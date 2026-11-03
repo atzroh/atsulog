@@ -9,10 +9,7 @@ type ArticleListProps = {
   basePath?: string;
 };
 
-/**
- * Renders a list of article items.
- * Shows a "not found" state if the list is empty.
- */
+/** The article cards, or a "not found" state when there are none. */
 export function ArticleList({
   articles,
   basePath = "/articles",
@@ -41,9 +38,6 @@ export function ArticleList({
   );
 }
 
-/**
- * Renders an individual article item within a list.
- */
 function ArticleListItem({
   article,
   basePath,

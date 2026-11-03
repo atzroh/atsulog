@@ -21,7 +21,7 @@ import {
   splitTags,
 } from "@/app/lib/article/article-utils";
 import { formatDateTimeCompact } from "@/app/lib/date-format";
-import { getDb, transaction } from "@/app/lib/db/db";
+import { getArticleDb, transaction } from "@/app/lib/db/db";
 import { siteConfig } from "@/app/lib/site-config";
 
 // --- Types ---
@@ -71,14 +71,14 @@ const SORT_COLUMNS: Partial<Record<keyof ArticleMetadata, string>> = {
 export async function getArticles(): Promise<ArticleMetadata[]> {
   // Request time only: a build that opened the database would create it.
   await connection();
-  return selectMetadata(getDb(), scopeCondition("all"));
+  return selectMetadata(getArticleDb(), scopeCondition("all"));
 }
 
 export async function getArticleBySlug(
   slug: string,
 ): Promise<ArticleDetail | null> {
   await connection();
-  const row = getDb()
+  const row = getArticleDb()
     .prepare(`${SELECT_DETAIL} WHERE a.slug = ?`)
     .get(slug) as DetailRow | undefined;
   return row ? toDetail(row) : null;
@@ -94,7 +94,7 @@ export async function searchArticles(
   perPage?: number,
 ): Promise<ArticlePage> {
   await connection();
-  const db = getDb();
+  const db = getArticleDb();
   const where = combine([scopeCondition(scope), ...searchConditions(params)]);
   const orderBy = orderClause(params);
 
@@ -122,7 +122,7 @@ export async function getLatestArticleDetails(
 ): Promise<ArticleDetail[]> {
   await connection();
   const where = scopeCondition("public");
-  const rows = getDb()
+  const rows = getArticleDb()
     .prepare(
       `${SELECT_DETAIL} WHERE ${where.sql}
        ORDER BY a.created_at DESC LIMIT ${limit}`,
@@ -136,7 +136,7 @@ export async function getArticleContents(): Promise<
   { slug: string; title: string; content: string }[]
 > {
   await connection();
-  const rows = getDb()
+  const rows = getArticleDb()
     .prepare("SELECT slug, title, content FROM articles")
     .all() as { slug: string; title: string; content: string }[];
   // Rows have a null prototype, which Client Components reject.
@@ -146,7 +146,7 @@ export async function getArticleContents(): Promise<
 /** Tags, categories and series in `scope`. */
 export async function getTaxonomies(scope: ArticleScope): Promise<Taxonomies> {
   await connection();
-  const db = getDb();
+  const db = getArticleDb();
   const where = scopeCondition(scope);
 
   const column = (sql: string) =>
@@ -176,7 +176,7 @@ export async function getSiteStats(
 ): Promise<SiteStatsData> {
   await connection();
   const where = scopeCondition(scope);
-  const { articleCount, launchedAt } = getDb()
+  const { articleCount, launchedAt } = getArticleDb()
     .prepare(
       `SELECT COUNT(*) AS articleCount, MIN(a.created_at) AS launchedAt
        FROM articles a WHERE ${where.sql}`,
@@ -198,7 +198,11 @@ export async function getSeriesNeighbors(
     scopeCondition("published"),
     { sql: "a.series = ?", params: [series] },
   ]);
-  const articles = selectMetadata(getDb(), where, "ORDER BY a.series_order");
+  const articles = selectMetadata(
+    getArticleDb(),
+    where,
+    "ORDER BY a.series_order",
+  );
   const index = articles.findIndex((a) => a.slug === article.slug);
 
   return {

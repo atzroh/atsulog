@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 /**
  * A plain list of draft links, without the sorting and pagination of
@@ -12,9 +13,7 @@ export function DraftArticleList({
 }) {
   return (
     <section>
-      <h1 className="text-3xl font-bold tracking-tight mb-8">
-        Drafts ({articles.length})
-      </h1>
+      <PageHeading className="mb-8">Drafts ({articles.length})</PageHeading>
 
       {articles.length === 0 ? (
         <p className="text-sm text-gray-400">No drafts found.</p>

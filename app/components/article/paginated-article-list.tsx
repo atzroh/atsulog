@@ -5,6 +5,7 @@ import type {
   ArticlePage,
   ArticleSearchParams,
 } from "@/app/lib/article/article-types";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 type PaginatedArticleListProps = {
   page: ArticlePage;
@@ -25,7 +26,7 @@ export function PaginatedArticleList({
       {/* The heading owns the gap to the list; PaginationNav brings its own
           mt-[3rem], so the section needs no space-y of its own. */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Articles</h1>
+        <PageHeading>Articles</PageHeading>
         <ArticleSortControls searchParams={searchParams} basePath={basePath} />
       </div>
 

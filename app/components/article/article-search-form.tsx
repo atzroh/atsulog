@@ -9,6 +9,7 @@ import type {
   ArticleSearchParams,
   TaxonomyCandidates,
 } from "@/app/lib/article/article-types";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 type ArticleSearchFormProps = {
   searchParams: ArticleSearchParams;
@@ -16,10 +17,7 @@ type ArticleSearchFormProps = {
   action?: string;
 };
 
-/**
- * A client-side component that renders a search and filter form for articles.
- * Uses next/form for automatic query parameter handling and prefetching.
- */
+/** next/form turns the fields into query params and prefetches the result. */
 export function ArticleSearchForm({
   searchParams,
   candidates,
@@ -29,9 +27,7 @@ export function ArticleSearchForm({
 
   return (
     <section className="mb-[4rem]">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">
-        Search & Filter
-      </h1>
+      <PageHeading className="mb-8">Search & Filter</PageHeading>
       <Form action={action}>
         <SearchFields
           key={JSON.stringify(searchParams)}

@@ -49,7 +49,7 @@ const globalForDb = globalThis as typeof globalThis & {
   databases?: Map<string, DatabaseSync>;
 };
 
-export function getDb(): DatabaseSync {
+export function getArticleDb(): DatabaseSync {
   return openDatabase("articles.db", ARTICLES_SCHEMA);
 }
 
@@ -63,7 +63,7 @@ export function getImageDb(): DatabaseSync {
 
 /** Runs `task` in a write transaction, rolling back if it throws. */
 export function transaction<T>(task: (db: DatabaseSync) => T): T {
-  const db = getDb();
+  const db = getArticleDb();
   db.exec("BEGIN IMMEDIATE");
   try {
     const result = task(db);

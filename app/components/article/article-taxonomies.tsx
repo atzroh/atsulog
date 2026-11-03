@@ -1,4 +1,5 @@
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
+import { taxonomyHref } from "@/app/lib/article/article-utils";
 import { Tag } from "@/app/components/ui/tag";
 
 type ArticleTaxonomiesProps = {
@@ -22,23 +23,19 @@ export function ArticleTaxonomies({
       {series && (
         <Tag
           label={series}
-          href={`${basePath}?series=${encodeURIComponent(series)}`}
+          href={taxonomyHref(basePath, "series", series)}
           variant="series"
         />
       )}
 
       <Tag
         label={category}
-        href={`${basePath}?category=${encodeURIComponent(category)}`}
+        href={taxonomyHref(basePath, "category", category)}
         variant="category"
       />
 
       {tags.map((tag) => (
-        <Tag
-          key={tag}
-          label={tag}
-          href={`${basePath}?tag=${encodeURIComponent(tag)}`}
-        />
+        <Tag key={tag} label={tag} href={taxonomyHref(basePath, "tag", tag)} />
       ))}
     </div>
   );

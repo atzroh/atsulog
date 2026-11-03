@@ -141,10 +141,7 @@ async function fetchYouTubeCard(url: string): Promise<LinkCard> {
       unknown
     >;
 
-    const name = clean(
-      typeof title === "string" ? title : undefined,
-      MAX_TITLE,
-    );
+    const name = clean(asString(title), MAX_TITLE);
     if (!name) return errorCard(url);
 
     return {
@@ -153,15 +150,9 @@ async function fetchYouTubeCard(url: string): Promise<LinkCard> {
       fetchedAt: new Date().toISOString(),
       title: name,
       // The channel, which is what a viewer wants from a video alongside it.
-      description: clean(
-        typeof author_name === "string" ? author_name : undefined,
-        MAX_DESCRIPTION,
-      ),
+      description: clean(asString(author_name), MAX_DESCRIPTION),
       siteName: "YouTube",
-      image: httpsUrl(
-        typeof thumbnail_url === "string" ? thumbnail_url : undefined,
-        endpoint,
-      ),
+      image: httpsUrl(asString(thumbnail_url), endpoint),
       favicon: YOUTUBE_FAVICON,
     };
   } catch {
@@ -341,6 +332,10 @@ function codePoint(value: number): string | undefined {
   if (!Number.isInteger(value) || value < 0 || value > 0x10ffff)
     return undefined;
   return String.fromCodePoint(value);
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
 }
 
 function clean(value: string | undefined, max: number): string | undefined {

@@ -5,7 +5,7 @@ import { getImageDb } from "@/app/lib/db/db";
 import { extensionForMimeType } from "@/app/lib/image/image-mime";
 
 /** Hex digits of SHA-256 kept as the key; 64 bits is plenty for one blog. */
-const HASH_LENGTH = 16;
+export const HASH_LENGTH = 16;
 
 const HASH_PATTERN = new RegExp(`^[0-9a-f]{${HASH_LENGTH}}$`);
 

@@ -78,7 +78,7 @@ export function ArticleSortControls({
           href={buildArticleSearchUrl(basePath, searchParams, {
             order: isAsc ? "desc" : "asc",
           })}
-          className="flex items-center space-x-[0.5rem] px-[0.75rem] py-[0.375rem] text-sm font-medium text-gray-500 hover:text-black hover:bg-gray-50 border border-gray-100 hover:border-gray-200 rounded-lg transition-all"
+          className={`${TOGGLE_STYLES} text-gray-500 hover:text-black hover:bg-gray-50 border-gray-100 hover:border-gray-200`}
           title={isAsc ? "Sort Descending" : "Sort Ascending"}
         >
           <OrderIcon className="size-[0.875rem]" />

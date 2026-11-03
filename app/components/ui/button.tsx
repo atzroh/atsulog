@@ -24,9 +24,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
     "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-black hover:border-gray-300",
 };
 
-/**
- * A button with the site's primary and outline styles.
- */
+/** A button with the site's primary and outline styles. */
 export function Button({
   children,
   onClick,

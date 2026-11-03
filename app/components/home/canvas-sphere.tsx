@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import { generateIcosphere, projectVertices } from "@/app/lib/home/icosphere";
 
 const COLORS = {
-  STROKE: "#F97316", // Orange
-  NODE: "#000000", // Black
+  STROKE: "#F97316",
+  NODE: "#000000",
 };
 
 const ROTATION_SPEEDS = {
@@ -14,9 +14,7 @@ const ROTATION_SPEEDS = {
   Z: 0.0016,
 };
 
-/**
- * A lightweight 3D Icosphere wireframe rendered on a 2D Canvas.
- */
+/** An icosphere wireframe drawn on a 2D canvas. */
 export function CanvasSphere() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

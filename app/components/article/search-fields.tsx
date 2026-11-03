@@ -12,9 +12,6 @@ type SearchFieldsProps = {
   candidates?: TaxonomyCandidates;
 };
 
-/**
- * Renders the full set of search fields as a block.
- */
 export function SearchFields({ searchParams, candidates }: SearchFieldsProps) {
   const {
     value: tagValue,

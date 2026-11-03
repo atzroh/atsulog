@@ -4,6 +4,7 @@ import type {
   ArticleMetadata,
   SeriesNeighbors,
 } from "@/app/lib/article/article-types";
+import { taxonomyHref } from "@/app/lib/article/article-utils";
 
 /** Links to the previous and next published articles in the series, by seriesOrder. */
 export function SeriesNavigation({
@@ -20,7 +21,7 @@ export function SeriesNavigation({
       <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6 flex items-center justify-between">
         <span>More from {series}</span>
         <Link
-          href={`/articles?series=${encodeURIComponent(series)}`}
+          href={taxonomyHref("/articles", "series", series)}
           className="text-xs font-medium text-sky-600 hover:text-sky-700 transition-colors"
         >
           View all in series &rarr;

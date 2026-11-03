@@ -11,6 +11,7 @@ import {
   buildNewArticle,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 const INITIAL_METADATA: ArticleMetadata = {
   slug: "",
@@ -41,9 +42,7 @@ export default async function NewArticlePage() {
 
   return (
     <main className="space-y-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">
-        Create New Articles
-      </h1>
+      <PageHeading className="mb-8">Create New Articles</PageHeading>
       <EditArticleForm
         metadata={INITIAL_METADATA}
         content=""

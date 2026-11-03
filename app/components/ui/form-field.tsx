@@ -13,10 +13,7 @@ type FormFieldProps = {
   icon?: LucideIcon;
 };
 
-/**
- * A reusable input field with a label derived from its id.
- * Supports optional autocomplete candidates via datalist.
- */
+/** An input labelled from its id, with optional datalist suggestions. */
 export function FormField({
   id,
   name,

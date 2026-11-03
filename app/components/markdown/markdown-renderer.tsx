@@ -15,9 +15,7 @@ type MarkdownRendererProps = {
   withToc?: boolean;
 };
 
-/**
- * Renders Markdown as one HTML string, styled by .prose-site.
- */
+/** Markdown as one HTML string, styled by .prose-site. */
 export function MarkdownRenderer({
   content,
   cards,

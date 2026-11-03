@@ -15,6 +15,7 @@ import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 import { SeriesNavigation } from "@/app/components/article/series-navigation";
 import { siteConfig } from "@/app/lib/site-config";
 import { buildPageMetadata } from "@/app/lib/page-metadata";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 export async function generateMetadata({
   params,
@@ -63,9 +64,7 @@ export default async function ArticlePage({
   return (
     <article className="py-10">
       <header className="mb-12">
-        <h1 className="text-3xl font-bold tracking-tight mb-4">
-          {article.title}
-        </h1>
+        <PageHeading className="mb-4">{article.title}</PageHeading>
 
         <ArticleMeta article={article} className="mb-6" />
 

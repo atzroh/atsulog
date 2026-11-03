@@ -14,6 +14,7 @@ import {
   applyArticleEdit,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 type EditArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -48,9 +49,9 @@ export default async function EditArticlePage({
 
   return (
     <main className="space-y-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">
+      <PageHeading className="mb-8">
         Edit Article: {detail.metadata.title}
-      </h1>
+      </PageHeading>
       <EditArticleForm
         metadata={detail.metadata}
         content={detail.content}

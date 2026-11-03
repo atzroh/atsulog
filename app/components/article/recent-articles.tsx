@@ -2,17 +2,13 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { ArticleList } from "@/app/components/article/article-list";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
-/**
- * Renders a list of the most recent articles, newest first.
- */
 export function RecentArticles({ articles }: { articles: ArticleMetadata[] }) {
 
   return (
     <section>
-      <h1 className="text-3xl font-bold tracking-tight mb-8">
-        Recent Articles
-      </h1>
+      <PageHeading className="mb-8">Recent Articles</PageHeading>
       <ArticleList articles={articles} />
       <div className="mt-12">
         <Link

@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { ImageList } from "@/app/components/editor/image-list";
 import { listImages } from "@/app/lib/image/image-store";
 import { getImageUsers } from "@/app/lib/image/image-usage";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 export default async function ImagesPage() {
   // First, since it waits for request time before any database is opened.
@@ -15,9 +16,7 @@ export default async function ImagesPage() {
 
   return (
     <main className="space-y-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-8">
-        Images ({images.length})
-      </h1>
+      <PageHeading className="mb-8">Images ({images.length})</PageHeading>
       <ImageList images={images} />
       <nav aria-label="Images navigation" className="border-t pt-[2.5rem]">
         <Link

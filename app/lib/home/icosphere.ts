@@ -27,10 +27,7 @@ export function generateIcosphere(subdivisions: number = 1): {
     [phi, 0, 1],
     [-phi, 0, -1],
     [-phi, 0, 1],
-  ].map((v) => {
-    const len = Math.sqrt(v[0] ** 2 + v[1] ** 2 + v[2] ** 2);
-    return [v[0] / len, v[1] / len, v[2] / len] as Vec3;
-  });
+  ].map((v) => normalize(v as Vec3));
 
   let faces: Face[] = [
     [0, 11, 5],
@@ -58,7 +55,7 @@ export function generateIcosphere(subdivisions: number = 1): {
   const midPointCache = new Map<string, number>();
 
   const getMidPoint = (v1Idx: number, v2Idx: number) => {
-    const key = v1Idx < v2Idx ? `${v1Idx}-${v2Idx}` : `${v2Idx}-${v1Idx}`;
+    const key = edgeKey(v1Idx, v2Idx);
     if (midPointCache.has(key)) return midPointCache.get(key)!;
 
     const v1 = vertices[v1Idx];
@@ -68,10 +65,8 @@ export function generateIcosphere(subdivisions: number = 1): {
       (v1[1] + v2[1]) / 2,
       (v1[2] + v2[2]) / 2,
     ];
-    const len = Math.sqrt(mid[0] ** 2 + mid[1] ** 2 + mid[2] ** 2);
-    const normalized: Vec3 = [mid[0] / len, mid[1] / len, mid[2] / len];
 
-    vertices.push(normalized);
+    vertices.push(normalize(mid));
     const idx = vertices.length - 1;
     midPointCache.set(key, idx);
     return idx;
@@ -96,7 +91,7 @@ export function generateIcosphere(subdivisions: number = 1): {
       [v2, v3],
       [v3, v1],
     ].forEach(([a, b]) => {
-      const key = a < b ? `${a}-${b}` : `${b}-${a}`;
+      const key = edgeKey(a, b);
       if (!edgeSet.has(key)) {
         edgeSet.add(key);
         edges.push([a, b]);
@@ -105,6 +100,17 @@ export function generateIcosphere(subdivisions: number = 1): {
   });
 
   return { vertices, edges };
+}
+
+/** Scales `v` onto the unit sphere. */
+function normalize(v: Vec3): Vec3 {
+  const len = Math.sqrt(v[0] ** 2 + v[1] ** 2 + v[2] ** 2);
+  return [v[0] / len, v[1] / len, v[2] / len];
+}
+
+/** The same key for either direction of an edge. */
+function edgeKey(a: number, b: number): string {
+  return a < b ? `${a}-${b}` : `${b}-${a}`;
 }
 
 /** A vertex on the canvas: `z` is its depth (about [-1, 1]), `p` its perspective scale. */

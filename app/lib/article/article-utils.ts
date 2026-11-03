@@ -146,6 +146,15 @@ export function suggestSeriesDefaults(
   return suggestion;
 }
 
+/** A list page filtered to one tag, category or series. */
+export function taxonomyHref(
+  basePath: string,
+  key: "tag" | "category" | "series",
+  value: string,
+): string {
+  return `${basePath}?${key}=${encodeURIComponent(value)}`;
+}
+
 /** Existing params with `updates` applied; null or undefined removes a key. */
 export function buildArticleSearchUrl(
   basePath: string,

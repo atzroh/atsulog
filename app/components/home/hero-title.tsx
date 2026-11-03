@@ -1,9 +1,6 @@
 import { siteConfig } from "@/app/lib/site-config";
 import { CanvasSphere } from "@/app/components/home/canvas-sphere";
 
-/**
- * A simple, minimalist hero section with refined typography and a dynamic 3D icosphere background.
- */
 export function HeroTitle() {
   return (
     <section className="relative flex items-center justify-center py-20 md:py-[8.333rem] w-full overflow-hidden">

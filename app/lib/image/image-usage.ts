@@ -1,11 +1,15 @@
 import "server-only";
 
 import { getArticleContents } from "@/app/lib/article/article-repository";
+import { HASH_LENGTH } from "@/app/lib/image/image-store";
 
 export type ImageUser = { slug: string; title: string };
 
 /** "/images/<hash>" anywhere in a body; the extension does not matter. */
-const IMAGE_REFERENCE = /\/images\/([0-9a-f]{16})\b/g;
+const IMAGE_REFERENCE = new RegExp(
+  `/images/([0-9a-f]{${HASH_LENGTH}})\\b`,
+  "g",
+);
 
 /** Hash -> the articles whose body mentions it, drafts included. */
 export async function getImageUsers(): Promise<Map<string, ImageUser[]>> {

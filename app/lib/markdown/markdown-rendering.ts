@@ -21,6 +21,27 @@ import {
   linkCardUrlOf,
 } from "@/app/lib/link-card/link-card-utils";
 
+// --- Types ---
+
+/** A `##` or `###` heading, for the table of contents. */
+export type TocItem = { depth: 2 | 3; text: string; id: string };
+
+export type RenderedMarkdown = { html: string; toc: TocItem[] };
+
+type ProcessorOptions = {
+  katex?: KatexOptions;
+  /** Off for the feed: a reader has none of the CSS a card needs. */
+  linkCards?: boolean;
+  /** Off for the feed, where the `#` would show after every heading. */
+  headingLinks?: boolean;
+};
+
+// --- Constants ---
+
+const HEADING = /^h[1-6]$/;
+
+const CACHE_LIMIT = 64;
+
 // A paragraph that is nothing but a URL is drawn as the page it points at.
 // Done on mdast so the paragraph becomes the card itself, and so the test for
 // what counts is the one collectLinkCardUrls uses.
@@ -46,11 +67,6 @@ function remarkLinkCard() {
   };
 }
 
-/** A `##` or `###` heading, for the table of contents. */
-export type TocItem = { depth: 2 | 3; text: string; id: string };
-
-const HEADING = /^h[1-6]$/;
-
 function rehypeArticle({ headingLinks = true }: { headingLinks?: boolean }) {
   return (tree: Root, file: VFile) => {
     const baseUrl =
@@ -74,16 +90,26 @@ function rehypeArticle({ headingLinks = true }: { headingLinks?: boolean }) {
       alignToStyle(node);
       if (node.tagName === "table") parent.children[index] = wrapTable(node);
       if (HEADING.test(node.tagName)) {
-        const text = headingText(node.children).trim();
-        const id = slugger.slug(text);
-        node.properties.id = id;
-        if (node.tagName === "h2" || node.tagName === "h3") {
-          toc.push({ depth: node.tagName === "h2" ? 2 : 3, text, id });
-        }
-        if (headingLinks) node.children.push(headingLink(id));
+        anchorHeading(node, slugger, toc, headingLinks);
       }
     });
   };
+}
+
+/** Gives a heading its id, lists `##` and `###` in `toc`, and adds the `#` link. */
+function anchorHeading(
+  node: Element,
+  slugger: GithubSlugger,
+  toc: TocItem[],
+  headingLinks: boolean,
+) {
+  const text = headingText(node.children).trim();
+  const id = slugger.slug(text);
+  node.properties.id = id;
+  if (node.tagName === "h2" || node.tagName === "h3") {
+    toc.push({ depth: node.tagName === "h2" ? 2 : 3, text, id });
+  }
+  if (headingLinks) node.children.push(headingLink(id));
 }
 
 // KaTeX's MathML copy is skipped, or the formula would be read twice.
@@ -159,14 +185,6 @@ function wrapTable(table: Element): Element {
   };
 }
 
-type ProcessorOptions = {
-  katex?: KatexOptions;
-  /** Off for the feed: a reader has none of the CSS a card needs. */
-  linkCards?: boolean;
-  /** Off for the feed, where the `#` would show after every heading. */
-  headingLinks?: boolean;
-};
-
 function createProcessor({
   katex,
   linkCards = true,
@@ -194,10 +212,7 @@ const processor = createProcessor();
 let feedProcessor: Processor | undefined;
 
 // Cached per content: the article page renders on every request.
-const CACHE_LIMIT = 64;
 const cache = new Map<string, RenderedMarkdown>();
-
-export type RenderedMarkdown = { html: string; toc: TocItem[] };
 
 function render(
   processor: Processor,

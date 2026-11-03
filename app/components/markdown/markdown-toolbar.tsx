@@ -21,9 +21,6 @@ function Divider() {
   );
 }
 
-/**
- * Toolbar for Markdown syntax helpers.
- */
 export function MarkdownToolbar({
   onAction,
   onUploadClick,
@@ -85,9 +82,6 @@ export function MarkdownToolbar({
   );
 }
 
-/**
- * A toggle button to switch between Edit and Preview modes.
- */
 export function ModeToggle({
   mode,
   onToggle,

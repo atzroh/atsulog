@@ -7,9 +7,7 @@ type ArticleMetaProps = {
   className?: string;
 };
 
-/**
- * Displays article metadata (created and modified dates).
- */
+/** Created and modified dates. */
 export function ArticleMeta({ article, className = "" }: ArticleMetaProps) {
   const items = [
     {

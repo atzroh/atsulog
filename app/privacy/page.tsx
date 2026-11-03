@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
+import { PageHeading } from "@/app/components/ui/page-heading";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -31,9 +32,7 @@ export default function PrivacyPage() {
   return (
     <article className="py-10">
       <header className="mb-12">
-        <h1 className="text-3xl font-bold tracking-tight mb-4">
-          Privacy Policy
-        </h1>
+        <PageHeading className="mb-4">Privacy Policy</PageHeading>
       </header>
 
       <MarkdownRenderer content={content} />
