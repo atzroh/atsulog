@@ -1,6 +1,5 @@
-/** One link's Open Graph data, cached as data/link-cards/<hash>.json. */
+/** One link's Open Graph data, cached in data/link-cards.db. */
 export type LinkCard = {
-  /** The file name is a hash, so the URL is kept here. */
   url: string;
   /** "error" is a negative cache entry: a dead link must not cost a fetch twice. */
   status: "ok" | "error";

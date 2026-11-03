@@ -1,6 +1,10 @@
 import { siteConfig } from "@/app/lib/site-config";
 import { buildPageMetadata } from "@/app/lib/page-metadata";
-import { getPublicArticles } from "@/app/lib/article/article-repository";
+import {
+  getSiteStats,
+  getTaxonomies,
+  searchArticles,
+} from "@/app/lib/article/article-repository";
 import { RecentArticles } from "@/app/components/article/recent-articles";
 import { HeroTitle } from "@/app/components/home/hero-title";
 import { SiteStats } from "@/app/components/home/site-stats";
@@ -16,13 +20,20 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default async function Home() {
-  const articles = await getPublicArticles();
+  const taxonomies = await getTaxonomies("public");
+  const stats = await getSiteStats("public");
+  // The default order is newest first.
+  const { items: recentArticles } = await searchArticles(
+    {},
+    "public",
+    siteConfig.recentArticlesCount,
+  );
 
   return (
     <div className="space-y-16">
       <HeroTitle />
-      <SiteStats articles={articles} />
-      <RecentArticles articles={articles} />
+      <SiteStats taxonomies={taxonomies} stats={stats} />
+      <RecentArticles articles={recentArticles} />
     </div>
   );
 }

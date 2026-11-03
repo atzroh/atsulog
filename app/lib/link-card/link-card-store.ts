@@ -1,10 +1,6 @@
 import "server-only";
 
-import { createHash } from "node:crypto";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
-import path from "node:path";
-
-import { DATA_DIR, isNotFound } from "@/app/lib/fs-utils";
+import { getLinkCardDb } from "@/app/lib/db/db";
 import { fetchLinkCard } from "@/app/lib/link-card/link-card-fetch";
 import type {
   LinkCard,
@@ -12,8 +8,6 @@ import type {
 } from "@/app/lib/link-card/link-card-types";
 
 // --- Constants ---
-
-const LINK_CARDS_DIR = path.join(DATA_DIR, "link-cards");
 
 const OK_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 /** A dead link should cost one timeout a day, not one per view. */
@@ -39,7 +33,7 @@ const inFlight = new Map<string, Promise<LinkCard>>();
 export async function getLinkCards(urls: string[]): Promise<LinkCardMap> {
   if (urls.length === 0) return {};
 
-  const stored = await Promise.all(urls.map(readCard));
+  const stored = urls.map(readCard);
   const resolved = new Map<string, LinkCard>();
   const pending: Promise<void>[] = [];
 
@@ -75,8 +69,8 @@ function refresh(url: string): Promise<LinkCard> {
   if (running) return running;
 
   const task = fetchLinkCard(url)
-    .then(async (card) => {
-      await writeCard(card);
+    .then((card) => {
+      writeCard(card);
       return card;
     })
     .finally(() => inFlight.delete(url));
@@ -97,33 +91,29 @@ function settleWithin(tasks: Promise<unknown>[], ms: number): Promise<unknown> {
 
 // --- Storage ---
 
-async function readCard(url: string): Promise<LinkCard | null> {
+function readCard(url: string): LinkCard | null {
   try {
-    const content = await readFile(filePathFor(url), "utf8");
-    const card = JSON.parse(content) as LinkCard;
+    const row = getLinkCardDb()
+      .prepare("SELECT card FROM link_cards WHERE url = ?")
+      .get(url) as { card: string } | undefined;
+    if (!row) return null;
+    const card = JSON.parse(row.card) as LinkCard;
     return card.status === "ok" || card.status === "error" ? card : null;
   } catch (error: unknown) {
     // Losing an entry only costs a fetch, so nothing here is fatal.
-    if (!isNotFound(error)) {
-      console.error(`Failed to read the link card cache for ${url}`, error);
-    }
+    console.error(`Failed to read the link card cache for ${url}`, error);
     return null;
   }
 }
 
-async function writeCard(card: LinkCard): Promise<void> {
-  const filePath = filePathFor(card.url);
-  // The article page reads these on every request, so never leave a torn file.
-  const temporaryPath = `${filePath}.${process.pid}.tmp`;
-
+function writeCard(card: LinkCard): void {
   try {
-    await mkdir(LINK_CARDS_DIR, { recursive: true });
-    await writeFile(
-      temporaryPath,
-      `${JSON.stringify(card, null, 2)}\n`,
-      "utf8",
-    );
-    await rename(temporaryPath, filePath);
+    getLinkCardDb()
+      .prepare(
+        `INSERT INTO link_cards (url, card) VALUES (?, ?)
+         ON CONFLICT (url) DO UPDATE SET card = excluded.card`,
+      )
+      .run(card.url, JSON.stringify(card));
   } catch (error: unknown) {
     console.error(`Failed to cache the link card for ${card.url}`, error);
   }
@@ -140,10 +130,4 @@ function isFresh(card: LinkCard): boolean {
         : ERROR_TTL_MS;
   const age = Date.now() - Date.parse(card.fetchedAt);
   return Number.isFinite(age) && age < ttl;
-}
-
-/** A URL is no file name, and a hash keeps one entry per link. */
-function filePathFor(url: string): string {
-  const name = createHash("sha256").update(url).digest("hex").slice(0, 16);
-  return path.join(LINK_CARDS_DIR, `${name}.json`);
 }

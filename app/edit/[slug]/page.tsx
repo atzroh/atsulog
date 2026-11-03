@@ -5,13 +5,13 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import {
   getArticleBySlug,
   getArticles,
+  getTaxonomies,
   updateArticle,
 } from "@/app/lib/article/article-repository";
 import { requireAuth } from "@/app/lib/auth/auth";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import {
   applyArticleEdit,
-  getTaxonomies,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
 
@@ -30,7 +30,7 @@ export default async function EditArticlePage({
     notFound();
   }
 
-  const taxonomies = getTaxonomies(articles);
+  const taxonomies = await getTaxonomies("all");
 
   async function handleSave(formData: FormData) {
     "use server";

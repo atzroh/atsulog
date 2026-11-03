@@ -1,7 +1,9 @@
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import type { Metadata } from "next";
-import { getPublicArticles } from "@/app/lib/article/article-repository";
-import { getTaxonomies, searchArticles } from "@/app/lib/article/article-utils";
+import {
+  getTaxonomies,
+  searchArticles,
+} from "@/app/lib/article/article-repository";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
 import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 import { siteConfig } from "@/app/lib/site-config";
@@ -23,10 +25,12 @@ export default async function ArticlesPage({
 }) {
   const resolvedSearchParams = await searchParams;
 
-  const articles = await getPublicArticles();
-
-  const taxonomies = getTaxonomies(articles);
-  const sortedArticles = searchArticles(articles, resolvedSearchParams);
+  const taxonomies = await getTaxonomies("public");
+  const page = await searchArticles(
+    resolvedSearchParams,
+    "public",
+    siteConfig.articlesPerPage,
+  );
 
   return (
     <main>
@@ -35,7 +39,7 @@ export default async function ArticlesPage({
         candidates={taxonomies}
       />
       <PaginatedArticleList
-        articles={sortedArticles}
+        page={page}
         searchParams={resolvedSearchParams}
       />
     </main>

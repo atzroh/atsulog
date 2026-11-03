@@ -1,14 +1,13 @@
-import { getArticles } from "@/app/lib/article/article-repository";
-import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
-import { DraftArticleList } from "@/app/components/editor/draft-article-list";
 import {
-  filterArticles,
   getTaxonomies,
   searchArticles,
-} from "@/app/lib/article/article-utils";
+} from "@/app/lib/article/article-repository";
+import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
+import { DraftArticleList } from "@/app/components/editor/draft-article-list";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
 import { CreateArticleSection } from "@/app/components/editor/create-article-section";
 import type { ArticleSearchParams } from "@/app/lib/article/article-types";
+import { siteConfig } from "@/app/lib/site-config";
 
 export default async function EditDashboardPage({
   searchParams,
@@ -17,16 +16,16 @@ export default async function EditDashboardPage({
 }) {
   const resolvedSearchParams = await searchParams;
 
-  const articles = await getArticles();
+  const taxonomies = await getTaxonomies("all");
 
-  const taxonomies = getTaxonomies(articles);
-
-  const drafts = filterArticles(articles, resolvedSearchParams).filter(
-    (a) => !a.published,
-  );
-  const sortedPublished = searchArticles(
-    articles.filter((a) => a.published),
+  const { items: drafts } = await searchArticles(
     resolvedSearchParams,
+    "drafts",
+  );
+  const published = await searchArticles(
+    resolvedSearchParams,
+    "published",
+    siteConfig.articlesPerPage,
   );
 
   return (
@@ -43,7 +42,7 @@ export default async function EditDashboardPage({
         <DraftArticleList articles={drafts} />
 
         <PaginatedArticleList
-          articles={sortedPublished}
+          page={published}
           searchParams={resolvedSearchParams}
           basePath="/edit"
         />

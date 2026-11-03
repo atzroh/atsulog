@@ -3,12 +3,12 @@ import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import {
   createArticle,
   getArticles,
+  getTaxonomies,
 } from "@/app/lib/article/article-repository";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { requireAuth } from "@/app/lib/auth/auth";
 import {
   buildNewArticle,
-  getTaxonomies,
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
 
@@ -26,7 +26,7 @@ const INITIAL_METADATA: ArticleMetadata = {
 
 export default async function NewArticlePage() {
   const articles = await getArticles();
-  const taxonomies = getTaxonomies(articles);
+  const taxonomies = await getTaxonomies("all");
 
   async function handleCreate(formData: FormData) {
     "use server";

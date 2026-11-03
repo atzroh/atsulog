@@ -2,29 +2,23 @@ import { ArticleList } from "@/app/components/article/article-list";
 import { ArticleSortControls } from "@/app/components/article/article-sort-controls";
 import { PaginationNav } from "@/app/components/article/pagination-nav";
 import type {
-  ArticleMetadata,
+  ArticlePage,
   ArticleSearchParams,
 } from "@/app/lib/article/article-types";
-import { paginate } from "@/app/lib/article/article-utils";
-import { siteConfig } from "@/app/lib/site-config";
 
 type PaginatedArticleListProps = {
-  articles: ArticleMetadata[];
+  page: ArticlePage;
   searchParams: ArticleSearchParams;
   basePath?: string;
 };
 
 /** Renders the article list with its heading, sort controls and pagination. */
 export function PaginatedArticleList({
-  articles,
+  page,
   searchParams,
   basePath = "/articles",
 }: PaginatedArticleListProps) {
-  const {
-    pageItems: pagedArticles,
-    currentPage,
-    totalPages,
-  } = paginate(articles, searchParams.page, siteConfig.articlesPerPage);
+  const { items: pagedArticles, currentPage, totalPages } = page;
 
   return (
     <section>

@@ -102,103 +102,17 @@ export function getSortConfig(params: ArticleSearchParams): {
   return { field, order, sortBy };
 }
 
-/** The articles matching `params`, in the order they ask for. */
-export function searchArticles(
-  articles: ArticleMetadata[],
-  params: ArticleSearchParams,
-): ArticleMetadata[] {
-  const { field, order } = getSortConfig(params);
-  return sortArticles(filterArticles(articles, params), field, order);
-}
-
 /** The page `pageParam` asks for, clamped to the pages there are (at least one). */
-export function paginate<T>(
-  items: T[],
+export function resolvePage(
   pageParam: string | string[] | undefined,
+  total: number,
   perPage: number,
-): { pageItems: T[]; currentPage: number; totalPages: number } {
+): { currentPage: number; totalPages: number } {
   const rawPage = Number.parseInt(getParam(pageParam, "1"), 10);
   const requestedPage = rawPage > 0 ? rawPage : 1;
 
-  const totalPages = Math.max(1, Math.ceil(items.length / perPage));
-  const currentPage = Math.min(requestedPage, totalPages);
-  const startIndex = (currentPage - 1) * perPage;
-
-  return {
-    pageItems: items.slice(startIndex, startIndex + perPage),
-    currentPage,
-    totalPages,
-  };
-}
-
-export function sortArticles(
-  articles: ArticleMetadata[],
-  field: keyof ArticleMetadata = "createdAt",
-  order: SortOrder = "desc",
-): ArticleMetadata[] {
-  const isAsc = order === "asc";
-  return [...articles].sort((a, b) => {
-    let aVal = a[field];
-    let bVal = b[field];
-
-    if (field === "createdAt" || field === "modifiedAt") {
-      aVal = Date.parse(aVal as string);
-      bVal = Date.parse(bVal as string);
-    }
-
-    // Missing values go last in either order.
-    if (aVal === null || aVal === undefined) return 1;
-    if (bVal === null || bVal === undefined) return -1;
-
-    if (aVal === bVal) return 0;
-    const comparison = aVal < bVal ? -1 : 1;
-    return isAsc ? comparison : -comparison;
-  });
-}
-
-/**
- * Sorted unique tags, categories and series, plus launchedAt (the oldest
- * createdAt).
- */
-export function getTaxonomies(articles: ArticleMetadata[]) {
-  const tagsSet = new Set<string>();
-  const categorySet = new Set<string>();
-  const seriesSet = new Set<string>();
-  let oldestDate: Date | null = null;
-  let launchedAt: string | null = null;
-
-  for (const article of articles) {
-    article.tags.forEach((t) => tagsSet.add(t));
-    categorySet.add(article.category);
-    if (article.series) seriesSet.add(article.series);
-
-    const createdAt = new Date(article.createdAt);
-    if (!oldestDate || createdAt < oldestDate) {
-      oldestDate = createdAt;
-      launchedAt = article.createdAt;
-    }
-  }
-
-  return {
-    tags: Array.from(tagsSet).sort(),
-    categories: Array.from(categorySet).sort(),
-    series: Array.from(seriesSet).sort(),
-    launchedAt,
-  };
-}
-
-export function getNextSeriesOrder(
-  seriesName: string,
-  articles: ArticleMetadata[],
-): number {
-  const seriesArticles = articles.filter(
-    (article) => article.series === seriesName,
-  );
-  const maxOrder = seriesArticles.reduce(
-    (max, a) => Math.max(max, a.seriesOrder ?? -1),
-    -1,
-  );
-  return maxOrder + 1;
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  return { currentPage: Math.min(requestedPage, totalPages), totalPages };
 }
 
 /**
@@ -229,47 +143,6 @@ export function suggestSeriesDefaults(
     }
   }
   return suggestion;
-}
-
-export function filterArticles(
-  articles: ArticleMetadata[],
-  params: ArticleSearchParams,
-): ArticleMetadata[] {
-  const query = getParam(params.keyword).toLowerCase();
-  const tag = getParam(params.tag).toLowerCase();
-  const series = getParam(params.series).toLowerCase();
-  const category = getParam(params.category).toLowerCase();
-
-  if (!query && !tag && !series && !category) {
-    return articles;
-  }
-
-  return articles.filter((article) => {
-    if (query) {
-      const matches =
-        article.title.toLowerCase().includes(query) ||
-        article.slug.toLowerCase().includes(query) ||
-        article.category.toLowerCase().includes(query) ||
-        article.series?.toLowerCase().includes(query) ||
-        article.tags.some((t) => t.toLowerCase().includes(query));
-      if (!matches) return false;
-    }
-
-    // Comma-separated; an article must carry every tag.
-    if (tag) {
-      const searchTags = tag
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean);
-      const articleTags = article.tags.map((t) => t.toLowerCase());
-      if (!searchTags.every((st) => articleTags.includes(st))) return false;
-    }
-
-    if (series && article.series?.toLowerCase() !== series) return false;
-    if (category && article.category.toLowerCase() !== category) return false;
-
-    return true;
-  });
 }
 
 /** Existing params with `updates` applied; null or undefined removes a key. */

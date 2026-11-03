@@ -1,26 +1,10 @@
 import { NextResponse } from "next/server";
-import {
-  getArticleBySlug,
-  getPublicArticles,
-} from "@/app/lib/article/article-repository";
-import type { ArticleDetail } from "@/app/lib/article/article-types";
-import { sortArticles } from "@/app/lib/article/article-utils";
+import { getLatestArticleDetails } from "@/app/lib/article/article-repository";
 import { buildAtomFeed } from "@/app/lib/feed/atom-feed";
 import { siteConfig } from "@/app/lib/site-config";
 
 export async function GET() {
-  const articles = await getPublicArticles();
-  const latest = sortArticles(articles, "createdAt").slice(
-    0,
-    siteConfig.feedEntriesCount,
-  );
-
-  const details = await Promise.all(
-    latest.map((article) => getArticleBySlug(article.slug)),
-  );
-  const entries = details.filter(
-    (detail): detail is ArticleDetail => detail !== null,
-  );
+  const entries = await getLatestArticleDetails(siteConfig.feedEntriesCount);
 
   return new NextResponse(buildAtomFeed(entries), {
     headers: { "Content-Type": "application/atom+xml; charset=utf-8" },

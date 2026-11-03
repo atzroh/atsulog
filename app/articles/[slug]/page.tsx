@@ -4,8 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
 import {
-  getArticles,
   getArticleBySlug,
+  getSeriesNeighbors,
 } from "@/app/lib/article/article-repository";
 import { isAuthenticated } from "@/app/lib/auth/auth";
 import { getLinkCards } from "@/app/lib/link-card/link-card-store";
@@ -46,7 +46,6 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const articles = await getArticles();
   const articleDetail = await getArticleBySlug(slug);
 
   if (!articleDetail || !articleDetail.metadata.published) {
@@ -54,6 +53,7 @@ export default async function ArticlePage({
   }
 
   const { metadata: article, content } = articleDetail;
+  const neighbors = await getSeriesNeighbors(article);
 
   const authenticated = await isAuthenticated();
 
@@ -77,7 +77,7 @@ export default async function ArticlePage({
       </div>
 
       <div className="mt-16">
-        <SeriesNavigation article={article} articles={articles} />
+        {neighbors && <SeriesNavigation {...neighbors} />}
 
         <nav
           aria-label="Article navigation"

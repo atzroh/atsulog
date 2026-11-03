@@ -1,26 +1,19 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { sortArticles } from "@/app/lib/article/article-utils";
 import type { ArticleMetadata } from "@/app/lib/article/article-types";
 import { ArticleList } from "@/app/components/article/article-list";
 
-import { siteConfig } from "@/app/lib/site-config";
-
 /**
- * Renders a list of the most recent articles.
+ * Renders a list of the most recent articles, newest first.
  */
 export function RecentArticles({ articles }: { articles: ArticleMetadata[] }) {
-  const recentArticles = sortArticles(articles, "createdAt").slice(
-    0,
-    siteConfig.recentArticlesCount,
-  );
 
   return (
     <section>
       <h1 className="text-3xl font-bold tracking-tight mb-8">
         Recent Articles
       </h1>
-      <ArticleList articles={recentArticles} />
+      <ArticleList articles={articles} />
       <div className="mt-12">
         <Link
           href="/articles"

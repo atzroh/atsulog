@@ -2,9 +2,11 @@
 
 import { useSyncExternalStore } from "react";
 import { Newspaper, BookOpen, Folder, Tag, Calendar } from "lucide-react";
-import { getTaxonomies } from "@/app/lib/article/article-utils";
 import { siteConfig } from "@/app/lib/site-config";
-import type { ArticleMetadata } from "@/app/lib/article/article-types";
+import type {
+  SiteStatsData,
+  Taxonomies,
+} from "@/app/lib/article/article-types";
 
 /** Latest clock reading shared by every subscriber. Empty until the first tick. */
 let clockSnapshot = "";
@@ -38,11 +40,15 @@ function useCurrentTime() {
 }
 
 /** Site statistics styled as Zsh shell output. */
-export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
+export function SiteStats({
+  taxonomies,
+  stats: { articleCount, launchedAt },
+}: {
+  taxonomies: Taxonomies;
+  stats: SiteStatsData;
+}) {
   const currentTime = useCurrentTime();
 
-  const taxonomies = getTaxonomies(articles);
-  const { launchedAt } = taxonomies;
   const commandName = siteConfig.title.toLowerCase();
 
   const stats = [
@@ -55,7 +61,7 @@ export function SiteStats({ articles }: { articles: ArticleMetadata[] }) {
           },
         ]
       : []),
-    { label: "articles", value: articles.length, icon: Newspaper },
+    { label: "articles", value: articleCount, icon: Newspaper },
     { label: "series", value: taxonomies.series.length, icon: BookOpen },
     { label: "categories", value: taxonomies.categories.length, icon: Folder },
     { label: "tags", value: taxonomies.tags.length, icon: Tag },

@@ -1,32 +1,16 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { ArticleMetadata } from "@/app/lib/article/article-types";
-
-type SeriesNavigationProps = {
-  articles: ArticleMetadata[];
-  article: ArticleMetadata;
-};
+import type {
+  ArticleMetadata,
+  SeriesNeighbors,
+} from "@/app/lib/article/article-types";
 
 /** Links to the previous and next published articles in the series, by seriesOrder. */
-export function SeriesNavigation({ articles, article }: SeriesNavigationProps) {
-  const { series, seriesOrder, slug } = article;
-
-  if (!series || seriesOrder === null) {
-    return null;
-  }
-
-  const seriesArticles = articles
-    .filter((a) => a.series === series && a.published)
-    .sort((a, b) => (a.seriesOrder ?? 0) - (b.seriesOrder ?? 0));
-
-  const currentIndex = seriesArticles.findIndex((a) => a.slug === slug);
-  const previousInSeries =
-    currentIndex > 0 ? seriesArticles[currentIndex - 1] : null;
-  const nextInSeries =
-    currentIndex < seriesArticles.length - 1
-      ? seriesArticles[currentIndex + 1]
-      : null;
-
+export function SeriesNavigation({
+  series,
+  previous: previousInSeries,
+  next: nextInSeries,
+}: SeriesNeighbors) {
   if (!previousInSeries && !nextInSeries) {
     return null;
   }

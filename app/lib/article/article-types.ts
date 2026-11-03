@@ -15,6 +15,12 @@ export type ArticleDetail = {
   content: string;
 };
 
+/**
+ * Which articles a query covers. "public" is what visitors see: published,
+ * without the about page.
+ */
+export type ArticleScope = "public" | "published" | "drafts" | "all";
+
 export type SortBy = "created" | "modified";
 
 export type SortOrder = "asc" | "desc";
@@ -38,4 +44,27 @@ export type TaxonomyCandidates = {
   tags?: string[];
   categories?: string[];
   series?: string[];
+};
+
+/** Sorted unique tags, categories and series. */
+export type Taxonomies = Required<TaxonomyCandidates>;
+
+/** Article count, plus launchedAt (the oldest createdAt). */
+export type SiteStatsData = {
+  articleCount: number;
+  launchedAt: string | null;
+};
+
+/** One page of search results. */
+export type ArticlePage = {
+  items: ArticleMetadata[];
+  currentPage: number;
+  totalPages: number;
+};
+
+/** The published neighbours of an article within its series. */
+export type SeriesNeighbors = {
+  series: string;
+  previous: ArticleMetadata | null;
+  next: ArticleMetadata | null;
 };
