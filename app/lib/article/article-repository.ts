@@ -18,10 +18,30 @@ import {
   getParam,
   getSortConfig,
   resolvePage,
+  splitTags,
 } from "@/app/lib/article/article-utils";
 import { formatDateTimeCompact } from "@/app/lib/date-format";
 import { getDb, transaction } from "@/app/lib/db/db";
 import { siteConfig } from "@/app/lib/site-config";
+
+// --- Types ---
+
+type ArticleRow = {
+  slug: string;
+  title: string;
+  category: string;
+  series: string | null;
+  series_order: number | null;
+  tags: string;
+  created_at: string;
+  modified_at: string;
+  published: number;
+};
+
+type DetailRow = ArticleRow & { content: string };
+
+/** A WHERE clause and its positional parameters. */
+type Condition = { sql: string; params: SQLInputValue[] };
 
 // --- Constants ---
 
@@ -44,23 +64,6 @@ const SORT_COLUMNS: Partial<Record<keyof ArticleMetadata, string>> = {
   modifiedAt: "a.modified_at",
   seriesOrder: "a.series_order",
 };
-
-type ArticleRow = {
-  slug: string;
-  title: string;
-  category: string;
-  series: string | null;
-  series_order: number | null;
-  tags: string;
-  created_at: string;
-  modified_at: string;
-  published: number;
-};
-
-type DetailRow = ArticleRow & { content: string };
-
-/** A WHERE clause and its positional parameters. */
-type Condition = { sql: string; params: SQLInputValue[] };
 
 // --- Public API ---
 
@@ -223,18 +226,14 @@ export async function updateArticle(
       throw new Error(`Article not found: ${article.slug}`);
     }
 
-    const updated = {
+    const resolved = {
       ...article,
       seriesOrder: resolveSeriesOrder(db, article, existing),
     };
-
-    // Draft to published: re-slugged and re-dated to the moment of publishing.
-    if (!existing.published && updated.published) {
-      const now = new Date();
-      updated.slug = formatDateTimeCompact(now);
-      updated.createdAt = now.toISOString();
-      updated.modifiedAt = updated.createdAt;
-    }
+    const updated =
+      !existing.published && resolved.published
+        ? publishedNow(resolved)
+        : resolved;
 
     // Tags go first and come back last, so the slug can change under them.
     db.prepare("DELETE FROM article_tags WHERE slug = ?").run(existing.slug);
@@ -287,11 +286,7 @@ function searchConditions(params: ArticleSearchParams): Condition[] {
   }
 
   // Comma-separated; an article must carry every tag.
-  const searchTags = tag
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean);
-  for (const searchTag of searchTags) {
+  for (const searchTag of splitTags(tag)) {
     conditions.push({
       sql: `a.slug IN (SELECT slug FROM article_tags
         WHERE tag = ? COLLATE NOCASE)`,
@@ -360,6 +355,18 @@ function resolveSeriesOrder(
     )
     .get(article.series, article.slug) as { next: number };
   return next;
+}
+
+/** Draft to published: re-slugged and re-dated to the moment of publishing. */
+function publishedNow(article: ArticleMetadata): ArticleMetadata {
+  const now = new Date();
+  const createdAt = now.toISOString();
+  return {
+    ...article,
+    slug: formatDateTimeCompact(now),
+    createdAt,
+    modifiedAt: createdAt,
+  };
 }
 
 /** A tag given twice is kept once. */

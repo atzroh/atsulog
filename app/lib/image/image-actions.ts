@@ -3,7 +3,7 @@
 import { writeFile, mkdir, access } from "node:fs/promises";
 import { join, parse } from "node:path";
 import { requireAuth } from "@/app/lib/auth/auth";
-import { DATA_DIR } from "@/app/lib/fs-utils";
+import { DATA_DIR } from "@/app/lib/db/db";
 import {
   formatDateCompact,
   formatDateTimeCompact,

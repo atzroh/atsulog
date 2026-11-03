@@ -22,21 +22,21 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const detail = await getArticleBySlug(slug);
 
   // A draft must not leak its title, even though the page itself 404s.
-  if (!article || !article.metadata.published) {
+  if (!detail || !detail.metadata.published) {
     return {
       title: `Article Not Found | ${siteConfig.title}`,
     };
   }
 
   return buildPageMetadata({
-    title: article.metadata.title,
-    description: `Read "${article.metadata.title}" on ${siteConfig.title}.`,
+    title: detail.metadata.title,
+    description: `Read "${detail.metadata.title}" on ${siteConfig.title}.`,
     url: `${siteConfig.url}/articles/${slug}`,
     type: "article",
-    publishedTime: article.metadata.createdAt,
+    publishedTime: detail.metadata.createdAt,
   });
 }
 
@@ -46,13 +46,13 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const articleDetail = await getArticleBySlug(slug);
+  const detail = await getArticleBySlug(slug);
 
-  if (!articleDetail || !articleDetail.metadata.published) {
+  if (!detail || !detail.metadata.published) {
     notFound();
   }
 
-  const { metadata: article, content } = articleDetail;
+  const { metadata: article, content } = detail;
   const neighbors = await getSeriesNeighbors(article);
 
   const authenticated = await isAuthenticated();

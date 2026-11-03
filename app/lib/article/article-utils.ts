@@ -6,6 +6,8 @@ import type {
 } from "@/app/lib/article/article-types";
 import { formatDateTimeCompact } from "@/app/lib/date-format";
 
+type ArticleForm = ReturnType<typeof parseArticleForm>;
+
 /** The first value of a search parameter. */
 export function getParam(
   param: string | string[] | undefined,
@@ -15,6 +17,14 @@ export function getParam(
   return param ?? defaultValue;
 }
 
+/** Comma-separated tags, trimmed, without empties. */
+export function splitTags(value: string): string[] {
+  return value
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
+
 /** Reads the fields shared by the create and edit forms. */
 export function parseArticleForm(formData: FormData) {
   const raw = Object.fromEntries(formData) as Record<string, string>;
@@ -22,16 +32,11 @@ export function parseArticleForm(formData: FormData) {
     title: raw.title,
     category: raw.category,
     series: raw.series.trim() || null,
-    tags: raw.tags
-      .split(",")
-      .map((t) => t.trim())
-      .filter(Boolean),
+    tags: splitTags(raw.tags),
     content: raw.content,
     isPublished: raw.intent === "publish",
   };
 }
-
-type ArticleForm = ReturnType<typeof parseArticleForm>;
 
 /** A new article from the form, created at `now`. */
 export function buildNewArticle(
@@ -81,17 +86,13 @@ export function getSortConfig(params: ArticleSearchParams): {
   const orderParam = getParam(params.order) as SortOrder;
   const hasSeries = !!getParam(params.series);
 
-  const configMap: Record<
-    string,
-    { field: keyof ArticleMetadata; sortBy: SortBy }
-  > = {
-    modified: { field: "modifiedAt", sortBy: "modified" },
-  };
-
-  const { field, sortBy } = configMap[sortByParam] ?? {
-    field: hasSeries && !sortByParam ? "seriesOrder" : "createdAt",
-    sortBy: "created",
-  };
+  const sortBy: SortBy = sortByParam === "modified" ? "modified" : "created";
+  const field: keyof ArticleMetadata =
+    sortBy === "modified"
+      ? "modifiedAt"
+      : hasSeries && !sortByParam
+        ? "seriesOrder"
+        : "createdAt";
 
   // Modified is always descending; a series reads oldest first.
   const order =

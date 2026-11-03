@@ -11,34 +11,6 @@ import type {
 /** Latest clock reading shared by every subscriber. Empty until the first tick. */
 let clockSnapshot = "";
 
-/** Subscribes to the wall clock, notifying React only when the displayed time changes. */
-function subscribeToClock(onChange: () => void) {
-  const tick = () => {
-    const next = new Date().toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    if (next === clockSnapshot) return;
-    clockSnapshot = next;
-    onChange();
-  };
-  tick();
-  const timer = setInterval(tick, 1000);
-  return () => clearInterval(timer);
-}
-
-/**
- * The current time as HH:MM. Empty on the server and during hydration so the
- * markup stays identical on both sides.
- */
-function useCurrentTime() {
-  return useSyncExternalStore(
-    subscribeToClock,
-    () => clockSnapshot,
-    () => "",
-  );
-}
-
 /** Site statistics styled as Zsh shell output. */
 export function SiteStats({
   taxonomies,
@@ -107,4 +79,32 @@ export function SiteStats({
       </div>
     </section>
   );
+}
+
+/**
+ * The current time as HH:MM. Empty on the server and during hydration so the
+ * markup stays identical on both sides.
+ */
+function useCurrentTime() {
+  return useSyncExternalStore(
+    subscribeToClock,
+    () => clockSnapshot,
+    () => "",
+  );
+}
+
+/** Subscribes to the wall clock, notifying React only when the displayed time changes. */
+function subscribeToClock(onChange: () => void) {
+  const tick = () => {
+    const next = new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    if (next === clockSnapshot) return;
+    clockSnapshot = next;
+    onChange();
+  };
+  tick();
+  const timer = setInterval(tick, 1000);
+  return () => clearInterval(timer);
 }
