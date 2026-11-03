@@ -27,11 +27,6 @@ function formatZoned(
   return fields.map((field) => values.get(field) ?? "").join("");
 }
 
-/** YYYYMMDD. */
-export function formatDateCompact(date: Date = new Date()): string {
-  return formatZoned(date, ["year", "month", "day"]);
-}
-
 /** YYYYMMDDHHMMSS; also the slug a draft gets when it is published. */
 export function formatDateTimeCompact(date: Date = new Date()): string {
   return formatZoned(date, [

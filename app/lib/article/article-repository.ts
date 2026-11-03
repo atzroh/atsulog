@@ -131,6 +131,18 @@ export async function getLatestArticleDetails(
   return rows.map(toDetail);
 }
 
+/** Every article's body, drafts included; for finding unused images. */
+export async function getArticleContents(): Promise<
+  { slug: string; title: string; content: string }[]
+> {
+  await connection();
+  const rows = getDb()
+    .prepare("SELECT slug, title, content FROM articles")
+    .all() as { slug: string; title: string; content: string }[];
+  // Rows have a null prototype, which Client Components reject.
+  return rows.map(({ slug, title, content }) => ({ slug, title, content }));
+}
+
 /** Tags, categories and series in `scope`. */
 export async function getTaxonomies(scope: ArticleScope): Promise<Taxonomies> {
   await connection();

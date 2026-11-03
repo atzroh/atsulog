@@ -110,7 +110,7 @@ export function useMarkdownField({
         const formData = new FormData();
         formData.append("image", file);
         const result = await uploadImageAction(formData);
-        insertMarkdown(`![${escapeAltText(result.name)}](${result.url})`);
+        insertMarkdown(`![${escapeAltText(result.alt)}](${result.url})`);
       } catch (error) {
         console.error("Upload failed:", error);
         alert("Failed to upload image.");

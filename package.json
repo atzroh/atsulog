@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:restore": "rm -f data/articles.db data/articles.db-wal data/articles.db-shm && sqlite3 data/articles.db < data/articles.sql"
+    "db:restore": "rm -f data/articles.db data/articles.db-wal data/articles.db-shm && sqlite3 data/articles.db < data/articles.sql && rm -f data/images.db data/images.db-wal data/images.db-shm && sqlite3 data/images.db < data/images.sql"
   },
   "dependencies": {
     "@next/third-parties": "^16.4.0",

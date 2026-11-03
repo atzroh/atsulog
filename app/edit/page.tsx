@@ -6,6 +6,7 @@ import { PaginatedArticleList } from "@/app/components/article/paginated-article
 import { DraftArticleList } from "@/app/components/editor/draft-article-list";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
 import { CreateArticleSection } from "@/app/components/editor/create-article-section";
+import { ImagesSection } from "@/app/components/editor/images-section";
 import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 import { siteConfig } from "@/app/lib/site-config";
 
@@ -31,6 +32,8 @@ export default async function EditDashboardPage({
   return (
     <main className="space-y-12">
       <CreateArticleSection />
+
+      <ImagesSection />
 
       <ArticleSearchForm
         searchParams={resolvedSearchParams}

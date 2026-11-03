@@ -4,7 +4,7 @@ import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
-/** Where the databases and uploaded images live. */
+/** Where the databases live. */
 export const DATA_DIR = path.join(process.cwd(), "data");
 
 const ARTICLES_SCHEMA = `
@@ -35,6 +35,15 @@ CREATE TABLE IF NOT EXISTS link_cards (
 );
 `;
 
+const IMAGES_SCHEMA = `
+CREATE TABLE IF NOT EXISTS images (
+  hash       TEXT PRIMARY KEY,
+  mime_type  TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  data       BLOB NOT NULL
+);
+`;
+
 /** Survives dev HMR, which would otherwise open a connection per reload. */
 const globalForDb = globalThis as typeof globalThis & {
   databases?: Map<string, DatabaseSync>;
@@ -46,6 +55,10 @@ export function getDb(): DatabaseSync {
 
 export function getLinkCardDb(): DatabaseSync {
   return openDatabase("link-cards.db", LINK_CARDS_SCHEMA);
+}
+
+export function getImageDb(): DatabaseSync {
+  return openDatabase("images.db", IMAGES_SCHEMA);
 }
 
 /** Runs `task` in a write transaction, rolling back if it throws. */

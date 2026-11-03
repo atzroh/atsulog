@@ -1,20 +1,16 @@
 "use server";
 
-import { writeFile, mkdir, access } from "node:fs/promises";
-import { join, parse } from "node:path";
+import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/app/lib/auth/auth";
-import { DATA_DIR } from "@/app/lib/db/db";
+import { normalizeMimeType } from "@/app/lib/image/image-mime";
 import {
-  formatDateCompact,
-  formatDateTimeCompact,
-} from "@/app/lib/date-format";
-import { sanitizeFileName } from "@/app/lib/image/image-file-name";
-import { extensionForMimeType } from "@/app/lib/image/image-mime";
+  deleteImage,
+  isImageHash,
+  saveImage,
+} from "@/app/lib/image/image-store";
+import { getImageUsers } from "@/app/lib/image/image-usage";
 
-/**
- * Saves the editor's upload under data/images/YYYYMMDD/, with a name that never
- * breaks a Markdown URL. Returns the URL and the original name for alt text.
- */
+/** Stores the editor's upload in images.db; returns its URL and alt text. */
 export async function uploadImageAction(formData: FormData) {
   await requireAuth();
 
@@ -23,42 +19,30 @@ export async function uploadImageAction(formData: FormData) {
     throw new Error("No file provided");
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-
-  const dateDir = formatDateCompact();
-  const uploadDir = join(DATA_DIR, "images", dateDir);
-
-  try {
-    await mkdir(uploadDir, { recursive: true });
-  } catch {
-    // A real failure surfaces at writeFile.
+  // Stored as given and served back as is, so only images get in.
+  const mimeType = normalizeMimeType(file.type);
+  if (!mimeType.startsWith("image/")) {
+    throw new Error("Not an image");
   }
 
-  // From the MIME type, not the name: path.parse("shot.png (1)") gives ext
-  // ".png (1)", whose space would break the Markdown URL.
-  const ext = `.${extensionForMimeType(file.type)}`;
-  // A timestamp when nothing survives sanitizing.
-  const safeName =
-    sanitizeFileName(parse(file.name).name) || formatDateTimeCompact();
-  let finalFileName = `${safeName}${ext}`;
-  let counter = 1;
+  const data = new Uint8Array(await file.arrayBuffer());
+  const { hash, url } = saveImage(data, mimeType);
 
-  while (true) {
-    const filePath = join(uploadDir, finalFileName);
-    try {
-      await access(filePath);
-      finalFileName = `${safeName}-${counter}${ext}`;
-      counter++;
-    } catch {
-      break;
-    }
+  // The hash, like the URL, so no original file name gets into an article.
+  return { url, alt: hash };
+}
+
+/** Deletes an image no article mentions; a used one is kept. */
+export async function deleteImageAction(hash: string) {
+  await requireAuth();
+
+  if (!isImageHash(hash)) {
+    throw new Error("Invalid image hash");
+  }
+  if ((await getImageUsers()).has(hash)) {
+    throw new Error("Image is still used by an article");
   }
 
-  const finalPath = join(uploadDir, finalFileName);
-  await writeFile(finalPath, buffer);
-
-  return {
-    url: `/images/${dateDir}/${finalFileName}`,
-    name: file.name,
-  };
+  deleteImage(hash);
+  revalidatePath("/edit/images");
 }
