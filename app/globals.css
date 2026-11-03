@@ -84,6 +84,24 @@ body {
       @apply text-base font-bold mt-7 mb-2;
     }
 
+    /* Clears the sticky header when a heading is jumped to. */
+    & :is(h1, h2, h3, h4, h5, h6) {
+      @apply scroll-mt-20;
+    }
+    /* The `#` after a heading, shown on hover; always there on touch screens. */
+    & .heading-link {
+      @apply ml-2 font-normal text-gray-300 no-underline opacity-0 transition-opacity hover:text-sky-600;
+    }
+    & :is(h1, h2, h3, h4, h5, h6):hover .heading-link,
+    & .heading-link:focus-visible {
+      @apply opacity-100;
+    }
+    @media (hover: none) {
+      & .heading-link {
+        @apply opacity-100;
+      }
+    }
+
     /* Tables — rules between rows only, no outer frame.
        `uppercase` is deliberately absent: it does nothing to Japanese headers
        and would make English-only tables look like a different component.

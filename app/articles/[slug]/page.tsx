@@ -73,7 +73,7 @@ export default async function ArticlePage({
       </header>
 
       <div className="mb-16">
-        <MarkdownRenderer content={content} cards={cards} />
+        <MarkdownRenderer content={content} cards={cards} withToc />
       </div>
 
       <div className="mt-16">

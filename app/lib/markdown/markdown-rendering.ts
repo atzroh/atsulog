@@ -1,4 +1,5 @@
-import type { Element, Root } from "hast";
+import GithubSlugger from "github-slugger";
+import type { Element, ElementContent, Root } from "hast";
 import { urlAttributes } from "html-url-attributes";
 import type { Root as MdastRoot } from "mdast";
 import { defaultUrlTransform } from "react-markdown";
@@ -45,10 +46,18 @@ function remarkLinkCard() {
   };
 }
 
-function rehypeArticle() {
+/** A `##` or `###` heading, for the table of contents. */
+export type TocItem = { depth: 2 | 3; text: string; id: string };
+
+const HEADING = /^h[1-6]$/;
+
+function rehypeArticle({ headingLinks = true }: { headingLinks?: boolean }) {
   return (tree: Root, file: VFile) => {
     const baseUrl =
       typeof file.data.baseUrl === "string" ? file.data.baseUrl : undefined;
+    const slugger = new GithubSlugger();
+    const toc: TocItem[] = [];
+    file.data.toc = toc;
 
     visit(tree, (node, index, parent) => {
       if (!parent || index === undefined) return;
@@ -64,7 +73,44 @@ function rehypeArticle() {
       transformUrls(node, baseUrl);
       alignToStyle(node);
       if (node.tagName === "table") parent.children[index] = wrapTable(node);
+      if (HEADING.test(node.tagName)) {
+        const text = headingText(node.children).trim();
+        const id = slugger.slug(text);
+        node.properties.id = id;
+        if (node.tagName === "h2" || node.tagName === "h3") {
+          toc.push({ depth: node.tagName === "h2" ? 2 : 3, text, id });
+        }
+        if (headingLinks) node.children.push(headingLink(id));
+      }
     });
+  };
+}
+
+// KaTeX's MathML copy is skipped, or the formula would be read twice.
+function headingText(children: ElementContent[]): string {
+  return children
+    .map((child) => {
+      if (child.type === "text" || child.type === "raw") return child.value;
+      if (child.type !== "element") return "";
+      const className = child.properties.className;
+      if (Array.isArray(className) && className.includes("katex-mathml")) {
+        return "";
+      }
+      return headingText(child.children);
+    })
+    .join("");
+}
+
+function headingLink(id: string): Element {
+  return {
+    type: "element",
+    tagName: "a",
+    properties: {
+      href: `#${id}`,
+      className: ["heading-link"],
+      ariaLabel: "Link to this section",
+    },
+    children: [{ type: "text", value: "#" }],
   };
 }
 
@@ -117,9 +163,15 @@ type ProcessorOptions = {
   katex?: KatexOptions;
   /** Off for the feed: a reader has none of the CSS a card needs. */
   linkCards?: boolean;
+  /** Off for the feed, where the `#` would show after every heading. */
+  headingLinks?: boolean;
 };
 
-function createProcessor({ katex, linkCards = true }: ProcessorOptions = {}) {
+function createProcessor({
+  katex,
+  linkCards = true,
+  headingLinks = true,
+}: ProcessorOptions = {}) {
   const processor = unified().use(remarkParse).use(remarkGfm).use(remarkMath);
   if (linkCards) processor.use(remarkLinkCard);
 
@@ -130,7 +182,7 @@ function createProcessor({ katex, linkCards = true }: ProcessorOptions = {}) {
       .use(rehypeKatex, katex)
       // Left as source for MermaidDiagrams to draw in the browser.
       .use(rehypeHighlight, { plainText: ["mermaid"] })
-      .use(rehypeArticle)
+      .use(rehypeArticle, { headingLinks })
       .use(rehypeStringify)
   );
 }
@@ -143,32 +195,42 @@ let feedProcessor: Processor | undefined;
 
 // Cached per content: the article page renders on every request.
 const CACHE_LIMIT = 64;
-const cache = new Map<string, string>();
+const cache = new Map<string, RenderedMarkdown>();
+
+export type RenderedMarkdown = { html: string; toc: TocItem[] };
 
 function render(
   processor: Processor,
   content: string,
   cards?: LinkCardMap,
   baseUrl?: string,
-): string {
+): RenderedMarkdown {
   // Keyed by the cards too: one filled in later must not hit an older entry.
   const key = [baseUrl ?? "", fingerprintCards(cards), content].join("\0");
   const cached = cache.get(key);
   if (cached !== undefined) return cached;
 
-  const html = String(
-    processor.processSync({ value: content, data: { baseUrl, cards } }),
-  );
+  const file = processor.processSync({
+    value: content,
+    data: { baseUrl, cards },
+  });
+  const rendered = {
+    html: String(file),
+    toc: (file.data.toc ?? []) as TocItem[],
+  };
   if (cache.size >= CACHE_LIMIT) cache.delete(cache.keys().next().value!);
-  cache.set(key, html);
-  return html;
+  cache.set(key, rendered);
+  return rendered;
 }
 
 /**
- * Renders Markdown (GFM, `$math$`) to an HTML string. Without `cards`, a link
- * card carries its URL alone.
+ * Renders Markdown (GFM, `$math$`) to HTML, with its `##` and `###` headings.
+ * Without `cards`, a link card carries its URL alone.
  */
-export function renderMarkdown(content: string, cards?: LinkCardMap): string {
+export function renderMarkdown(
+  content: string,
+  cards?: LinkCardMap,
+): RenderedMarkdown {
   return render(processor, content, cards);
 }
 
@@ -180,6 +242,7 @@ export function renderFeedMarkdown(content: string, baseUrl: string): string {
   feedProcessor ??= createProcessor({
     katex: { output: "mathml" },
     linkCards: false,
+    headingLinks: false,
   });
-  return render(feedProcessor, content, undefined, baseUrl);
+  return render(feedProcessor, content, undefined, baseUrl).html;
 }
