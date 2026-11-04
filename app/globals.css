@@ -200,30 +200,20 @@ body {
     }
 
     /* Mermaid — the source shows in a light box until MermaidDiagrams swaps in
-       the diagram, so the swap is not a dark block turning white. A wide
-       diagram scrolls like a table.
+       the diagram, so the swap is not a dark block turning white.
 
-       Preflight makes the svg a block, so it is centred with auto margins,
-       which resolve to zero once it outgrows the column and leave its left
-       edge reachable. Below `md`, the breakpoint the layout switches at, it is
-       drawn at 0.50 so more of it fits before it has to scroll. It is shrunk
-       through its box, against the size MermaidDiagrams records, not `zoom`:
-       `zoom` recomputes the labels' font size, which mobile browsers then
-       enlarge, while the box scales the drawing as a whole. */
+       Mermaid draws the svg at the column's width, capped at its own, so a
+       wide diagram shrinks to fit instead of scrolling. Preflight makes it a
+       block, centred with auto margins. The height follows the width, since
+       some types (journey) write a fixed one that leaves blank space. */
     & pre:has(> code.language-mermaid) {
       @apply bg-gray-50 border border-gray-200 text-gray-600;
     }
     & .mermaid-diagram {
-      @apply my-8 overflow-x-auto;
+      @apply my-8;
     }
     & .mermaid-diagram svg {
-      @apply mx-auto;
-      width: var(--mermaid-w);
-      height: var(--mermaid-h);
-      @variant max-md {
-        width: calc(var(--mermaid-w) * 0.5);
-        height: calc(var(--mermaid-h) * 0.5);
-      }
+      @apply mx-auto h-auto;
     }
     & .mermaid-error {
       /* Kept as written: the error points at the column with a `^` line. */
@@ -242,16 +232,10 @@ body {
        from the block's edges rather than against them. */
     @supports not selector(::-webkit-scrollbar) {
       /* Firefox only — see below for why the two APIs cannot both be set. */
-      & :is(pre > code, .katex-display, .table-scroll, .mermaid-diagram) {
+      & :is(pre > code, .katex-display, .table-scroll) {
         scrollbar-width: thin;
       }
-      &
-        :is(
-          .katex-display,
-          .table-scroll,
-          .mermaid-diagram,
-          code.language-mermaid
-        ) {
+      & :is(.katex-display, .table-scroll, code.language-mermaid) {
         scrollbar-color: #e5e7eb transparent;
       }
       & pre > code {
@@ -262,31 +246,13 @@ body {
     /* Chrome drops every `::-webkit-scrollbar` rule as soon as `scrollbar-color`
        is set on the element, which is why the standard pair above is fenced off
        to the one engine that has no `::-webkit-scrollbar` selector. */
-    &
-      :is(
-        pre > code,
-        .katex-display,
-        .table-scroll,
-        .mermaid-diagram
-      )::-webkit-scrollbar {
+    & :is(pre > code, .katex-display, .table-scroll)::-webkit-scrollbar {
       @apply h-1.5;
     }
-    &
-      :is(
-        pre > code,
-        .katex-display,
-        .table-scroll,
-        .mermaid-diagram
-      )::-webkit-scrollbar-track {
+    & :is(pre > code, .katex-display, .table-scroll)::-webkit-scrollbar-track {
       background: transparent;
     }
-    &
-      :is(
-        pre > code,
-        .katex-display,
-        .table-scroll,
-        .mermaid-diagram
-      )::-webkit-scrollbar-button {
+    & :is(pre > code, .katex-display, .table-scroll)::-webkit-scrollbar-button {
       @apply hidden;
     }
     /* 4px is the inline radius token; on a 6px bar it clamps to a full round. */
@@ -295,7 +261,6 @@ body {
       :is(
         .katex-display,
         .table-scroll,
-        .mermaid-diagram,
         code.language-mermaid
       )::-webkit-scrollbar-thumb {
       @apply bg-gray-200 rounded-[4px];

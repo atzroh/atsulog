@@ -40,36 +40,7 @@ const COLOR = {
   sky500: "#0ea5e9",
 };
 
-// At its own size, so a wide chart scrolls instead of shrinking.
-const DIAGRAM_TYPES = [
-  "flowchart",
-  "sequence",
-  "class",
-  "state",
-  "er",
-  "gantt",
-  "journey",
-  "pie",
-  "requirement",
-  "mindmap",
-  "timeline",
-  "gitGraph",
-  "c4",
-  "sankey",
-  "xyChart",
-  "block",
-  "packet",
-  "architecture",
-  "quadrantChart",
-  "radar",
-  "kanban",
-];
-const NO_SHRINK = Object.fromEntries(
-  DIAGRAM_TYPES.map((type) => [type, { useMaxWidth: false }]),
-) as MermaidConfig;
-
 const CONFIG: MermaidConfig = {
-  ...NO_SHRINK,
   startOnLoad: false,
   securityLevel: "strict",
   theme: "base",
@@ -189,13 +160,11 @@ const CONFIG: MermaidConfig = {
     }
   `,
   flowchart: {
-    useMaxWidth: false,
     wrappingWidth: 200,
     subGraphTitleMargin: { top: 4, bottom: 4 },
     curve: "basis",
   },
   sequence: {
-    useMaxWidth: false,
     mirrorActors: false,
     actorFontFamily: FONT,
     actorFontSize: 14,
@@ -252,14 +221,6 @@ export function MermaidDiagrams({ html, children }: MermaidDiagramsProps) {
           const diagram = document.createElement("div");
           diagram.className = "mermaid-diagram";
           diagram.innerHTML = svg;
-
-          // Its own size, for globals.css to scale the whole drawing by.
-          const el = diagram.querySelector("svg");
-          const box = el?.viewBox.baseVal;
-          if (el && box?.width) {
-            el.style.setProperty("--mermaid-w", `${box.width}px`);
-            el.style.setProperty("--mermaid-h", `${box.height}px`);
-          }
           pre.replaceWith(diagram);
         } catch (error) {
           if (cancelled) return;
