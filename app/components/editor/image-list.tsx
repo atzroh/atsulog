@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { ImageCopyButton } from "@/app/components/editor/image-copy-button";
 import { ImageDeleteButton } from "@/app/components/editor/image-delete-button";
 import { formatDate } from "@/app/lib/date-format";
 import type { ImageSummary } from "@/app/lib/image/image-store";
@@ -69,7 +70,12 @@ export function ImageList({ images }: { images: ImageEntry[] }) {
               </p>
             )}
           </div>
-          {image.users.length === 0 && <ImageDeleteButton hash={image.hash} />}
+          <div className="flex shrink-0 gap-2">
+            <ImageCopyButton url={image.url} />
+            {image.users.length === 0 && (
+              <ImageDeleteButton hash={image.hash} />
+            )}
+          </div>
         </li>
       ))}
     </ul>
