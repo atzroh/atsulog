@@ -26,11 +26,6 @@ function caretAt(value: string, position: number): EditResult {
   return { value, selectionStart: position, selectionEnd: position };
 }
 
-/** Escapes the characters that would end a Markdown alt text early. */
-export function escapeAltText(text: string): string {
-  return text.replace(/[\\[\]]/g, "\\$&");
-}
-
 /**
  * Wraps the selection in `prefix`/`suffix`, falling back to `placeholder` when
  * nothing is selected. The returned selection covers the wrapped text but not

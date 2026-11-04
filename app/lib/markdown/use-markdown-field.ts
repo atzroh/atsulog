@@ -2,7 +2,6 @@ import { useCallback, useRef, useState } from "react";
 import { uploadImageAction } from "@/app/lib/image/image-actions";
 import {
   continueList,
-  escapeAltText,
   indentList,
   insertAround,
   type EditResult,
@@ -110,7 +109,7 @@ export function useMarkdownField({
         const formData = new FormData();
         formData.append("image", file);
         const result = await uploadImageAction(formData);
-        insertMarkdown(`![${escapeAltText(result.alt)}](${result.url})`);
+        insertMarkdown(`![](${result.url})`);
       } catch (error) {
         console.error("Upload failed:", error);
         alert("Failed to upload image.");

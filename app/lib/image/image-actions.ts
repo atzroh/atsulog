@@ -11,7 +11,7 @@ import {
 } from "@/app/lib/image/image-store";
 import { getImageUsers } from "@/app/lib/image/image-usage";
 
-/** Stores the editor's upload in images.db; returns its URL and alt text. */
+/** Stores the editor's upload in images.db; returns its URL. */
 export async function uploadImageAction(formData: FormData) {
   await requireAuth();
 
@@ -30,10 +30,9 @@ export async function uploadImageAction(formData: FormData) {
     new Uint8Array(await file.arrayBuffer()),
     mimeType,
   );
-  const { hash, url } = saveImage(optimized.data, optimized.mimeType);
+  const { url } = saveImage(optimized.data, optimized.mimeType);
 
-  // The hash, like the URL, so no original file name gets into an article.
-  return { url, alt: hash };
+  return { url };
 }
 
 /** Deletes an image no article mentions; a used one is kept. */
