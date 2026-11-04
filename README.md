@@ -81,6 +81,121 @@ Each database is backed up as a plain-text SQL dump, which diffs well in Git. Th
 
 Run the app behind a reverse proxy that appends the client address to `X-Forwarded-For`. The login lockout counts failures per address, taken from the rightmost entry of that header; without a proxy every visitor shares one count, so a few failed attempts by anyone lock out the admin too.
 
+The app runs as a Next.js standalone server under pm2 in `/home/ubuntu/app`, listening only on `127.0.0.1:3000` behind nginx. The server needs Node.js 22.19+, pm2, nginx (set up as the reverse proxy), sqlite3 and netfilter-persistent.
+
+### Building the bundle
+
+On your machine:
+
+```bash
+./standalone.sh
+```
+
+This builds the app and packs it into `deploy.tar.gz` (the server, static files and `ecosystem.config.cjs`). `data/` and `.env*` are not included.
+
+### First deployment
+
+1. **Upload the files** with SFTP:
+
+   ```
+   sftp ubuntu@<server>
+   sftp> mkdir /home/ubuntu/app
+   sftp> cd /home/ubuntu/app
+   sftp> put deploy.tar.gz
+   sftp> put startup.sh
+   sftp> put restart.sh
+   ```
+
+2. **Extract the bundle** on the server:
+
+   ```bash
+   cd /home/ubuntu/app
+   tar -xzf deploy.tar.gz
+   ```
+
+3. **Get the data.** Clone the articles repository into `data/`. The server needs push access to it for backups.
+
+   ```bash
+   git clone git@github.com:atzroh/atsulog-articles.git data
+   ```
+
+   Only the SQL dumps are in Git; `startup.sh` rebuilds the `.db` files from them.
+
+4. **Set the environment variables.** Create `.env.production`, which the server reads on start:
+
+   ```bash
+   openssl rand -base64 32   # use the output as SESSION_SECRET
+   nano .env.production
+   chmod 600 .env.production
+   ```
+
+   ```env
+   SESSION_SECRET=your-random-session-secret
+   ADMIN_PASSWORD=your-secure-password
+   ```
+
+   Without `SESSION_SECRET`, every page returns 500. `NEXT_PUBLIC_GA_ID` is built into the bundle, so it belongs in your local `.env.local`, not here.
+
+5. **Run the setup script:**
+
+   ```bash
+   bash startup.sh
+   ```
+
+   It is safe to run again. In order, it:
+   - opens ports 80 and 443 in iptables and saves the rules
+   - enables and restarts nginx
+   - registers pm2 to start on boot
+   - restores `data/articles.db` and `data/images.db` from their dumps if the `.db` files do not exist
+   - starts the app with `ecosystem.config.cjs` and saves the pm2 process list
+   - waits up to 30 seconds for the app to respond
+
+6. **Schedule backups.** Run `data/git_autopush.sh` with cron (`crontab -e`). It dumps the databases and pushes any changes. For example, every hour:
+
+   ```
+   0 * * * * /home/ubuntu/app/data/git_autopush.sh >> /home/ubuntu/backup.log 2>&1
+   ```
+
+### Later deployments
+
+1. **Build and upload** the new bundle, replacing the old one:
+
+   ```bash
+   ./standalone.sh
+   ```
+
+   ```
+   sftp ubuntu@<server>
+   sftp> cd /home/ubuntu/app
+   sftp> put deploy.tar.gz
+   ```
+
+   Upload `restart.sh` or `startup.sh` too if they changed.
+
+2. **Restart the app** on the server:
+
+   ```bash
+   cd /home/ubuntu/app
+   bash restart.sh
+   ```
+
+   It checks the archive, replaces the app files with its contents, starts the app again and waits up to 30 seconds for it to respond. `data/` and `.env*` are kept.
+
+Notes:
+
+- The site is down for a few seconds while the files are replaced.
+- A failed deployment is not rolled back. To be able to roll back, copy the previous `deploy.tar.gz` aside before building (`standalone.sh` deletes it), then upload that copy and run `restart.sh` again.
+
+### Troubleshooting
+
+If the app does not respond or returns 500, check its logs:
+
+```bash
+pm2 logs atsulog --lines 50 --nostream
+```
+
+For example, `SESSION_SECRET environment variable is not set.` means `.env.production` is missing (see step 4 of the first deployment).
+
 ## Project Structure
 
 Logic lives in `app/lib/`, grouped by feature:
