@@ -20,6 +20,7 @@ npm run build
 echo "Copying public and static files..."
 cp -r public .next/standalone/
 cp -r .next/static .next/standalone/.next/
+cp ecosystem.config.cjs .next/standalone/
 
 # 4. Create deployment archive
 echo "Creating deployment bundle (deploy.tar.gz)..."
