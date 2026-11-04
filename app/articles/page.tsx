@@ -38,10 +38,7 @@ export default async function ArticlesPage({
         searchParams={resolvedSearchParams}
         candidates={taxonomies}
       />
-      <PaginatedArticleList
-        page={page}
-        searchParams={resolvedSearchParams}
-      />
+      <PaginatedArticleList page={page} searchParams={resolvedSearchParams} />
     </main>
   );
 }

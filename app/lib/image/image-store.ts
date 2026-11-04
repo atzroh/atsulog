@@ -53,8 +53,7 @@ export function getImage(hash: string): StoredImage | null {
   const row = getImageDb()
     .prepare("SELECT mime_type, data FROM images WHERE hash = ?")
     .get(hash) as
-    | { mime_type: string; data: Uint8Array<ArrayBuffer> }
-    | undefined;
+    { mime_type: string; data: Uint8Array<ArrayBuffer> } | undefined;
   return row ? { mimeType: row.mime_type, data: row.data } : null;
 }
 

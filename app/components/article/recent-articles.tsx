@@ -5,7 +5,6 @@ import { ArticleList } from "@/app/components/article/article-list";
 import { PageHeading } from "@/app/components/ui/page-heading";
 
 export function RecentArticles({ articles }: { articles: ArticleMetadata[] }) {
-
   return (
     <section>
       <PageHeading className="mb-8">Recent Articles</PageHeading>

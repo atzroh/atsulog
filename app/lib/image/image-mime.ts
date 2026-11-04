@@ -31,4 +31,3 @@ export function extensionForMimeType(mimeType: string): string {
 
   return cleaned || FALLBACK_EXTENSION;
 }
-

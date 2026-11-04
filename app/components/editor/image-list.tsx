@@ -69,9 +69,7 @@ export function ImageList({ images }: { images: ImageEntry[] }) {
               </p>
             )}
           </div>
-          {image.users.length === 0 && (
-            <ImageDeleteButton hash={image.hash} />
-          )}
+          {image.users.length === 0 && <ImageDeleteButton hash={image.hash} />}
         </li>
       ))}
     </ul>

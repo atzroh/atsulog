@@ -27,11 +27,11 @@ pm2 save
 # 4. Wait until the app responds
 echo "Waiting for the app to respond..."
 for _ in $(seq 30); do
-  if curl -fsS -o /dev/null http://127.0.0.1:3000/; then
-    echo "Ready."
-    exit 0
-  fi
-  sleep 1
+    if curl -fsS -o /dev/null http://127.0.0.1:3000/; then
+        echo "Ready."
+        exit 0
+    fi
+    sleep 1
 done
 echo "The app did not respond within 30 seconds. Check: pm2 logs atsulog" >&2
 exit 1

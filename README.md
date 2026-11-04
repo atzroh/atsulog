@@ -124,7 +124,7 @@ This builds the app and packs it into `deploy.tar.gz` (the server, static files 
 4. **Set the environment variables.** Create `.env.production`, which the server reads on start:
 
    ```bash
-   openssl rand -base64 32   # use the output as SESSION_SECRET
+   openssl rand -base64 32 # use the output as SESSION_SECRET
    nano .env.production
    chmod 600 .env.production
    ```
