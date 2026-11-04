@@ -81,7 +81,7 @@ Each database is backed up as a plain-text SQL dump, which diffs well in Git. Th
 
 Run the app behind a reverse proxy that appends the client address to `X-Forwarded-For`. The login lockout counts failures per address, taken from the rightmost entry of that header; without a proxy every visitor shares one count, so a few failed attempts by anyone lock out the admin too.
 
-The app runs as a Next.js standalone server under pm2 in `/home/ubuntu/app`, listening only on `127.0.0.1:3000` behind nginx. The server needs Node.js 22.19+, pm2, nginx (set up as the reverse proxy), sqlite3 and netfilter-persistent.
+The app runs as a Next.js standalone server under pm2 in `/home/ubuntu/app`, listening only on `127.0.0.1:3000` behind nginx. The server needs Node.js 22.19+, pm2, nginx (set up as the reverse proxy), sqlite3 and netfilter-persistent. Image uploads can be up to 10MB, so set nginx's `client_max_body_size` to `10m` or more (the default is 1MB).
 
 ### Building the bundle
 

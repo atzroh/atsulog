@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/app/lib/auth/auth";
 import { normalizeMimeType } from "@/app/lib/image/image-mime";
+import { optimizeImage } from "@/app/lib/image/image-optimize";
 import {
   deleteImage,
   isImageHash,
@@ -25,8 +26,11 @@ export async function uploadImageAction(formData: FormData) {
     throw new Error("Not an image");
   }
 
-  const data = new Uint8Array(await file.arrayBuffer());
-  const { hash, url } = saveImage(data, mimeType);
+  const optimized = await optimizeImage(
+    new Uint8Array(await file.arrayBuffer()),
+    mimeType,
+  );
+  const { hash, url } = saveImage(optimized.data, optimized.mimeType);
 
   // The hash, like the URL, so no original file name gets into an article.
   return { url, alt: hash };
