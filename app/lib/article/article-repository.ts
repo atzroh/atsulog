@@ -290,14 +290,16 @@ function searchConditions(params: ArticleSearchParams): Condition[] {
   const series = getParam(params.series);
   const category = getParam(params.category);
 
-  if (keyword) {
-    const pattern = `%${keyword.replace(/[\\%_]/g, "\\$&")}%`;
+  // Whitespace-separated; every term must appear somewhere, content included.
+  for (const term of keyword.split(/\s+/).filter(Boolean)) {
+    const pattern = `%${term.replace(/[\\%_]/g, "\\$&")}%`;
     conditions.push({
       sql: `(a.title LIKE ? ESCAPE '\\' OR a.slug LIKE ? ESCAPE '\\'
         OR a.category LIKE ? ESCAPE '\\' OR a.series LIKE ? ESCAPE '\\'
+        OR a.content LIKE ? ESCAPE '\\'
         OR EXISTS (SELECT 1 FROM article_tags t
           WHERE t.slug = a.slug AND t.tag LIKE ? ESCAPE '\\'))`,
-      params: Array(5).fill(pattern),
+      params: Array(6).fill(pattern),
     });
   }
 
