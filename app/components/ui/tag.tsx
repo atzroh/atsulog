@@ -39,7 +39,7 @@ export function Tag({
 }: TagProps) {
   const Icon = ICONS[variant];
 
-  const combinedStyles = `inline-flex items-center px-[0.625rem] py-[0.125rem] rounded-full text-xs font-medium border transition-all duration-200 ${VARIANTS[variant]}`;
+  const combinedStyles = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border transition-colors ${VARIANTS[variant]}`;
 
   const content = (
     <>

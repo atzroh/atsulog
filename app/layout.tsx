@@ -31,7 +31,7 @@ export default async function RootLayout({
     <html lang={siteConfig.htmlLang}>
       <body className="min-h-screen flex flex-col">
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
-          <div className="max-w-3xl mx-auto px-[1.5rem] py-[1rem] flex items-center justify-between">
+          <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link
                 href="/"
@@ -44,7 +44,7 @@ export default async function RootLayout({
                   height={20}
                   className="mr-1"
                 />
-                <span className="group-hover:text-gray-600 lowercase">
+                <span className="group-hover:text-muted lowercase">
                   {siteConfig.title}
                 </span>
               </Link>
@@ -96,7 +96,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className="text-sm font-medium text-gray-500 hover:text-black transition-colors flex items-center"
+      className="text-sm font-medium text-muted hover:text-foreground transition-colors flex items-center"
     >
       <Icon className="size-4.5 md:size-4 md:mr-1.5" />
       <span className="hidden md:inline">{label}</span>

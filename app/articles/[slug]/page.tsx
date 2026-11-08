@@ -1,6 +1,5 @@
 import { ArrowLeft, Pencil } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
 import {
@@ -16,6 +15,7 @@ import { SeriesNavigation } from "@/app/components/article/series-navigation";
 import { siteConfig } from "@/app/lib/site-config";
 import { buildPageMetadata } from "@/app/lib/page-metadata";
 import { PageHeading } from "@/app/components/ui/page-heading";
+import { PageNav, PageNavLink } from "@/app/components/ui/page-nav";
 
 export async function generateMetadata({
   params,
@@ -62,7 +62,7 @@ export default async function ArticlePage({
   const cards = await getLinkCards(collectLinkCardUrls(content));
 
   return (
-    <article className="py-10">
+    <article>
       <header className="mb-12">
         <PageHeading className="mb-4">{article.title}</PageHeading>
 
@@ -78,28 +78,21 @@ export default async function ArticlePage({
       <div className="mt-16">
         {neighbors && <SeriesNavigation {...neighbors} />}
 
-        <nav
-          aria-label="Article navigation"
-          className="border-t pt-[2.5rem] flex items-center justify-between"
-        >
-          <Link
-            href="/articles"
-            className="text-sm font-medium text-gray-600 hover:text-black transition-colors flex items-center"
-          >
-            <ArrowLeft className="size-[1rem] mr-[0.5rem]" />
+        <PageNav label="Article navigation">
+          <PageNavLink href="/articles" icon={ArrowLeft}>
             Back to Articles
-          </Link>
+          </PageNavLink>
 
           {authenticated && (
-            <Link
+            <PageNavLink
               href={`/admin/edit/${slug}`}
-              className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors flex items-center"
+              icon={Pencil}
+              className="text-emerald-600 hover:text-emerald-700"
             >
-              <Pencil className="size-[1rem] mr-[0.5rem]" />
               Edit this article
-            </Link>
+            </PageNavLink>
           )}
-        </nav>
+        </PageNav>
       </div>
     </article>
   );

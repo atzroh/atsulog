@@ -79,7 +79,7 @@ export function SocialLinks() {
       >
         <div className="flex flex-col items-center gap-3 px-8 py-6">
           <h2 className="text-lg font-medium text-foreground">Mail</h2>
-          <div className="flex items-center gap-3 rounded-md border border-gray-300 bg-gray-100 px-3 py-2">
+          <div className="flex items-center gap-3 rounded-md border border-gray-200 bg-gray-100 px-3 py-2">
             <p className="select-all text-base">{siteConfig.email}</p>
             <button
               type="button"

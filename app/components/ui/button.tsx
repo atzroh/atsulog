@@ -16,12 +16,12 @@ type ButtonProps = {
 };
 
 const BASE_STYLES =
-  "flex items-center justify-center space-x-[0.5rem] px-[1rem] py-[0.5rem] text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
+  "flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: "bg-gray-900 text-white hover:bg-gray-800 border border-transparent",
   outline:
-    "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-black hover:border-gray-300",
+    "bg-white border border-gray-200 text-muted hover:bg-gray-50 hover:text-foreground hover:border-gray-300",
 };
 
 /** A button with the site's primary and outline styles. */

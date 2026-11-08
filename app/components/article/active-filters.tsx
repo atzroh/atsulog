@@ -23,7 +23,7 @@ export function ActiveFilters({ searchParams, basePath }: ActiveFiltersProps) {
     buildArticleSearchUrl(basePath, searchParams, { ...updates, page: null });
 
   return (
-    <div className="flex flex-wrap gap-[0.5rem] px-[1.125rem]">
+    <div className="flex flex-wrap gap-2 px-4.5">
       {series && (
         <Tag
           label={series}

@@ -19,7 +19,7 @@ export function ArticleTaxonomies({
   const { category, series, tags } = article;
 
   return (
-    <div className={`flex flex-wrap gap-[0.5rem] ${className}`.trim()}>
+    <div className={`flex flex-wrap gap-2 ${className}`.trim()}>
       {series && (
         <Tag
           label={series}

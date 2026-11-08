@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import {
@@ -14,6 +13,7 @@ import {
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
 import { PageHeading } from "@/app/components/ui/page-heading";
+import { PageNav, PageNavLink } from "@/app/components/ui/page-nav";
 
 const INITIAL_METADATA: ArticleMetadata = {
   slug: "",
@@ -52,15 +52,11 @@ export default async function NewArticlePage() {
         articles={articles}
         candidates={taxonomies}
       />
-      <nav aria-label="Create navigation" className="border-t pt-[2.5rem]">
-        <Link
-          href="/admin"
-          className="text-sm font-medium text-gray-600 hover:text-black transition-colors flex items-center"
-        >
-          <ArrowLeft className="size-[1rem] mr-[0.5rem]" />
+      <PageNav label="Create navigation">
+        <PageNavLink href="/admin" icon={ArrowLeft}>
           Back to Admin
-        </Link>
-      </nav>
+        </PageNavLink>
+      </PageNav>
     </main>
   );
 }

@@ -13,17 +13,17 @@ type ArticleListProps = {
 export function ArticleList({ articles, basePath }: ArticleListProps) {
   if (articles.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
-        <div className="p-4 bg-white rounded-2xl shadow-sm mb-6">
+      <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+        <div className="p-4 bg-white rounded-lg shadow-sm mb-6">
           <SearchX className="size-10 text-gray-300" />
         </div>
-        <h3 className="text-lg font-bold text-gray-400">No articles found</h3>
+        <h3 className="text-lg font-bold text-muted">No articles found</h3>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col space-y-[1.5rem]">
+    <div className="flex flex-col space-y-6">
       {articles.map((article) => (
         <ArticleListItem
           key={article.slug}
@@ -45,9 +45,9 @@ function ArticleListItem({
   const articleHref = `${basePath}/${article.slug}`;
 
   return (
-    <div className="group relative bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-sky-200 transition-all duration-300 flex flex-col p-[1.5rem] space-y-[1.25rem]">
-      <Link href={articleHref} className="space-y-[1.25rem]">
-        <h2 className="text-xl font-bold leading-tight group-hover:text-sky-600 transition-colors duration-300">
+    <div className="group relative bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-gray-300 transition-colors flex flex-col p-6 space-y-5">
+      <Link href={articleHref} className="space-y-5">
+        <h2 className="text-xl font-bold leading-tight group-hover:text-sky-600 transition-colors">
           {article.title}
         </h2>
         <ArticleMeta article={article} />
@@ -57,7 +57,7 @@ function ArticleListItem({
       <ArticleTaxonomies
         article={article}
         basePath={basePath}
-        className="pt-[0.25rem]"
+        className="pt-1"
       />
     </div>
   );

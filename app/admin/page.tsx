@@ -17,12 +17,12 @@ export default function AdminPage() {
           <Link
             key={href}
             href={href}
-            className="group flex flex-col gap-4 p-6 bg-white border border-gray-100 rounded-2xl hover:border-gray-300 transition-all duration-300"
+            className="group flex flex-col gap-4 p-6 bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-gray-300 transition-colors"
           >
-            <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-gray-500 group-hover:bg-gray-900 group-hover:text-white transition-colors duration-300">
+            <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-muted group-hover:bg-gray-900 group-hover:text-white transition-colors">
               <Icon className="size-5" />
             </div>
-            <span className="text-lg font-semibold text-gray-900 group-hover:text-black transition-colors">
+            <span className="text-lg font-semibold text-foreground">
               {label}
             </span>
           </Link>

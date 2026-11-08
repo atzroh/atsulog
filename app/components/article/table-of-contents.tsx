@@ -26,7 +26,7 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
 
   return (
     <details open className="group border-l-2 border-gray-200 pl-5 mb-12">
-      <summary className="cursor-pointer list-none text-sm font-semibold text-gray-500 uppercase tracking-wider [&::-webkit-details-marker]:hidden">
+      <summary className="cursor-pointer list-none text-sm font-semibold text-muted uppercase tracking-wider [&::-webkit-details-marker]:hidden">
         <ChevronRight
           aria-hidden="true"
           strokeWidth={2.5}
@@ -40,18 +40,18 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
             {heading && (
               <a
                 href={`#${heading.id}`}
-                className="font-medium text-gray-800 hover:text-sky-600"
+                className="font-medium text-foreground hover:text-sky-600"
               >
                 {heading.text}
               </a>
             )}
             {children.length > 0 && (
-              <ul className="mt-1.5 ml-1 border-l border-gray-200 pl-3 space-y-1 text-[13px]">
+              <ul className="mt-1.5 ml-1 border-l-2 border-gray-200 pl-3 space-y-1 text-[13px]">
                 {children.map((child) => (
                   <li key={child.id}>
                     <a
                       href={`#${child.id}`}
-                      className="text-gray-500 hover:text-sky-600"
+                      className="text-foreground hover:text-sky-600"
                     >
                       {child.text}
                     </a>

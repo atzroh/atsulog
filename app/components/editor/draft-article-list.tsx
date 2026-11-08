@@ -16,7 +16,7 @@ export function DraftArticleList({
       <PageHeading className="mb-8">Drafts ({articles.length})</PageHeading>
 
       {articles.length === 0 ? (
-        <p className="text-sm text-gray-400">No drafts found.</p>
+        <p className="text-sm text-muted">No drafts found.</p>
       ) : (
         <ul className="space-y-3">
           {articles.map((article) => (

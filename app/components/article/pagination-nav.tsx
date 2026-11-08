@@ -27,12 +27,12 @@ const VARIANTS = {
   edge: {
     base: "p-2",
     enabled:
-      "rounded-lg transition-all text-gray-400 hover:text-black hover:bg-gray-50",
+      "rounded-lg transition-colors text-muted hover:text-foreground hover:bg-gray-50",
   },
   step: {
     base: "p-2 px-3 text-sm font-medium flex items-center",
     enabled:
-      "rounded-lg transition-all text-gray-600 hover:text-black hover:bg-gray-50 border border-transparent hover:border-gray-200",
+      "rounded-lg transition-colors text-muted hover:text-foreground hover:bg-gray-50 border border-transparent hover:border-gray-300",
   },
 };
 
@@ -105,7 +105,7 @@ function PageJumper({
   return isEditing ? (
     <form
       onSubmit={handleJump}
-      className="px-4 py-2 text-sm font-medium text-gray-900 bg-gray-50 rounded-lg flex items-center"
+      className="px-4 py-2 text-sm font-medium text-foreground bg-gray-50 rounded-lg flex items-center"
     >
       <input
         type="text"
@@ -115,18 +115,18 @@ function PageJumper({
         onChange={(e) => setInputPage(e.target.value.replace(/[^0-9]/g, ""))}
         onBlur={() => setIsEditing(false)}
         autoFocus
-        className="w-6 bg-transparent border-none text-sm font-medium text-gray-900 text-center focus:ring-0 p-0 outline-none"
+        className="w-6 bg-transparent border-none text-sm font-medium text-foreground text-center focus:ring-0 p-0 outline-none"
       />
-      <span className="text-gray-400 font-normal mx-1">/</span>
-      <span className="text-sm font-medium text-gray-900">{totalPages}</span>
+      <span className="text-muted font-normal mx-1">/</span>
+      <span className="text-sm font-medium text-foreground">{totalPages}</span>
     </form>
   ) : (
     <button
       onClick={() => setIsEditing(true)}
-      className="px-4 text-sm font-medium text-gray-900 bg-gray-50 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+      className="px-4 text-sm font-medium text-foreground bg-gray-50 py-2 rounded-lg hover:bg-gray-100 transition-colors"
       title="Jump to page"
     >
-      {currentPage} <span className="text-gray-400 font-normal mx-1">/</span>{" "}
+      {currentPage} <span className="text-muted font-normal mx-1">/</span>{" "}
       {totalPages}
     </button>
   );
@@ -148,9 +148,9 @@ export function PaginationNav({
   return (
     <nav
       aria-label="Pagination"
-      className="flex justify-center items-center mt-[3rem] py-[2rem] border-t border-gray-100"
+      className="flex justify-center items-center mt-12 py-8 border-t border-gray-100"
     >
-      <div className="flex items-center space-x-[0.5rem]">
+      <div className="flex items-center space-x-2">
         <PageLink
           href={pageHref(1)}
           disabled={!hasPreviousPage}

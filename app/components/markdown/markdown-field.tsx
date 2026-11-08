@@ -39,16 +39,16 @@ export function MarkdownField({
   } = useMarkdownField({ value, onChange });
 
   return (
-    <div className="flex flex-col space-y-[1rem]">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-[0.5rem]">
-        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+        <label className="text-xs font-semibold text-muted uppercase tracking-wider">
           {label}
         </label>
         <ModeToggle mode={mode} onToggle={setMode} />
       </div>
 
       {mode === "edit" && (
-        <div className="flex flex-col space-y-[0.5rem]">
+        <div className="flex flex-col space-y-2">
           <MarkdownToolbar
             onAction={insertMarkdown}
             onUploadClick={openImagePicker}
@@ -89,10 +89,10 @@ export function MarkdownField({
             onChange={(event) => onChange(event.target.value)}
             onKeyDown={handleKeyDown}
             required
-            className="w-full h-[70dvh] min-h-[18rem] resize-y overflow-auto p-[1rem] bg-gray-50/50 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500/10 transition-shadow"
+            className="w-full h-[70dvh] min-h-72 resize-y overflow-auto p-4 bg-gray-50/50 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500/10 transition-shadow"
           />
         ) : (
-          <div className="p-[1rem] bg-white">
+          <div className="p-4 bg-white">
             <MarkdownRenderer content={value} />
             {/* Keeps the content in the form submission while previewing */}
             <textarea name="content" value={value} readOnly hidden />

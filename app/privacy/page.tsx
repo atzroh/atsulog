@@ -30,7 +30,7 @@ This policy may be changed without prior notice when necessary. Any changes take
 
 export default function PrivacyPage() {
   return (
-    <article className="py-10">
+    <article>
       <header className="mb-12">
         <PageHeading className="mb-4">Privacy Policy</PageHeading>
       </header>

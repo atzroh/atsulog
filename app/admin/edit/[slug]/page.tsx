@@ -1,5 +1,4 @@
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 
 import {
@@ -15,6 +14,7 @@ import {
   parseArticleForm,
 } from "@/app/lib/article/article-utils";
 import { PageHeading } from "@/app/components/ui/page-heading";
+import { PageNav, PageNavLink } from "@/app/components/ui/page-nav";
 
 type EditArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -64,29 +64,23 @@ export default async function EditArticlePage({
         articles={articles}
         candidates={taxonomies}
       />
-      <nav
-        aria-label="Article edit navigation"
-        className="border-t pt-[2.5rem] flex items-center justify-between"
-      >
-        <Link
-          href="/admin/edit"
-          className="text-sm font-medium text-gray-600 hover:text-black transition-colors flex items-center"
-        >
-          <ArrowLeft className="size-[1rem] mr-[0.5rem]" />
+      <PageNav label="Article edit navigation">
+        <PageNavLink href="/admin/edit" icon={ArrowLeft}>
           Back to Edit List
-        </Link>
+        </PageNavLink>
         {/* The public article route 404s on an unpublished article, so this
             link is only ever reachable once the draft has been published. */}
         {detail.metadata.published && (
-          <Link
+          <PageNavLink
             href={`/articles/${slug}`}
-            className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors flex items-center"
+            icon={ExternalLink}
+            iconAfter
+            className="text-sky-600 hover:text-sky-700"
           >
             View this article
-            <ExternalLink className="size-[1rem] ml-[0.5rem]" />
-          </Link>
+          </PageNavLink>
         )}
-      </nav>
+      </PageNav>
     </main>
   );
 }

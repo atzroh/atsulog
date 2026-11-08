@@ -41,7 +41,7 @@ const SORT_KEYS: Record<
 };
 
 const TOGGLE_STYLES =
-  "flex items-center space-x-[0.5rem] px-[0.75rem] py-[0.375rem] text-sm font-medium rounded-lg transition-all border";
+  "flex items-center space-x-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors border";
 
 /**
  * A button toggling Created <-> Modified, plus an order toggle shown only for
@@ -59,7 +59,7 @@ export function ArticleSortControls({
   const OrderIcon = isAsc ? ArrowUpNarrowWide : ArrowDownWideNarrow;
 
   return (
-    <div className="flex items-center space-x-[0.5rem]">
+    <div className="flex items-center space-x-2">
       <Link
         href={buildArticleSearchUrl(basePath, searchParams, {
           sortBy: current.next,
@@ -69,7 +69,7 @@ export function ArticleSortControls({
         className={`${TOGGLE_STYLES} ${current.styles}`}
         title={`Sort by ${SORT_KEYS[current.next].label}`}
       >
-        <Icon className="size-[0.875rem]" />
+        <Icon className="size-3.5" />
         <span>{current.label}</span>
       </Link>
 
@@ -78,10 +78,10 @@ export function ArticleSortControls({
           href={buildArticleSearchUrl(basePath, searchParams, {
             order: isAsc ? "desc" : "asc",
           })}
-          className={`${TOGGLE_STYLES} text-gray-500 hover:text-black hover:bg-gray-50 border-gray-100 hover:border-gray-200`}
+          className={`${TOGGLE_STYLES} text-muted hover:text-foreground hover:bg-gray-50 border-gray-200 hover:border-gray-300`}
           title={isAsc ? "Sort Descending" : "Sort Ascending"}
         >
-          <OrderIcon className="size-[0.875rem]" />
+          <OrderIcon className="size-3.5" />
           <span>{isAsc ? "Asc" : "Desc"}</span>
         </Link>
       )}

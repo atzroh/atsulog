@@ -22,7 +22,7 @@ export function ArticleSearchForm({
   action = "/articles",
 }: ArticleSearchFormProps) {
   return (
-    <section className="mb-[4rem] space-y-[1rem]">
+    <section className="mb-16 space-y-4">
       <KeywordForm
         key={JSON.stringify(searchParams)}
         searchParams={searchParams}
@@ -59,12 +59,9 @@ function KeywordForm({
   return (
     <Form
       action={action}
-      className="flex items-center gap-[0.625rem] h-12 pl-[1.125rem] pr-[0.375rem] bg-white border border-gray-200 rounded-full transition-all hover:border-gray-300 focus-within:border-sky-300 focus-within:ring-4 focus-within:ring-sky-500/10"
+      className="flex items-center gap-2.5 h-12 pl-4.5 pr-1.5 bg-white border border-gray-200 rounded-full transition-[color,background-color,border-color,box-shadow] hover:border-gray-300 focus-within:border-sky-300 focus-within:ring-4 focus-within:ring-sky-500/10"
     >
-      <Search
-        className="size-[1.125rem] shrink-0 text-gray-400"
-        aria-hidden="true"
-      />
+      <Search className="size-4.5 shrink-0 text-muted" aria-hidden="true" />
       <label htmlFor="keyword" className="sr-only">
         Keyword
       </label>
@@ -85,9 +82,9 @@ function KeywordForm({
           type="button"
           onClick={clear}
           aria-label="Clear"
-          className="flex items-center justify-center size-9 shrink-0 rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-colors focus-visible:outline-2 focus-visible:outline-sky-500"
+          className="flex items-center justify-center size-9 shrink-0 rounded-full text-muted hover:bg-gray-100 hover:text-foreground transition-colors focus-visible:outline-2 focus-visible:outline-sky-500"
         >
-          <X className="size-[1.125rem]" aria-hidden="true" />
+          <X className="size-4.5" aria-hidden="true" />
         </button>
       )}
     </Form>

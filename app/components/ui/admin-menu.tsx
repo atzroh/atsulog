@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/app/lib/auth/auth-actions";
 
 const ITEM =
-  "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-black transition-colors";
+  "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-muted hover:bg-gray-50 hover:text-foreground transition-colors";
 
 /** Admin dropdown shown while logged in. Closes on outside click, Esc, or item click. */
 export function AdminMenu() {
@@ -37,7 +37,7 @@ export function AdminMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-0.5 rounded-full bg-gray-100 py-1 pl-1.5 pr-1 text-gray-700 hover:text-black transition-colors cursor-pointer"
+        className="flex items-center gap-0.5 rounded-full bg-gray-100 py-1 pl-1.5 pr-1 text-muted hover:text-foreground transition-colors cursor-pointer"
       >
         <UserCog className="size-4.5" />
         <ChevronDown className="size-3.5" />

@@ -143,7 +143,7 @@ body {
       @apply border-b border-gray-200;
     }
     & th {
-      @apply px-3 py-2 text-left text-sm font-bold text-gray-900 max-w-[20rem];
+      @apply px-3 py-2 text-left text-sm font-bold text-foreground max-w-[20rem];
     }
     & td {
       @apply border-b border-gray-200 px-3 py-2 text-sm text-gray-700 max-w-[20rem];
@@ -160,7 +160,7 @@ body {
        pins the padding to the p-4 token instead of the theme's font-relative
        1em. Specificity ties with the theme's rule; this layer wins on order. */
     & pre {
-      @apply bg-gray-900 rounded-[8px] p-4;
+      @apply bg-gray-900 rounded-lg p-4;
       color: #f8f8f2;
       /* The typography plugin puts `overflow-x: auto` on `pre`. The frame is
          not the scroll box any more, and it no longer carries scrollbar
@@ -185,7 +185,7 @@ body {
       color: inherit;
     }
     & :not(pre) > code {
-      @apply bg-gray-100 text-sky-600 px-1.5 py-0.5 rounded-[4px] font-medium;
+      @apply bg-gray-100 text-sky-600 px-1.5 py-0.5 rounded-sm font-medium;
       &::before,
       &::after {
         content: none;
@@ -207,7 +207,7 @@ body {
        block, centred with auto margins. The height follows the width, since
        some types (journey) write a fixed one that leaves blank space. */
     & pre:has(> code.language-mermaid) {
-      @apply bg-gray-50 border border-gray-200 text-gray-600;
+      @apply bg-gray-50 border border-gray-200 text-muted;
     }
     & .mermaid-diagram {
       @apply my-8;
@@ -263,13 +263,13 @@ body {
         .table-scroll,
         code.language-mermaid
       )::-webkit-scrollbar-thumb {
-      @apply bg-gray-200 rounded-[4px];
+      @apply bg-gray-200 rounded-sm;
       &:hover {
         @apply bg-gray-300;
       }
     }
     & pre > code::-webkit-scrollbar-thumb {
-      @apply bg-white/15 rounded-[4px];
+      @apply bg-white/15 rounded-sm;
       &:hover {
         @apply bg-white/30;
       }
@@ -287,7 +287,7 @@ body {
 
     /* Links */
     & a {
-      @apply text-sky-500 no-underline font-medium hover:underline;
+      @apply text-sky-600 no-underline font-medium hover:underline;
     }
 
     /* Link Cards — a paragraph holding nothing but a URL, drawn as the page it
@@ -308,7 +308,7 @@ body {
        stands the same height. A card without one keeps sizing to its text —
        a URL and a host name do not need 9rem of frame around them. */
     & a.link-card {
-      @apply my-8 flex items-stretch gap-4 overflow-hidden rounded-[8px]
+      @apply my-8 flex items-stretch gap-4 overflow-hidden rounded-lg
         border border-gray-200 bg-white no-underline font-normal text-inherit;
       &:hover {
         @apply no-underline border-gray-300 bg-gray-50;
@@ -321,7 +321,7 @@ body {
       @apply flex flex-1 min-w-0 flex-col justify-center gap-1 p-4;
     }
     & a.link-card .link-card-title {
-      @apply text-sm font-bold text-gray-900 line-clamp-2 break-words;
+      @apply text-sm font-bold text-foreground line-clamp-2 break-words;
     }
     /* No title to show, so the URL is the title — and a URL has no spaces to
        break at. */
@@ -329,10 +329,10 @@ body {
       @apply font-medium break-all;
     }
     & a.link-card .link-card-description {
-      @apply text-xs text-gray-500 line-clamp-2 break-words;
+      @apply text-xs text-muted line-clamp-2 break-words;
     }
     & a.link-card .link-card-site {
-      @apply mt-1 flex min-w-0 items-center gap-1.5 text-xs text-gray-500;
+      @apply mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted;
     }
     /* One line, always: a site name wrapping to two is what would outgrow the
        fixed height above, and on a phone "X (formerly Twitter)" does. */
@@ -352,7 +352,7 @@ body {
        because the typography plugin sets italic, and Japanese fonts have no
        italic glyphs — browsers would slant them mechanically. */
     & blockquote {
-      @apply border-l-4 border-sky-300 bg-sky-50 py-1 pl-4 rounded-r-[8px] text-gray-700;
+      @apply border-l-4 border-sky-300 bg-sky-50 py-1 pl-4 rounded-r-lg text-gray-700;
       & p::before,
       & p::after {
         content: none;
@@ -363,7 +363,7 @@ body {
        35rem is the smallest cap that still lets a landscape screenshot fill the
        720px column (768px container minus the px-6 gutters in layout.tsx). */
     & img {
-      @apply max-w-full h-auto max-h-[35rem] mx-auto rounded-[8px];
+      @apply max-w-full h-auto max-h-[35rem] mx-auto rounded-lg;
     }
 
     /* Lists
@@ -391,7 +391,7 @@ body {
       @apply ps-0;
     }
     & ul {
-      @apply list-disc marker:text-gray-900;
+      @apply list-disc marker:text-foreground;
       & ul {
         @apply list-[circle];
         & ul {
@@ -413,7 +413,7 @@ body {
     }
     & li.task-list-item > input[type="checkbox"] {
       @apply appearance-none inline-block shrink-0 w-[1.05em] h-[1.05em] mr-2
-        align-[-0.15em] rounded-[4px] border border-gray-300 bg-white;
+        align-[-0.15em] rounded-sm border border-gray-300 bg-white;
     }
     & li.task-list-item > input[type="checkbox"]:checked {
       @apply bg-sky-500 border-sky-500;
@@ -423,7 +423,7 @@ body {
       background-size: 0.75em;
     }
     & li.task-list-item:has(> input[type="checkbox"]:checked) {
-      @apply text-gray-500 line-through;
+      @apply text-muted line-through;
     }
   }
 }

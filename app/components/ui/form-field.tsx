@@ -34,7 +34,7 @@ export function FormField({
     <div className="flex flex-col space-y-2">
       <label
         htmlFor={id}
-        className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center"
+        className="text-xs font-semibold text-muted uppercase tracking-wider flex items-center"
       >
         {Icon && <Icon className="size-3 mr-1.5" />}
         {displayLabel}
@@ -55,7 +55,7 @@ export function FormField({
         placeholder={placeholder}
         list={candidates ? listId : undefined}
         autoComplete={candidates ? "off" : undefined}
-        className="w-full px-[1rem] py-[0.5rem] bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all placeholder:text-gray-400"
+        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-[color,background-color,border-color,box-shadow] placeholder:text-gray-400"
       />
       {candidates && candidates.length > 0 && (
         <datalist id={listId}>

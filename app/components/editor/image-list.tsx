@@ -17,7 +17,7 @@ function formatSize(bytes: number): string {
 /** Stored images with the articles using them; unused ones can be deleted. */
 export function ImageList({ images }: { images: ImageEntry[] }) {
   if (images.length === 0) {
-    return <p className="text-sm text-gray-400">No images found.</p>;
+    return <p className="text-sm text-muted">No images found.</p>;
   }
 
   // Unused first, since those are what this page is for.
@@ -45,10 +45,10 @@ export function ImageList({ images }: { images: ImageEntry[] }) {
             />
           </a>
           <div className="min-w-0 flex-1 space-y-1 text-sm">
-            <p className="truncate font-mono font-medium text-gray-900">
+            <p className="truncate font-mono font-medium text-foreground">
               {image.hash}
             </p>
-            <p className="text-gray-400">{formatSize(image.size)}</p>
+            <p className="text-muted">{formatSize(image.size)}</p>
             {image.users.length === 0 ? (
               <p className="text-amber-600">Unused</p>
             ) : (

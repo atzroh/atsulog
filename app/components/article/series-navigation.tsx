@@ -17,8 +17,8 @@ export function SeriesNavigation({
   }
 
   return (
-    <section className="bg-gray-50 rounded-xl p-8 mb-12">
-      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6 flex items-center justify-between">
+    <section className="bg-gray-50 rounded-2xl p-8 mb-12">
+      <h3 className="text-sm font-semibold text-muted uppercase tracking-wider mb-6 flex items-center justify-between">
         <span>More from {series}</span>
         <Link
           href={taxonomyHref("/articles", "series", series)}
@@ -52,7 +52,7 @@ function SeriesLink({
       className="group block p-4 bg-white border border-gray-100 rounded-lg hover:border-gray-300 transition-colors"
     >
       <div
-        className={`flex items-center text-xs text-gray-400 mb-2${isNext ? " justify-end" : ""}`}
+        className={`flex items-center text-xs text-muted mb-2${isNext ? " justify-end" : ""}`}
       >
         {isNext ? (
           <>

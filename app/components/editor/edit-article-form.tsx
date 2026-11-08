@@ -59,8 +59,8 @@ export function EditArticleForm({
   const publishLabel = published ? "Save Changes" : "Publish";
 
   return (
-    <form action={handleSubmitAction} className="space-y-[2rem] pb-[5rem]">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[1.5rem]">
+    <form action={handleSubmitAction} className="space-y-8 pb-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           id="series"
           value={series}
@@ -99,7 +99,7 @@ export function EditArticleForm({
 
       <MarkdownField value={currentContent} onChange={setCurrentContent} />
 
-      <div className="pt-[1.5rem] border-t border-gray-100 flex justify-end space-x-4">
+      <div className="pt-6 border-t border-gray-100 flex justify-end space-x-4">
         {!published && (
           <Button
             type="submit"
@@ -107,7 +107,7 @@ export function EditArticleForm({
             value="draft"
             icon={FileText}
             variant="outline"
-            className="px-[2rem] py-[0.75rem]"
+            className="px-8 py-3"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Saving..." : "Save Draft"}
@@ -119,7 +119,7 @@ export function EditArticleForm({
           value="publish"
           icon={published ? Save : Check}
           variant="primary"
-          className="px-[2.5rem] py-[0.75rem]"
+          className="px-10 py-3"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Saving..." : publishLabel}

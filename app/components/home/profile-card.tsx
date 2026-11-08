@@ -21,7 +21,7 @@ export function ProfileCard({ profile }: { profile: GitHubProfile }) {
         />
         <div className="min-w-0 flex-1 space-y-1">
           <p className="text-lg font-bold tracking-tight">{name ?? login}</p>
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm text-gray-600">
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm text-muted">
             {bio && <span className="whitespace-pre-line">{bio}</span>}
             {location && (
               <span className="inline-flex items-center gap-1 text-muted">
