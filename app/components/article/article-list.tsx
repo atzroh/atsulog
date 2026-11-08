@@ -6,14 +6,11 @@ import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 
 type ArticleListProps = {
   articles: ArticleMetadata[];
-  basePath?: string;
+  basePath: string;
 };
 
 /** The article cards, or a "not found" state when there are none. */
-export function ArticleList({
-  articles,
-  basePath = "/articles",
-}: ArticleListProps) {
+export function ArticleList({ articles, basePath }: ArticleListProps) {
   if (articles.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
