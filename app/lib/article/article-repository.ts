@@ -10,7 +10,9 @@ import type {
   ArticlePage,
   ArticleScope,
   ArticleSearchParams,
+  CategoryCount,
   SeriesNeighbors,
+  TagCount,
   Taxonomies,
 } from "@/app/lib/article/article-types";
 import {
@@ -167,6 +169,37 @@ export async function getTaxonomies(scope: ArticleScope): Promise<Taxonomies> {
        WHERE ${where.sql} AND COALESCE(a.series, '') != '' ORDER BY 1`,
     ),
   };
+}
+
+/** Categories in `scope` with their article counts, most articles first. */
+export async function getCategoryCounts(
+  scope: ArticleScope,
+): Promise<CategoryCount[]> {
+  await connection();
+  const where = scopeCondition(scope);
+  const rows = getArticleDb()
+    .prepare(
+      `SELECT a.category, COUNT(*) AS count FROM articles a
+       WHERE ${where.sql} GROUP BY a.category ORDER BY count DESC, a.category`,
+    )
+    .all(...where.params) as CategoryCount[];
+  // Rows have a null prototype, which Client Components reject.
+  return rows.map(({ category, count }) => ({ category, count }));
+}
+
+/** Tags in `scope` with their article counts, in name order. */
+export async function getTagCounts(scope: ArticleScope): Promise<TagCount[]> {
+  await connection();
+  const where = scopeCondition(scope);
+  const rows = getArticleDb()
+    .prepare(
+      `SELECT t.tag, COUNT(*) AS count FROM article_tags t
+       JOIN articles a ON a.slug = t.slug WHERE ${where.sql}
+       GROUP BY t.tag ORDER BY t.tag`,
+    )
+    .all(...where.params) as TagCount[];
+  // Rows have a null prototype, which Client Components reject.
+  return rows.map(({ tag, count }) => ({ tag, count }));
 }
 
 /** The published articles on either side of `article` in its series. */

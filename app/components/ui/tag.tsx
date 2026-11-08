@@ -9,6 +9,8 @@ type TagProps = {
   variant?: TagVariant;
   /** Shows an X; the link is expected to drop this tag. */
   removable?: boolean;
+  /** Shown after the label, e.g. the number of articles. */
+  count?: number;
 };
 
 const VARIANTS: Record<TagVariant, string> = {
@@ -33,6 +35,7 @@ export function Tag({
   href,
   variant = "tag",
   removable = false,
+  count,
 }: TagProps) {
   const Icon = ICONS[variant];
 
@@ -42,6 +45,9 @@ export function Tag({
     <>
       <Icon className="size-3 mr-1" aria-hidden="true" />
       <span>{label}</span>
+      {count !== undefined && (
+        <span className="ml-1.5 opacity-70 tabular-nums">{count}</span>
+      )}
       {removable && <X className="size-3 ml-1 opacity-70" aria-hidden="true" />}
     </>
   );

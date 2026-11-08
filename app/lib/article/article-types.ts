@@ -62,3 +62,15 @@ export type SeriesNeighbors = {
   previous: ArticleMetadata | null;
   next: ArticleMetadata | null;
 };
+
+/** A category with the number of articles in it. */
+export type CategoryCount = {
+  category: string;
+  count: number;
+};
+
+/** A tag with the number of articles carrying it. */
+export type TagCount = {
+  tag: string;
+  count: number;
+};
