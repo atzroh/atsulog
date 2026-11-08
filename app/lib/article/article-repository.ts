@@ -11,7 +11,6 @@ import type {
   ArticleScope,
   ArticleSearchParams,
   SeriesNeighbors,
-  SiteStatsData,
   Taxonomies,
 } from "@/app/lib/article/article-types";
 import {
@@ -168,22 +167,6 @@ export async function getTaxonomies(scope: ArticleScope): Promise<Taxonomies> {
        WHERE ${where.sql} AND COALESCE(a.series, '') != '' ORDER BY 1`,
     ),
   };
-}
-
-/** The size of `scope` and its oldest date. */
-export async function getSiteStats(
-  scope: ArticleScope,
-): Promise<SiteStatsData> {
-  await connection();
-  const where = scopeCondition(scope);
-  const { articleCount, launchedAt } = getArticleDb()
-    .prepare(
-      `SELECT COUNT(*) AS articleCount, MIN(a.created_at) AS launchedAt
-       FROM articles a WHERE ${where.sql}`,
-    )
-    .get(...where.params) as SiteStatsData;
-  // Rows have a null prototype, which Client Components reject.
-  return { articleCount, launchedAt };
 }
 
 /** The published articles on either side of `article` in its series. */

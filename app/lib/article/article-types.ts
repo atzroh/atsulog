@@ -49,12 +49,6 @@ export type TaxonomyCandidates = {
 /** Sorted unique tags, categories and series. */
 export type Taxonomies = Required<TaxonomyCandidates>;
 
-/** Article count, plus launchedAt (the oldest createdAt). */
-export type SiteStatsData = {
-  articleCount: number;
-  launchedAt: string | null;
-};
-
 /** One page of search results. */
 export type ArticlePage = {
   items: ArticleMetadata[];
