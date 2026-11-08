@@ -23,12 +23,7 @@ export const siteConfig = {
   loginLockMinutes: 15,
 
   // Article listing
-<<<<<<< HEAD
   articlesPerPage: 10,
-  recentArticlesCount: 3,
-=======
-  articlesPerPage: 6,
->>>>>>> refactor/remove-home-stats-and-recent
   feedEntriesCount: 20,
   aboutSlug: "about",
 } as const;
