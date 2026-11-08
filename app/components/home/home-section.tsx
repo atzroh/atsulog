@@ -14,7 +14,7 @@ export function HomeSection({
 
   return (
     <section aria-labelledby={id} className="space-y-4">
-      <div className="flex items-baseline justify-between gap-4 border-b border-gray-100 pb-2">
+      <div className="flex items-baseline justify-between gap-4">
         <h2 id={id} className="text-4xl font-light uppercase tracking-wide">
           {title}
         </h2>

@@ -40,7 +40,7 @@ export function PaginatedArticleList({
         {search}
 
         <div className="flex flex-col gap-5">
-          <div className="flex items-center justify-between gap-4 border-b border-gray-100 pb-3">
+          <div className="flex items-center justify-between gap-4 border-b border-gray-200 pb-3">
             <p className="text-sm text-muted tabular-nums">
               {totalCount} {totalCount === 1 ? "article" : "articles"}
             </p>

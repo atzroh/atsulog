@@ -63,17 +63,17 @@ export default async function ArticlePage({
   return (
     <article>
       <header className="mb-12">
-        {/* Bold, unlike PageHeading: the title anchors the article. */}
-        <h1 className="mb-4 text-3xl font-bold tracking-tight">
+        {/* PageHeading's size and weight, without the uppercase. */}
+        <h1 className="mb-3 text-4xl font-light leading-snug tracking-tight">
           {article.title}
         </h1>
 
-        <ArticleMeta article={article} className="mb-6" />
+        <ArticleMeta article={article} className="mb-4" />
 
         <ArticleTaxonomies article={article} />
       </header>
 
-      <div className="mb-16">
+      <div>
         <MarkdownRenderer content={content} cards={cards} withToc />
       </div>
 

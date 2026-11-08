@@ -99,7 +99,7 @@ export function EditArticleForm({
 
       <MarkdownField value={currentContent} onChange={setCurrentContent} />
 
-      <div className="pt-6 border-t border-gray-100 flex justify-end space-x-4">
+      <div className="pt-6 border-t border-gray-200 flex justify-end space-x-4">
         {!published && (
           <Button
             type="submit"

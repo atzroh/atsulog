@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-/** The row of links that closes a page, under a rule. */
+/** The row of links that closes a page, set off by space alone. */
 export function PageNav({
   label,
   children,
@@ -11,10 +11,7 @@ export function PageNav({
   children: ReactNode;
 }) {
   return (
-    <nav
-      aria-label={label}
-      className="flex items-center justify-between border-t border-gray-100 pt-10"
-    >
+    <nav aria-label={label} className="flex items-center justify-between pt-10">
       {children}
     </nav>
   );

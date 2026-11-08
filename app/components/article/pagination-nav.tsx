@@ -148,7 +148,7 @@ export function PaginationNav({
   return (
     <nav
       aria-label="Pagination"
-      className="flex justify-center items-center mt-12 py-8 border-t border-gray-100"
+      className="flex justify-center items-center mt-12 py-8"
     >
       <div className="flex items-center space-x-2">
         <PageLink

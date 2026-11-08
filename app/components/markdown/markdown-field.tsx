@@ -41,7 +41,7 @@ export function MarkdownField({
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+      <div className="flex items-center justify-between">
         <label className={FIELD_LABEL}>{label}</label>
         <ModeToggle mode={mode} onToggle={setMode} />
       </div>

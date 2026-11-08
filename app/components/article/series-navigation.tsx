@@ -19,14 +19,14 @@ export function SeriesNavigation({
   }
 
   return (
-    <section className="bg-gray-50 rounded-2xl p-8 mb-12">
-      <div className="mb-6 flex items-center justify-between gap-4">
+    <section className="bg-gray-50 rounded-lg p-6 mb-12">
+      <div className="mb-4 flex items-center justify-between gap-4">
         <h3 className={SECTION_LABEL}>More from {series}</h3>
         <ArrowLink href={taxonomyHref("/articles", "series", series)}>
           View all in series
         </ArrowLink>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {previousInSeries && (
           <SeriesLink article={previousInSeries} direction="previous" />
         )}

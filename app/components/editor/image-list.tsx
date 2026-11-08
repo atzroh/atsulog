@@ -27,7 +27,7 @@ export function ImageList({ images }: { images: ImageEntry[] }) {
   ];
 
   return (
-    <ul className="divide-y divide-gray-100">
+    <ul className="divide-y divide-gray-200">
       {sorted.map((image) => (
         <li key={image.hash} className="flex items-center gap-4 py-4">
           <a

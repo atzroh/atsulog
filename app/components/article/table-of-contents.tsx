@@ -49,7 +49,7 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
               </a>
             )}
             {children.length > 0 && (
-              <ul className="mt-1.5 ml-1 border-l-2 border-gray-200 pl-3 space-y-1 text-[13px]">
+              <ul className="mt-1.5 ml-1 border-l border-gray-200 pl-3 space-y-1 text-[13px]">
                 {children.map((child) => (
                   <li key={child.id}>
                     <a

@@ -66,18 +66,24 @@ body {
     @apply prose max-w-none prose-sky;
 
     /* Headings
-       Hierarchy comes from size and leading space alone — no rules, no color.
-       Weight is pinned to bold at every level so headings read the same even
-       when Murecho has not loaded and an OS font with Regular/Bold only stands in.
-       `#` is capped below the 30px article title in articles/[slug]/page.tsx. */
+       Light, like the article title above them; size and the rule carry the
+       hierarchy.
+       `#` and `##` carry a short sky rule at the bottom left, the one accent
+       a heading gets. `#` is capped below the 36px article title in
+       articles/[slug]/page.tsx. */
+    & :is(h1, h2) {
+      @apply font-light mt-14 mb-5 pb-2;
+      background: linear-gradient(var(--color-sky-300), var(--color-sky-300))
+        left bottom / 2.5rem 2px no-repeat;
+    }
     & h1 {
-      @apply text-[1.75rem] font-bold mt-14 mb-4;
+      @apply text-[1.75rem];
     }
     & h2 {
-      @apply text-[1.625rem] font-bold mt-14 mb-4;
+      @apply text-[1.625rem];
     }
     & h3 {
-      @apply text-[1.3125rem] font-bold mt-10 mb-3;
+      @apply text-xl font-normal mt-10 mb-3;
     }
     & h4 {
       @apply text-base font-bold mt-7 mb-2;
@@ -284,9 +290,10 @@ body {
       overflow-wrap: anywhere;
     }
 
-    /* Links */
+    /* Links — always underlined, as the small links elsewhere are on hover,
+       so they stand apart from inline code in the same sky. */
     & a {
-      @apply text-sky-600 no-underline font-medium hover:underline;
+      @apply text-sky-600 font-medium underline underline-offset-2 hover:text-sky-800;
     }
 
     /* Link Cards — a paragraph holding nothing but a URL, drawn as the page it
@@ -349,9 +356,22 @@ body {
     /* Blockquotes
        Used as the article lead-in, not as a citation. `not-italic` is required
        because the typography plugin sets italic, and Japanese fonts have no
-       italic glyphs — browsers would slant them mechanically. */
+       italic glyphs — browsers would slant them mechanically.
+       One small opening mark at the top left, with no side rule: a rule is
+       what the table of contents just above it is drawn with. The plugin's
+       own marks sit on each `p`, so they are cleared for this one. */
     & blockquote {
-      @apply border-l-4 border-sky-300 bg-sky-50 py-1 pl-4 rounded-r-lg text-gray-700;
+      @apply relative border-none pl-8 text-muted;
+      &::before {
+        @apply absolute left-0 top-0.5 text-2xl leading-none font-light text-gray-300;
+        content: "\201C";
+      }
+      & > :first-child {
+        @apply mt-0;
+      }
+      & > :last-child {
+        @apply mb-0;
+      }
       & p::before,
       & p::after {
         content: none;

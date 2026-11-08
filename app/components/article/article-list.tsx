@@ -13,7 +13,7 @@ type ArticleListProps = {
   empty?: ReactNode;
 };
 
-/** The articles as rows under rules, or `empty` when there are none. */
+/** The articles as rows set apart by space, or `empty` when there are none. */
 export function ArticleList({
   articles,
   basePath,
@@ -48,7 +48,7 @@ function ArticleListItem({
   const date = sortBy === "modified" ? article.modifiedAt : article.createdAt;
 
   return (
-    <li className="flex flex-col gap-2 border-b border-gray-100 py-5 first:pt-0 last:border-b-0">
+    <li className="flex flex-col gap-2 py-5 first:pt-0 last:pb-0">
       <Link
         href={`${basePath}/${article.slug}`}
         className="group flex flex-col gap-1"
