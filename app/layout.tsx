@@ -1,11 +1,11 @@
-import { Home, Newspaper, Pencil, User, type LucideIcon } from "lucide-react";
+import { Home, Search, User, type LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { siteConfig } from "@/app/lib/site-config";
 import { isAuthenticated } from "@/app/lib/auth/auth";
-import { LogoutButton } from "@/app/components/ui/logout-button";
+import { AdminMenu } from "@/app/components/ui/admin-menu";
 import { GaOptOut } from "@/app/components/analytics/ga-opt-out";
 import { SocialLinks } from "@/app/components/ui/social-links";
 import "./globals.css";
@@ -50,22 +50,19 @@ export default async function RootLayout({
               </Link>
               {authenticated && (
                 <div className="flex items-center border-l border-gray-100 pl-4">
-                  <LogoutButton />
+                  <AdminMenu />
                 </div>
               )}
             </div>
 
             <div className="flex items-center space-x-6">
               <NavLink href="/" icon={Home} label="Home" />
-              <NavLink href="/articles" icon={Newspaper} label="Articles" />
               <NavLink
                 href={`/articles/${siteConfig.aboutSlug}`}
                 icon={User}
                 label="About"
               />
-              {authenticated && (
-                <NavLink href="/edit" icon={Pencil} label="Edit" />
-              )}
+              <NavLink href="/articles" icon={Search} label="Search" />
             </div>
           </div>
         </header>
