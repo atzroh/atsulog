@@ -49,7 +49,7 @@ export default async function EditArticlePage({
       ),
       content,
     );
-    redirect(`/edit/`);
+    redirect("/admin/edit");
   }
 
   return (
@@ -69,7 +69,7 @@ export default async function EditArticlePage({
         className="border-t pt-[2.5rem] flex items-center justify-between"
       >
         <Link
-          href="/edit"
+          href="/admin/edit"
           className="text-sm font-medium text-gray-600 hover:text-black transition-colors flex items-center"
         >
           <ArrowLeft className="size-[1rem] mr-[0.5rem]" />

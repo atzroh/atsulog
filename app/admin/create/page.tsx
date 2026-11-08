@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { EditArticleForm } from "@/app/components/editor/edit-article-form";
 import {
   createArticle,
@@ -37,7 +39,7 @@ export default async function NewArticlePage() {
     const { content, ...form } = parseArticleForm(formData);
 
     await createArticle(buildNewArticle(form, new Date()), content);
-    redirect(`/edit/`);
+    redirect("/admin/edit");
   }
 
   return (
@@ -50,6 +52,15 @@ export default async function NewArticlePage() {
         articles={articles}
         candidates={taxonomies}
       />
+      <nav aria-label="Create navigation" className="border-t pt-[2.5rem]">
+        <Link
+          href="/admin"
+          className="text-sm font-medium text-gray-600 hover:text-black transition-colors flex items-center"
+        >
+          <ArrowLeft className="size-[1rem] mr-[0.5rem]" />
+          Back to Admin
+        </Link>
+      </nav>
     </main>
   );
 }

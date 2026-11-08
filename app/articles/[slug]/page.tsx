@@ -92,7 +92,7 @@ export default async function ArticlePage({
 
           {authenticated && (
             <Link
-              href={`/edit/${slug}`}
+              href={`/admin/edit/${slug}`}
               className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors flex items-center"
             >
               <Pencil className="size-[1rem] mr-[0.5rem]" />

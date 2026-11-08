@@ -22,7 +22,7 @@ export function DraftArticleList({
           {articles.map((article) => (
             <li key={article.slug}>
               <Link
-                href={`/edit/${article.slug}`}
+                href={`/admin/edit/${article.slug}`}
                 className="text-sky-600 hover:text-sky-700 hover:underline transition-colors"
               >
                 {article.title}

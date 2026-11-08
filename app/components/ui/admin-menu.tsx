@@ -1,22 +1,9 @@
 "use client";
 
-import {
-  ChevronDown,
-  Image as ImageIcon,
-  LogOut,
-  Pencil,
-  Plus,
-  UserCog,
-} from "lucide-react";
+import { ChevronDown, LayoutGrid, LogOut, UserCog } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/app/lib/auth/auth-actions";
-
-const LINKS = [
-  { href: "/edit", label: "Edit", Icon: Pencil },
-  { href: "/edit/create", label: "New", Icon: Plus },
-  { href: "/edit/images", label: "Images", Icon: ImageIcon },
-];
 
 const ITEM =
   "flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-black transition-colors";
@@ -60,18 +47,15 @@ export function AdminMenu() {
           role="menu"
           className="absolute left-0 top-full mt-2 w-44 rounded-lg border border-gray-200 bg-white p-1.5 shadow-lg"
         >
-          {LINKS.map(({ href, label, Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              role="menuitem"
-              onClick={() => setOpen(false)}
-              className={ITEM}
-            >
-              <Icon className="size-4" />
-              {label}
-            </Link>
-          ))}
+          <Link
+            href="/admin"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className={ITEM}
+          >
+            <LayoutGrid className="size-4" />
+            Admin
+          </Link>
           <div className="my-1 h-px bg-gray-100" />
           <form action={logoutAction}>
             <button

@@ -1,13 +1,11 @@
-import { Images, Plus } from "lucide-react";
 import { searchArticles } from "@/app/lib/article/article-repository";
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import { DraftArticleList } from "@/app/components/editor/draft-article-list";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
-import { DashboardLinkSection } from "@/app/components/editor/dashboard-link-section";
 import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 import { siteConfig } from "@/app/lib/site-config";
 
-export default async function EditDashboardPage({
+export default async function EditListPage({
   searchParams,
 }: {
   searchParams: Promise<ArticleSearchParams>;
@@ -26,21 +24,10 @@ export default async function EditDashboardPage({
 
   return (
     <main className="space-y-12">
-      <DashboardLinkSection
-        title="Create Articles"
-        href="/edit/create"
-        icon={Plus}
-        label="New Articles"
+      <ArticleSearchForm
+        searchParams={resolvedSearchParams}
+        action="/admin/edit"
       />
-
-      <DashboardLinkSection
-        title="Images"
-        href="/edit/images"
-        icon={Images}
-        label="Manage Images"
-      />
-
-      <ArticleSearchForm searchParams={resolvedSearchParams} action="/edit" />
 
       <div className="space-y-16">
         <DraftArticleList articles={drafts} />
@@ -48,7 +35,7 @@ export default async function EditDashboardPage({
         <PaginatedArticleList
           page={published}
           searchParams={resolvedSearchParams}
-          basePath="/edit"
+          basePath="/admin/edit"
         />
       </div>
     </main>

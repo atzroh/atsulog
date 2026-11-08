@@ -26,7 +26,7 @@ export async function loginAction(formData: FormData) {
   if (typeof password === "string" && passwordMatches(password)) {
     failures.delete(client);
     await createSession();
-    redirect("/edit");
+    redirect("/admin");
   }
   recordFailure(client);
   redirect("/login?error=invalid");

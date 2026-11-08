@@ -47,5 +47,5 @@ export async function deleteImageAction(hash: string) {
   }
 
   deleteImage(hash);
-  revalidatePath("/edit/images");
+  revalidatePath("/admin/images");
 }

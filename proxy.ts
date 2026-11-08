@@ -6,7 +6,7 @@ import { siteConfig } from "@/app/lib/site-config";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isProtectedRoute = pathname.startsWith("/edit");
+  const isProtectedRoute = pathname.startsWith("/admin");
   const isPublicAuthRoute = pathname === "/login";
 
   const isAuthenticated = !!(await verifySession(
@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isPublicAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL("/edit", request.url));
+    return NextResponse.redirect(new URL("/admin", request.url));
   }
 
   return NextResponse.next();

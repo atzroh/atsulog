@@ -20,11 +20,11 @@ export default async function ImagesPage() {
       <ImageList images={images} />
       <nav aria-label="Images navigation" className="border-t pt-[2.5rem]">
         <Link
-          href="/edit"
+          href="/admin"
           className="text-sm font-medium text-gray-600 hover:text-black transition-colors flex items-center"
         >
           <ArrowLeft className="size-[1rem] mr-[0.5rem]" />
-          Back to Edit List
+          Back to Admin
         </Link>
       </nav>
     </main>

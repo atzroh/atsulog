@@ -57,7 +57,7 @@ export function ImageList({ images }: { images: ImageEntry[] }) {
                   <span key={user.slug}>
                     {index > 0 && ", "}
                     <Link
-                      href={`/edit/${user.slug}`}
+                      href={`/admin/edit/${user.slug}`}
                       className="text-sky-600 hover:text-sky-700 hover:underline transition-colors"
                     >
                       {user.title}
