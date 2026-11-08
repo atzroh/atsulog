@@ -5,22 +5,17 @@ import { useRouter } from "next/navigation";
 import Form from "next/form";
 import { SearchFields } from "@/app/components/article/search-fields";
 import { Button } from "@/app/components/ui/button";
-import type {
-  ArticleSearchParams,
-  TaxonomyCandidates,
-} from "@/app/lib/article/article-types";
+import type { ArticleSearchParams } from "@/app/lib/article/article-types";
 import { PageHeading } from "@/app/components/ui/page-heading";
 
 type ArticleSearchFormProps = {
   searchParams: ArticleSearchParams;
-  candidates?: TaxonomyCandidates;
   action?: string;
 };
 
 /** next/form turns the fields into query params and prefetches the result. */
 export function ArticleSearchForm({
   searchParams,
-  candidates,
   action = "/articles",
 }: ArticleSearchFormProps) {
   const router = useRouter();
@@ -32,7 +27,6 @@ export function ArticleSearchForm({
         <SearchFields
           key={JSON.stringify(searchParams)}
           searchParams={searchParams}
-          candidates={candidates}
         />
 
         <div className="flex items-center space-x-[1rem]">

@@ -1,8 +1,5 @@
 import { Images, Plus } from "lucide-react";
-import {
-  getTaxonomies,
-  searchArticles,
-} from "@/app/lib/article/article-repository";
+import { searchArticles } from "@/app/lib/article/article-repository";
 import { PaginatedArticleList } from "@/app/components/article/paginated-article-list";
 import { DraftArticleList } from "@/app/components/editor/draft-article-list";
 import { ArticleSearchForm } from "@/app/components/article/article-search-form";
@@ -16,8 +13,6 @@ export default async function EditDashboardPage({
   searchParams: Promise<ArticleSearchParams>;
 }) {
   const resolvedSearchParams = await searchParams;
-
-  const taxonomies = await getTaxonomies("all");
 
   const { items: drafts } = await searchArticles(
     resolvedSearchParams,
@@ -45,11 +40,7 @@ export default async function EditDashboardPage({
         label="Manage Images"
       />
 
-      <ArticleSearchForm
-        searchParams={resolvedSearchParams}
-        candidates={taxonomies}
-        action="/edit"
-      />
+      <ArticleSearchForm searchParams={resolvedSearchParams} action="/edit" />
 
       <div className="space-y-16">
         <DraftArticleList articles={drafts} />
