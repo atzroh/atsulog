@@ -23,7 +23,7 @@ export const siteConfig = {
   loginLockMinutes: 15,
 
   // Article listing
-  articlesPerPage: 6,
+  articlesPerPage: 10,
   recentArticlesCount: 3,
   feedEntriesCount: 20,
   aboutSlug: "about",
