@@ -5,12 +5,10 @@ import {
   getTagCounts,
   searchArticles,
 } from "@/app/lib/article/article-repository";
-import { getGitHubProfile } from "@/app/lib/github/github-profile";
 import { HeroTitle } from "@/app/components/home/hero-title";
 import { LatestArticle } from "@/app/components/home/latest-article";
 import { CategoryGrid } from "@/app/components/home/category-grid";
 import { TagCloud } from "@/app/components/home/tag-cloud";
-import { ProfileCard } from "@/app/components/home/profile-card";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -23,19 +21,17 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default async function Home() {
-  const [latestPage, categories, tags, profile] = await Promise.all([
+  const [latestPage, categories, tags] = await Promise.all([
     // The default order is newest first.
     searchArticles({}, "public", 1),
     getCategoryCounts("public"),
     getTagCounts("public"),
-    getGitHubProfile(),
   ]);
   const latest = latestPage.items[0];
 
   return (
     <div className="space-y-16">
       <HeroTitle />
-      {profile && <ProfileCard profile={profile} />}
       {latest && <LatestArticle article={latest} />}
       <CategoryGrid categories={categories} />
       <TagCloud tags={tags} />

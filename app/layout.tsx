@@ -9,6 +9,8 @@ import { isAuthenticated } from "@/app/lib/auth/auth";
 import { AdminMenu } from "@/app/components/ui/admin-menu";
 import { GaOptOut } from "@/app/components/analytics/ga-opt-out";
 import { SocialLinks } from "@/app/components/ui/social-links";
+import { AuthorLine } from "@/app/components/ui/author-line";
+import { getGitHubProfile } from "@/app/lib/github/github-profile";
 import "./globals.css";
 
 // Variable font, so every weight from 100 to 900 is available.
@@ -32,7 +34,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const currentYear = new Date().getFullYear();
-  const authenticated = await isAuthenticated();
+  const [authenticated, profile] = await Promise.all([
+    isAuthenticated(),
+    getGitHubProfile(),
+  ]);
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
@@ -79,6 +84,7 @@ export default async function RootLayout({
           <main>{children}</main>
         </div>
         <footer className="max-w-3xl mx-auto w-full px-6 py-8 border-t border-gray-200 text-sm text-muted text-center">
+          {profile && <AuthorLine profile={profile} />}
           <SocialLinks />
           <Link href="/privacy" className="block mb-2 hover:text-foreground">
             Privacy Policy
