@@ -20,24 +20,22 @@ export function PageNav({
   );
 }
 
-/** A link in a PageNav; the icon goes after the label with `iconAfter`. */
+/** A link in a PageNav, grey until hovered like ArrowLink; links on the right take `iconAfter`. */
 export function PageNavLink({
   href,
   icon: Icon,
   iconAfter = false,
-  className = "text-muted hover:text-foreground",
   children,
 }: {
   href: string;
   icon: LucideIcon;
   iconAfter?: boolean;
-  className?: string;
   children: ReactNode;
 }) {
   return (
     <Link
       href={href}
-      className={`flex items-center gap-2 text-sm font-medium transition-colors ${className}`}
+      className="flex items-center gap-2 text-sm font-medium text-muted hover:text-sky-600 hover:underline underline-offset-2 transition-colors"
     >
       {!iconAfter && <Icon className="size-4" aria-hidden="true" />}
       {children}

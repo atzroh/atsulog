@@ -101,7 +101,7 @@ export async function searchArticles(
 
   if (perPage === undefined) {
     const items = selectMetadata(db, where, orderBy);
-    return { items, currentPage: 1, totalPages: 1 };
+    return { items, currentPage: 1, totalPages: 1, totalCount: items.length };
   }
 
   const { total } = db
@@ -114,7 +114,7 @@ export async function searchArticles(
     where,
     `${orderBy} LIMIT ${perPage} OFFSET ${(currentPage - 1) * perPage}`,
   );
-  return { items, currentPage, totalPages };
+  return { items, currentPage, totalPages, totalCount: total };
 }
 
 /** The newest public articles with their content, for the feed. */

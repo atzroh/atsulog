@@ -1,4 +1,5 @@
 import { ChevronRight } from "lucide-react";
+import { SECTION_LABEL } from "@/app/components/ui/label-styles";
 import type { TocItem } from "@/app/lib/markdown/markdown-rendering";
 
 type TocGroup = { heading: TocItem | null; children: TocItem[] };
@@ -26,7 +27,9 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
 
   return (
     <details open className="group border-l-2 border-gray-200 pl-5 mb-12">
-      <summary className="cursor-pointer list-none text-sm font-semibold text-muted uppercase tracking-wider [&::-webkit-details-marker]:hidden">
+      <summary
+        className={`cursor-pointer list-none ${SECTION_LABEL} [&::-webkit-details-marker]:hidden`}
+      >
         <ChevronRight
           aria-hidden="true"
           strokeWidth={2.5}
@@ -51,7 +54,7 @@ export function TableOfContents({ items }: { items: TocItem[] }) {
                   <li key={child.id}>
                     <a
                       href={`#${child.id}`}
-                      className="text-foreground hover:text-sky-600"
+                      className="text-muted hover:text-sky-600"
                     >
                       {child.text}
                     </a>

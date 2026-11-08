@@ -9,7 +9,7 @@ export function TagCloud({ tags }: { tags: TagCount[] }) {
 
   return (
     <HomeSection title="Tags">
-      <ul className="flex flex-wrap gap-2">
+      <ul className="flex flex-wrap gap-x-4 gap-y-2">
         {tags.map(({ tag, count }) => (
           <li key={tag}>
             <Tag

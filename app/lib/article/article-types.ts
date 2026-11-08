@@ -54,6 +54,8 @@ export type ArticlePage = {
   items: ArticleMetadata[];
   currentPage: number;
   totalPages: number;
+  /** Matches across every page. */
+  totalCount: number;
 };
 
 /** The published neighbours of an article within its series. */

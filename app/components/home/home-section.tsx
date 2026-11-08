@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-/** A home page block under a small label, with an optional aside. */
+/** A home page block under a light uppercase heading like PageHeading, with an optional aside. */
 export function HomeSection({
   title,
   aside,
@@ -15,10 +15,7 @@ export function HomeSection({
   return (
     <section aria-labelledby={id} className="space-y-4">
       <div className="flex items-baseline justify-between gap-4 border-b border-gray-100 pb-2">
-        <h2
-          id={id}
-          className="text-sm font-semibold uppercase tracking-wider text-muted"
-        >
+        <h2 id={id} className="text-4xl font-light uppercase tracking-wide">
           {title}
         </h2>
         {aside}

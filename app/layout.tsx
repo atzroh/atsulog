@@ -1,5 +1,6 @@
 import { Home, Search, User, type LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
+import { Murecho } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -9,6 +10,13 @@ import { AdminMenu } from "@/app/components/ui/admin-menu";
 import { GaOptOut } from "@/app/components/analytics/ga-opt-out";
 import { SocialLinks } from "@/app/components/ui/social-links";
 import "./globals.css";
+
+// Variable font, so every weight from 100 to 900 is available.
+const murecho = Murecho({
+  subsets: ["latin"],
+  variable: "--font-murecho",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -28,7 +36,7 @@ export default async function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
-    <html lang={siteConfig.htmlLang}>
+    <html lang={siteConfig.htmlLang} className={murecho.variable}>
       <body className="min-h-screen flex flex-col">
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100">
           <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">

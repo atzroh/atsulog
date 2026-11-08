@@ -46,3 +46,11 @@ export function formatDate(value: string): string {
     timeZone: siteConfig.timeZone,
   });
 }
+
+/** The date alone, e.g. 2026/11/06 in ja-JP. */
+export function formatDay(value: string): string {
+  return new Date(value).toLocaleDateString(siteConfig.locale, {
+    dateStyle: "medium",
+    timeZone: siteConfig.timeZone,
+  });
+}

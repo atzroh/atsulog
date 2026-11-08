@@ -9,7 +9,7 @@ export function CategoryGrid({ categories }: { categories: CategoryCount[] }) {
 
   return (
     <HomeSection title="Categories">
-      <ul className="flex flex-wrap gap-2">
+      <ul className="flex flex-wrap gap-x-4 gap-y-2">
         {categories.map(({ category, count }) => (
           <li key={category}>
             <Tag

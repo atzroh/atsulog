@@ -14,7 +14,6 @@ import { ArticleTaxonomies } from "@/app/components/article/article-taxonomies";
 import { SeriesNavigation } from "@/app/components/article/series-navigation";
 import { siteConfig } from "@/app/lib/site-config";
 import { buildPageMetadata } from "@/app/lib/page-metadata";
-import { PageHeading } from "@/app/components/ui/page-heading";
 import { PageNav, PageNavLink } from "@/app/components/ui/page-nav";
 
 export async function generateMetadata({
@@ -64,7 +63,10 @@ export default async function ArticlePage({
   return (
     <article>
       <header className="mb-12">
-        <PageHeading className="mb-4">{article.title}</PageHeading>
+        {/* Bold, unlike PageHeading: the title anchors the article. */}
+        <h1 className="mb-4 text-3xl font-bold tracking-tight">
+          {article.title}
+        </h1>
 
         <ArticleMeta article={article} className="mb-6" />
 
@@ -84,11 +86,7 @@ export default async function ArticlePage({
           </PageNavLink>
 
           {authenticated && (
-            <PageNavLink
-              href={`/admin/edit/${slug}`}
-              icon={Pencil}
-              className="text-emerald-600 hover:text-emerald-700"
-            >
+            <PageNavLink href={`/admin/edit/${slug}`} icon={Pencil} iconAfter>
               Edit this article
             </PageNavLink>
           )}

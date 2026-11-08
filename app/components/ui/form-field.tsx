@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { FIELD_LABEL } from "@/app/components/ui/label-styles";
 
 type FormFieldProps = {
   id: string;
@@ -32,10 +33,7 @@ export function FormField({
 
   return (
     <div className="flex flex-col space-y-2">
-      <label
-        htmlFor={id}
-        className="text-xs font-semibold text-muted uppercase tracking-wider flex items-center"
-      >
+      <label htmlFor={id} className={`${FIELD_LABEL} flex items-center`}>
         {Icon && <Icon className="size-3 mr-1.5" />}
         {displayLabel}
         {required && (

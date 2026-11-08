@@ -5,6 +5,8 @@ import type {
   SeriesNeighbors,
 } from "@/app/lib/article/article-types";
 import { taxonomyHref } from "@/app/lib/article/article-utils";
+import { SECTION_LABEL } from "@/app/components/ui/label-styles";
+import { ArrowLink } from "@/app/components/ui/arrow-link";
 
 /** Links to the previous and next published articles in the series, by seriesOrder. */
 export function SeriesNavigation({
@@ -18,15 +20,12 @@ export function SeriesNavigation({
 
   return (
     <section className="bg-gray-50 rounded-2xl p-8 mb-12">
-      <h3 className="text-sm font-semibold text-muted uppercase tracking-wider mb-6 flex items-center justify-between">
-        <span>More from {series}</span>
-        <Link
-          href={taxonomyHref("/articles", "series", series)}
-          className="text-xs font-medium text-sky-600 hover:text-sky-700 transition-colors"
-        >
-          View all in series &rarr;
-        </Link>
-      </h3>
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <h3 className={SECTION_LABEL}>More from {series}</h3>
+        <ArrowLink href={taxonomyHref("/articles", "series", series)}>
+          View all in series
+        </ArrowLink>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {previousInSeries && (
           <SeriesLink article={previousInSeries} direction="previous" />

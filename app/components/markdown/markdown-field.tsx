@@ -6,6 +6,7 @@ import {
 } from "@/app/components/markdown/markdown-toolbar";
 import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
 import { useMarkdownField } from "@/app/lib/markdown/use-markdown-field";
+import { FIELD_LABEL } from "@/app/components/ui/label-styles";
 
 type MarkdownFieldProps = {
   value: string;
@@ -41,9 +42,7 @@ export function MarkdownField({
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-        <label className="text-xs font-semibold text-muted uppercase tracking-wider">
-          {label}
-        </label>
+        <label className={FIELD_LABEL}>{label}</label>
         <ModeToggle mode={mode} onToggle={setMode} />
       </div>
 

@@ -14,11 +14,9 @@ type TagProps = {
 };
 
 const VARIANTS: Record<TagVariant, string> = {
-  tag: "bg-sky-50 text-sky-600 border-sky-100/50 hover:bg-sky-500 hover:text-white hover:border-sky-500",
-  category:
-    "bg-emerald-50 text-emerald-600 border-emerald-100/50 hover:bg-emerald-500 hover:text-white hover:border-emerald-500",
-  series:
-    "bg-violet-50 text-violet-600 border-violet-100/50 hover:bg-violet-500 hover:text-white hover:border-violet-500",
+  tag: "text-sky-600 hover:text-sky-700",
+  category: "text-emerald-600 hover:text-emerald-700",
+  series: "text-violet-600 hover:text-violet-700",
 };
 
 const ICONS = {
@@ -29,6 +27,7 @@ const ICONS = {
 
 /**
  * A tag for categories, series or search tags, optionally rendered as a link.
+ * Drawn as coloured text with an icon, without a frame.
  */
 export function Tag({
   label,
@@ -39,16 +38,16 @@ export function Tag({
 }: TagProps) {
   const Icon = ICONS[variant];
 
-  const combinedStyles = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border transition-colors ${VARIANTS[variant]}`;
+  const combinedStyles = `inline-flex items-center gap-1 text-xs font-medium transition-colors ${VARIANTS[variant]} ${href ? "hover:underline underline-offset-2" : ""}`;
 
   const content = (
     <>
-      <Icon className="size-3 mr-1" aria-hidden="true" />
+      <Icon className="size-3" aria-hidden="true" />
       <span>{label}</span>
       {count !== undefined && (
-        <span className="ml-1.5 opacity-70 tabular-nums">{count}</span>
+        <span className="opacity-60 tabular-nums">{count}</span>
       )}
-      {removable && <X className="size-3 ml-1 opacity-70" aria-hidden="true" />}
+      {removable && <X className="size-3 opacity-70" aria-hidden="true" />}
     </>
   );
 

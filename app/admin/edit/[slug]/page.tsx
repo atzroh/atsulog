@@ -71,12 +71,7 @@ export default async function EditArticlePage({
         {/* The public article route 404s on an unpublished article, so this
             link is only ever reachable once the draft has been published. */}
         {detail.metadata.published && (
-          <PageNavLink
-            href={`/articles/${slug}`}
-            icon={ExternalLink}
-            iconAfter
-            className="text-sky-600 hover:text-sky-700"
-          >
+          <PageNavLink href={`/articles/${slug}`} icon={ExternalLink} iconAfter>
             View this article
           </PageNavLink>
         )}

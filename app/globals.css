@@ -20,6 +20,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family:
+    var(--font-murecho),
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -66,10 +67,8 @@ body {
 
     /* Headings
        Hierarchy comes from size and leading space alone — no rules, no color.
-       Weight is pinned to bold at every level on purpose: no webfont is loaded
-       for prose (KaTeX ships its own faces, but they only ever draw math), so
-       Japanese falls back to OS fonts that ship Regular/Bold only, and the
-       CSS font matching rules resolve 600 to Bold and 500 to Regular anyway.
+       Weight is pinned to bold at every level so headings read the same even
+       when Murecho has not loaded and an OS font with Regular/Bold only stands in.
        `#` is capped below the 30px article title in articles/[slug]/page.tsx. */
     & h1 {
       @apply text-[1.75rem] font-bold mt-14 mb-4;

@@ -22,7 +22,7 @@ export function ArticleSearchForm({
   action = "/articles",
 }: ArticleSearchFormProps) {
   return (
-    <section className="mb-16 space-y-4">
+    <section className="space-y-4">
       <KeywordForm
         key={JSON.stringify(searchParams)}
         searchParams={searchParams}

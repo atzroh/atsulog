@@ -1,9 +1,9 @@
-import { ArrowRight, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import type { GitHubProfile } from "@/app/lib/github/github-profile";
 import { siteConfig } from "@/app/lib/site-config";
 import { HomeSection } from "@/app/components/home/home-section";
+import { ArrowLink } from "@/app/components/ui/arrow-link";
 
 /** The author's GitHub profile; fields left blank on GitHub are skipped. */
 export function ProfileCard({ profile }: { profile: GitHubProfile }) {
@@ -31,16 +31,7 @@ export function ProfileCard({ profile }: { profile: GitHubProfile }) {
             )}
           </p>
         </div>
-        <Link
-          href={`/articles/${siteConfig.aboutSlug}`}
-          className="group inline-flex shrink-0 items-center gap-1 rounded-full border border-sky-100 bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700 hover:border-sky-500 hover:bg-sky-500 hover:text-white"
-        >
-          About
-          <ArrowRight
-            className="size-3 transition-transform group-hover:translate-x-0.5"
-            aria-hidden="true"
-          />
-        </Link>
+        <ArrowLink href={`/articles/${siteConfig.aboutSlug}`}>About</ArrowLink>
       </div>
     </HomeSection>
   );

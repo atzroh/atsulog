@@ -1,14 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownWideNarrow,
+  ArrowUpDown,
   ArrowUpNarrowWide,
-  Calendar,
-  RotateCcw,
+  Pencil,
   type LucideIcon,
 } from "lucide-react";
 import type {
   ArticleSearchParams,
   SortBy,
+  SortOrder,
 } from "@/app/lib/article/article-types";
 import {
   buildArticleSearchUrl,
@@ -20,70 +24,122 @@ type ArticleSortControlsProps = {
   basePath: string;
 };
 
-/** How each sort key presents itself, and which key the button cycles to next. */
-const SORT_KEYS: Record<
-  SortBy,
-  { icon: LucideIcon; label: string; next: SortBy; styles: string }
-> = {
-  created: {
-    icon: Calendar,
-    label: "Created",
-    next: "modified",
-    styles: "bg-sky-50 border-sky-100 text-sky-700 hover:bg-sky-100",
-  },
-  modified: {
-    icon: RotateCcw,
-    label: "Modified",
-    next: "created",
-    styles:
-      "bg-emerald-50 border-emerald-100 text-emerald-700 hover:bg-emerald-100",
-  },
+type SortOption = {
+  label: string;
+  description: string;
+  icon: LucideIcon;
+  sortBy: SortBy;
+  order: SortOrder;
 };
 
-const TOGGLE_STYLES =
-  "flex items-center space-x-2 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors border";
+/** The three orders that make sense; Modified is newest-first only. */
+const SORT_OPTIONS: SortOption[] = [
+  {
+    label: "Newest",
+    description: "Most recently published",
+    icon: ArrowDownWideNarrow,
+    sortBy: "created",
+    order: "desc",
+  },
+  {
+    label: "Oldest",
+    description: "Oldest first",
+    icon: ArrowUpNarrowWide,
+    sortBy: "created",
+    order: "asc",
+  },
+  {
+    label: "Updated",
+    description: "Most recently updated",
+    icon: Pencil,
+    sortBy: "modified",
+    order: "desc",
+  },
+];
 
 /**
- * A button toggling Created <-> Modified, plus an order toggle shown only for
- * Created (Modified is newest-first only).
+ * A quiet "Newest" trigger opening a described list of orders.
+ * Closes on outside click, Esc, or choosing an order.
  */
 export function ArticleSortControls({
   searchParams,
   basePath,
 }: ArticleSortControlsProps) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const { sortBy, order } = getSortConfig(searchParams);
-  const current = SORT_KEYS[sortBy];
-  const isAsc = order === "asc";
+  const current =
+    SORT_OPTIONS.find((o) => o.sortBy === sortBy && o.order === order) ??
+    SORT_OPTIONS[0];
 
-  const Icon = current.icon;
-  const OrderIcon = isAsc ? ArrowUpNarrowWide : ArrowDownWideNarrow;
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   return (
-    <div className="flex items-center space-x-2">
-      <Link
-        href={buildArticleSearchUrl(basePath, searchParams, {
-          sortBy: current.next,
-          // Modified only makes sense newest-first.
-          ...(current.next === "created" ? {} : { order: "desc" }),
-        })}
-        className={`${TOGGLE_STYLES} ${current.styles}`}
-        title={`Sort by ${SORT_KEYS[current.next].label}`}
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors cursor-pointer"
       >
-        <Icon className="size-3.5" />
-        <span>{current.label}</span>
-      </Link>
-
-      {sortBy === "created" && (
-        <Link
-          href={buildArticleSearchUrl(basePath, searchParams, {
-            order: isAsc ? "desc" : "asc",
-          })}
-          className={`${TOGGLE_STYLES} text-muted hover:text-foreground hover:bg-gray-50 border-gray-200 hover:border-gray-300`}
-          title={isAsc ? "Sort Descending" : "Sort Ascending"}
+        <ArrowUpDown className="size-3.5" aria-hidden="true" />
+        {current.label}
+      </button>
+      {open && (
+        <div
+          role="menu"
+          aria-label="Sort articles"
+          className="absolute right-0 top-full z-10 mt-2 w-64 rounded-lg border border-gray-200 bg-white p-1.5 shadow-lg"
         >
-          <OrderIcon className="size-3.5" />
-          <span>{isAsc ? "Asc" : "Desc"}</span>
-        </Link>
+          {SORT_OPTIONS.map((option) => {
+            const active = option === current;
+            const Icon = option.icon;
+            return (
+              <Link
+                key={option.label}
+                href={buildArticleSearchUrl(basePath, searchParams, {
+                  sortBy: option.sortBy,
+                  order: option.order,
+                  page: null,
+                })}
+                role="menuitemradio"
+                aria-checked={active}
+                onClick={() => setOpen(false)}
+                className={`flex items-start gap-3 rounded-md px-2.5 py-2 transition-colors ${active ? "bg-gray-50" : "hover:bg-gray-50"}`}
+              >
+                <Icon
+                  className={`mt-0.5 size-4 ${active ? "text-foreground" : "text-gray-400"}`}
+                  aria-hidden="true"
+                />
+                <span className="flex flex-col">
+                  <span
+                    className={`text-sm ${active ? "font-medium text-foreground" : "text-gray-700"}`}
+                  >
+                    {option.label}
+                  </span>
+                  <span className="text-xs text-muted">
+                    {option.description}
+                  </span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       )}
     </div>
   );

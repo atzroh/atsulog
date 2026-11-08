@@ -30,8 +30,11 @@ export default async function ArticlesPage({
 
   return (
     <main>
-      <ArticleSearchForm searchParams={resolvedSearchParams} />
-      <PaginatedArticleList page={page} searchParams={resolvedSearchParams} />
+      <PaginatedArticleList
+        page={page}
+        searchParams={resolvedSearchParams}
+        search={<ArticleSearchForm searchParams={resolvedSearchParams} />}
+      />
     </main>
   );
 }
