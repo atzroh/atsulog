@@ -41,7 +41,12 @@ export default async function EditArticlePage({
     const { content, ...form } = parseArticleForm(formData);
 
     await updateArticle(
-      applyArticleEdit(detail!.metadata, form, new Date()),
+      applyArticleEdit(
+        detail!.metadata,
+        form,
+        new Date(),
+        content !== detail!.content,
+      ),
       content,
     );
     redirect(`/edit/`);

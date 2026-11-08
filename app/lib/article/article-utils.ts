@@ -59,11 +59,15 @@ export function buildNewArticle(
   };
 }
 
-/** `existing` with the form applied; a published article never reverts to a draft. */
+/**
+ * `existing` with the form applied; a published article never reverts to a draft.
+ * modifiedAt moves only when the content changed.
+ */
 export function applyArticleEdit(
   existing: ArticleMetadata,
   form: Omit<ArticleForm, "content">,
   now: Date,
+  contentChanged: boolean,
 ): ArticleMetadata {
   return {
     ...existing,
@@ -71,7 +75,7 @@ export function applyArticleEdit(
     category: form.category,
     series: form.series,
     tags: form.tags,
-    modifiedAt: now.toISOString(),
+    modifiedAt: contentChanged ? now.toISOString() : existing.modifiedAt,
     published: existing.published || form.isPublished,
   };
 }
