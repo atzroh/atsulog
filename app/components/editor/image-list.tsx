@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { ImageCopyButton } from "@/app/components/editor/image-copy-button";
 import { ImageDeleteButton } from "@/app/components/editor/image-delete-button";
-import { formatDate } from "@/app/lib/date-format";
 import type { ImageSummary } from "@/app/lib/image/image-store";
 import type { ImageUser } from "@/app/lib/image/image-usage";
 
@@ -49,9 +48,7 @@ export function ImageList({ images }: { images: ImageEntry[] }) {
             <p className="truncate font-mono font-medium text-gray-900">
               {image.hash}
             </p>
-            <p className="text-gray-400">
-              {formatDate(image.createdAt)} · {formatSize(image.size)}
-            </p>
+            <p className="text-gray-400">{formatSize(image.size)}</p>
             {image.users.length === 0 ? (
               <p className="text-amber-600">Unused</p>
             ) : (

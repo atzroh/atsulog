@@ -17,7 +17,6 @@ export type StoredImage = {
 export type ImageSummary = {
   hash: string;
   url: string;
-  createdAt: string;
   size: number;
 };
 
@@ -42,10 +41,10 @@ export function saveImage(
   const hash = hashImage(data);
   getImageDb()
     .prepare(
-      `INSERT OR IGNORE INTO images (hash, mime_type, created_at, data)
-       VALUES (?, ?, ?, ?)`,
+      `INSERT OR IGNORE INTO images (hash, mime_type, data)
+       VALUES (?, ?, ?)`,
     )
-    .run(hash, mimeType, new Date().toISOString(), data);
+    .run(hash, mimeType, data);
   return { hash, url: imageUrl(hash, mimeType) };
 }
 
@@ -61,19 +60,17 @@ export function getImage(hash: string): StoredImage | null {
 export function listImages(): ImageSummary[] {
   const rows = getImageDb()
     .prepare(
-      `SELECT hash, mime_type, created_at, length(data) AS size
-       FROM images ORDER BY created_at DESC`,
+      `SELECT hash, mime_type, length(data) AS size
+       FROM images ORDER BY rowid DESC`,
     )
     .all() as {
     hash: string;
     mime_type: string;
-    created_at: string;
     size: number;
   }[];
   return rows.map((row) => ({
     hash: row.hash,
     url: imageUrl(row.hash, row.mime_type),
-    createdAt: row.created_at,
     size: row.size,
   }));
 }
