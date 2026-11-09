@@ -1,8 +1,7 @@
 "use client";
 
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, X } from "lucide-react";
 import { useRef, useState } from "react";
-import { Button } from "@/app/components/ui/button";
 import {
   FeedIcon,
   GitHubIcon,
@@ -42,7 +41,10 @@ export function SocialLinks() {
 
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(siteConfig.email);
+      // The page only ever holds "[at]"; the real address exists on copy.
+      await navigator.clipboard.writeText(
+        siteConfig.email.replace("[at]", "@"),
+      );
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -72,28 +74,40 @@ export function SocialLinks() {
           if (e.target === dialogRef.current) dialogRef.current.close();
         }}
         onClose={() => setCopied(false)}
-        className="m-auto rounded-lg border border-gray-200 bg-background p-0 text-foreground normal-case backdrop:bg-black/30"
+        className="m-auto max-w-[calc(100%-2rem)] rounded-lg bg-background p-0 text-foreground normal-case tracking-normal backdrop:bg-gray-900/25"
       >
-        <div className="flex flex-col items-center gap-3 px-8 py-6">
-          <h2 className="text-lg font-medium text-foreground">Mail</h2>
-          <div className="flex items-center gap-3 rounded-md border border-gray-200 bg-gray-100 px-3 py-2">
-            <p className="select-all text-base">{siteConfig.email}</p>
+        <div className="flex flex-col gap-5 px-8 pt-7 pb-6">
+          <div className="flex items-center gap-2.5">
+            <MailIcon className="size-4 text-muted" />
+            <h2 className="text-[11px] uppercase tracking-[0.32em] text-muted">
+              Email
+            </h2>
             <button
               type="button"
-              aria-label="Copy email address"
+              aria-label="Close"
+              onClick={() => dialogRef.current?.close()}
+              className="ml-auto text-gray-400 hover:text-sky-600 cursor-pointer"
+            >
+              <X className="size-4" strokeWidth={1.5} />
+            </button>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="select-all text-lg tracking-[0.02em]">
+              {siteConfig.email}
+            </p>
+            <button
+              type="button"
+              aria-label={copied ? "Copied" : "Copy email address"}
               onClick={copyEmail}
-              className={`${ICON_BUTTON} cursor-pointer`}
+              className={`ml-auto ${ICON_BUTTON} cursor-pointer`}
             >
               {copied ? (
-                <Check className="size-4" />
+                <Check className="size-4" strokeWidth={1.5} />
               ) : (
-                <Copy className="size-4" />
+                <Copy className="size-4" strokeWidth={1.5} />
               )}
             </button>
           </div>
-          <Button variant="outline" onClick={() => dialogRef.current?.close()}>
-            Close
-          </Button>
         </div>
       </dialog>
     </>
