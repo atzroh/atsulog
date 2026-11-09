@@ -1,3 +1,4 @@
+import { Home, Search, User, UserCog } from "lucide-react";
 import type { Metadata } from "next";
 import { Murecho } from "next/font/google";
 import Link from "next/link";
@@ -44,7 +45,8 @@ export default async function RootLayout({
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md">
           {/* The rule spans the text column, not the window. */}
           <div className="max-w-3xl mx-auto px-6">
-            <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-2 border-b border-gray-200 pt-6 pb-4 text-[13px] uppercase tracking-[0.18em]">
+            {/* A phone shows the links as icons and drops the dots. */}
+            <div className="flex flex-wrap items-center gap-x-3.5 gap-y-2 border-b border-gray-200 pt-6 pb-4 text-[13px] uppercase tracking-[0.18em]">
               <Link
                 href="/"
                 className="font-medium text-foreground hover:text-sky-600 transition-colors"
@@ -56,24 +58,39 @@ export default async function RootLayout({
                   <span aria-hidden="true" className="text-gray-300">
                     /
                   </span>
-                  <NavLink href="/admin">Admin</NavLink>
+                  <NavLink href="/admin" icon={<UserCog />}>
+                    Admin
+                  </NavLink>
                 </>
               )}
               <nav
                 aria-label="Main"
-                className="ml-auto flex items-baseline gap-3.5"
+                className="ml-auto flex items-center gap-5 sm:gap-3.5"
               >
-                <NavLink href="/">Home</NavLink>
-                <span aria-hidden="true" className="text-gray-300">
+                <NavLink href="/" icon={<Home />}>
+                  Home
+                </NavLink>
+                <span
+                  aria-hidden="true"
+                  className="hidden text-gray-300 sm:inline"
+                >
                   ·
                 </span>
-                <NavLink href={`/articles/${siteConfig.aboutSlug}`}>
+                <NavLink
+                  href={`/articles/${siteConfig.aboutSlug}`}
+                  icon={<User />}
+                >
                   About
                 </NavLink>
-                <span aria-hidden="true" className="text-gray-300">
+                <span
+                  aria-hidden="true"
+                  className="hidden text-gray-300 sm:inline"
+                >
                   ·
                 </span>
-                <NavLink href="/articles">Search</NavLink>
+                <NavLink href="/articles" icon={<Search />}>
+                  Search
+                </NavLink>
               </nav>
             </div>
           </div>

@@ -165,8 +165,8 @@ export function PaginationNav({
           disabled={!hasPreviousPage}
           variant="step"
         >
-          <ChevronLeft className="size-4 md:mr-1" />
-          <span className="hidden md:inline">Prev</span>
+          <ChevronLeft className="size-4 sm:mr-1" />
+          <span className="hidden sm:inline">Prev</span>
         </PageLink>
 
         <PageJumper
@@ -180,7 +180,7 @@ export function PaginationNav({
           disabled={!hasNextPage}
           variant="step"
         >
-          <span className="md:mr-1 hidden md:inline">Next</span>
+          <span className="sm:mr-1 hidden sm:inline">Next</span>
           <ChevronRight className="size-4" />
         </PageLink>
         <PageLink

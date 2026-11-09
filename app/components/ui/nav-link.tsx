@@ -14,12 +14,18 @@ function sectionOf(path: string): string | null {
   return null;
 }
 
-/** A header link, grey until hovered like ArrowLink; its own page is dark and underlined. */
+/**
+ * A header link, grey until hovered like ArrowLink; its own page is dark, its
+ * label underlined. Phones show the icon alone, the label kept for screen
+ * readers. The icon is an element: a component can't cross from the server.
+ */
 export function NavLink({
   href,
+  icon,
   children,
 }: {
   href: string;
+  icon: ReactNode;
   children: ReactNode;
 }) {
   const current = sectionOf(usePathname()) === href;
@@ -28,9 +34,14 @@ export function NavLink({
     <Link
       href={href}
       aria-current={current ? "page" : undefined}
-      className={`underline-offset-[7px] hover:text-sky-600 hover:underline transition-colors ${current ? "text-foreground underline" : "text-muted"}`}
+      className={`group flex items-center hover:text-sky-600 transition-colors [&>svg]:size-[18px] sm:[&>svg]:hidden ${current ? "text-foreground" : "text-muted"}`}
     >
-      {children}
+      {icon}
+      <span
+        className={`sr-only underline-offset-[7px] group-hover:underline sm:not-sr-only ${current ? "underline" : ""}`}
+      >
+        {children}
+      </span>
     </Link>
   );
 }

@@ -58,7 +58,7 @@ export function CanvasSphere() {
       ry += ROTATION_SPEEDS.Y;
       rz += ROTATION_SPEEDS.Z;
 
-      const isMobile = window.innerWidth < 768;
+      const isMobile = window.innerWidth < 640;
       const baseRadiusPx = remToPx(10);
       const radiusPx = isMobile ? remToPx(6) : baseRadiusPx;
       const scale = radiusPx / baseRadiusPx;
