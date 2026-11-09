@@ -1,15 +1,21 @@
 import { siteConfig } from "@/app/lib/site-config";
 import { CanvasSphere } from "@/app/components/home/canvas-sphere";
 
-export function HeroTitle() {
+/** The home page opener: a small turning sphere beside two lines of caps. */
+export function HeroTitle({ count }: { count: number }) {
   return (
-    <section className="relative flex items-center justify-center py-20 sm:py-[8.333rem] w-full overflow-hidden">
-      <CanvasSphere />
-      <div className="relative z-10 text-center px-4">
-        <h1 className="text-4xl sm:text-6xl leading-tight tracking-tighter text-foreground">
-          <span className="font-light text-muted">Welcome to</span>{" "}
-          <span className="font-light">{siteConfig.title}</span>
-        </h1>
+    <section className="flex items-center gap-6 py-16">
+      {/* The header already shows the name, so the heading is for screen readers. */}
+      <h1 className="sr-only">{siteConfig.title}</h1>
+      <div className="relative size-14 shrink-0">
+        <CanvasSphere />
+      </div>
+      <div className="flex flex-col gap-2.5 text-xs uppercase tracking-[0.32em]">
+        <p className="text-foreground">{siteConfig.tagline}</p>
+        <p className="text-muted">
+          {count} {count === 1 ? "entry" : "entries"} since{" "}
+          {siteConfig.sinceYear}
+        </p>
       </div>
     </section>
   );

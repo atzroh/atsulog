@@ -31,7 +31,7 @@ export default async function Home() {
 
   return (
     <div className="space-y-16">
-      <HeroTitle />
+      <HeroTitle count={latestPage.totalCount} />
       {latest && <LatestArticle article={latest} />}
       <CategoryGrid categories={categories} />
       <TagCloud tags={tags} />

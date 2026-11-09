@@ -3,10 +3,7 @@
 import { useEffect, useRef } from "react";
 import { generateIcosphere, projectVertices } from "@/app/lib/home/icosphere";
 
-const COLORS = {
-  STROKE: "#F97316",
-  NODE: "#000000",
-};
+const STROKE_COLOR = "#F97316";
 
 const ROTATION_SPEEDS = {
   X: 0.0024,
@@ -14,7 +11,13 @@ const ROTATION_SPEEDS = {
   Z: 0.0016,
 };
 
-/** An icosphere wireframe drawn on a 2D canvas. */
+/** Perspective in projectVertices enlarges the near side by up to this much. */
+const MAX_PERSPECTIVE = 1.25;
+
+/**
+ * An icosphere wireframe drawn on a 2D canvas, sized to fit the box the
+ * canvas fills, so the same component works as a mark or a backdrop.
+ */
 export function CanvasSphere() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -27,20 +30,14 @@ export function CanvasSphere() {
     let width = 0;
     let height = 0;
 
-    const { vertices, edges } = generateIcosphere(2);
-
-    const remToPx = (rem: number) =>
-      rem *
-      parseFloat(getComputedStyle(document.documentElement).fontSize || "16");
+    const { vertices, edges } = generateIcosphere(1);
 
     const resize = () => {
-      width = canvas.parentElement?.clientWidth || window.innerWidth;
-      height = canvas.parentElement?.clientHeight || remToPx(25);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
       const dpr = window.devicePixelRatio || 1;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
@@ -58,10 +55,8 @@ export function CanvasSphere() {
       ry += ROTATION_SPEEDS.Y;
       rz += ROTATION_SPEEDS.Z;
 
-      const isMobile = window.innerWidth < 640;
-      const baseRadiusPx = remToPx(10);
-      const radiusPx = isMobile ? remToPx(6) : baseRadiusPx;
-      const scale = radiusPx / baseRadiusPx;
+      // The near side, enlarged by perspective, still fits the box.
+      const radiusPx = Math.min(width, height) / 2 / MAX_PERSPECTIVE;
       const projected = projectVertices(
         vertices,
         { x: rx, y: ry, z: rz },
@@ -72,29 +67,17 @@ export function CanvasSphere() {
       // Maps depth z [-1, 1] to opacity [0, 1]
       const getOpacity = (z: number) => (z + 1) / 2;
 
-      ctx.lineWidth = remToPx(0.0625) * scale;
+      // The stroke scales with the sphere, with a floor for small sizes.
+      ctx.lineWidth = Math.max(0.75, radiusPx / 160);
+      ctx.strokeStyle = STROKE_COLOR;
       for (const [v1, v2] of edges) {
         const p1 = projected[v1];
         const p2 = projected[v2];
-
-        const avgZ = (p1.z + p2.z) / 2;
-        ctx.globalAlpha = getOpacity(avgZ);
-        ctx.strokeStyle = COLORS.STROKE;
-
+        ctx.globalAlpha = getOpacity((p1.z + p2.z) / 2);
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
         ctx.lineTo(p2.x, p2.y);
         ctx.stroke();
-      }
-
-      const nodeR = remToPx(0.09375) * scale;
-      for (const p of projected) {
-        ctx.globalAlpha = getOpacity(p.z);
-        ctx.fillStyle = COLORS.NODE;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, nodeR, 0, Math.PI * 2);
-        ctx.fill();
       }
 
       ctx.globalAlpha = 1.0;
@@ -111,7 +94,8 @@ export function CanvasSphere() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 -z-10 pointer-events-none opacity-30"
+      aria-hidden="true"
+      className="absolute inset-0 size-full pointer-events-none opacity-60"
     />
   );
 }

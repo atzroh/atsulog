@@ -3,6 +3,10 @@ export const siteConfig = {
   title: "Atsulog",
   url: "https://atsulog.com",
 
+  // Home hero: the tagline, and the year counted from ("33 entries since 2026")
+  tagline: "A personal log",
+  sinceYear: 2026,
+
   // Author's public accounts — bare identifiers; callers add "@" or the host
   twitter: "atzroh",
   github: "atzroh",
