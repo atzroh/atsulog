@@ -44,7 +44,7 @@ export default async function NewArticlePage() {
 
   return (
     <main className="space-y-8">
-      <PageHeading className="mb-8">Create New Articles</PageHeading>
+      <PageHeading className="mb-8">Create</PageHeading>
       <EditArticleForm
         metadata={INITIAL_METADATA}
         content=""

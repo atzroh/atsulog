@@ -33,12 +33,15 @@ export function FormField({
 
   return (
     <div className="flex flex-col space-y-2">
-      <label htmlFor={id} className={`${FIELD_LABEL} flex items-center`}>
-        {Icon && <Icon className="size-3 mr-1.5" />}
+      <label htmlFor={id} className={`${FIELD_LABEL} flex items-center gap-2`}>
+        {Icon && (
+          <Icon className="size-[13px]" strokeWidth={1.5} aria-hidden="true" />
+        )}
         {displayLabel}
-        {required && (
-          <span className="text-red-500 ml-1" aria-hidden="true">
-            *
+        {/* Fields are required unless marked, so only the exceptions say so. */}
+        {!required && (
+          <span className="ml-auto normal-case tracking-normal text-gray-400">
+            Optional
           </span>
         )}
       </label>
@@ -53,7 +56,7 @@ export function FormField({
         placeholder={placeholder}
         list={candidates ? listId : undefined}
         autoComplete={candidates ? "off" : undefined}
-        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-[color,background-color,border-color,box-shadow] placeholder:text-gray-400"
+        className="w-full px-3 py-[9px] bg-white border border-gray-200 rounded-md text-sm focus:outline-none focus:border-sky-600 transition-colors placeholder:text-gray-400"
       />
       {candidates && candidates.length > 0 && (
         <datalist id={listId}>

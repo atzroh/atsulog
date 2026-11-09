@@ -6,7 +6,6 @@ import {
 } from "@/app/components/markdown/markdown-toolbar";
 import { MarkdownRenderer } from "@/app/components/markdown/markdown-renderer";
 import { useMarkdownField } from "@/app/lib/markdown/use-markdown-field";
-import { FIELD_LABEL } from "@/app/components/ui/label-styles";
 
 type MarkdownFieldProps = {
   value: string;
@@ -41,10 +40,7 @@ export function MarkdownField({
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex items-center justify-between">
-        <label className={FIELD_LABEL}>{label}</label>
-        <ModeToggle mode={mode} onToggle={setMode} />
-      </div>
+      <ModeToggle mode={mode} onToggle={setMode} />
 
       {mode === "edit" && (
         <div className="flex flex-col space-y-2">
@@ -78,20 +74,21 @@ export function MarkdownField({
       >
         {mode === "edit" ? (
           // Fixed height with inner scroll: growing to fit the content made the
-          // page jump on every keystroke. transition-shadow animates only the
-          // focus ring, and resize-y keeps the w-full column intact.
+          // page jump on every keystroke. No fill or frame: the tabs above
+          // mark the field, and resize-y keeps the w-full column intact.
           <textarea
             id="content"
             name="content"
+            aria-label={label}
             ref={textareaRef}
             value={value}
             onChange={(event) => onChange(event.target.value)}
             onKeyDown={handleKeyDown}
             required
-            className="w-full h-[70dvh] min-h-72 resize-y overflow-auto p-4 bg-gray-50/50 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500/10 transition-shadow"
+            className="w-full h-[70dvh] min-h-72 resize-y overflow-auto py-4 bg-transparent text-sm font-mono focus:outline-none"
           />
         ) : (
-          <div className="p-4 bg-white">
+          <div className="py-4">
             <MarkdownRenderer content={value} />
             {/* Keeps the content in the form submission while previewing */}
             <textarea name="content" value={value} readOnly hidden />

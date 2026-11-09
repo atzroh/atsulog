@@ -9,7 +9,10 @@ import { TOOLBAR_GROUPS } from "@/app/components/markdown/toolbar-items";
 import type { EditMode } from "@/app/lib/markdown/use-markdown-field";
 
 const BUTTON_STYLES =
-  "p-1.5 hover:text-foreground hover:bg-gray-100 rounded-md transition-colors";
+  "p-1.5 hover:text-sky-600 transition-colors cursor-pointer";
+
+/** Thin strokes, like the other icons in the editor. */
+const ICON = { className: "size-4", strokeWidth: 1.5 };
 
 /** The vertical hairline drawn between button groups. */
 function Divider() {
@@ -28,7 +31,7 @@ export function MarkdownToolbar({
   isUploading: boolean;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-1 p-1 bg-white border border-gray-100 rounded-lg shadow-sm w-fit mx-auto">
+    <div className="flex flex-wrap items-center gap-1 p-1 bg-white border border-gray-200 rounded-lg w-fit mx-auto">
       {TOOLBAR_GROUPS.map((group, groupIdx) => (
         <div key={groupIdx} className="flex items-center">
           {groupIdx > 0 && <Divider />}
@@ -43,7 +46,7 @@ export function MarkdownToolbar({
                 className={`text-muted ${BUTTON_STYLES}`}
                 title={item.title}
               >
-                <item.icon className="size-4" />
+                <item.icon {...ICON} />
               </button>
             ))}
           </div>
@@ -60,9 +63,9 @@ export function MarkdownToolbar({
         title="Upload Image"
       >
         {isUploading ? (
-          <Loader2 className="size-4 animate-spin" />
+          <Loader2 {...ICON} className="size-4 animate-spin" />
         ) : (
-          <ImageIcon className="size-4" />
+          <ImageIcon {...ICON} />
         )}
       </button>
       <button
@@ -71,7 +74,7 @@ export function MarkdownToolbar({
         className={`text-muted ${BUTTON_STYLES}`}
         title="Load Markdown"
       >
-        <FileText className="size-4" />
+        <FileText {...ICON} />
       </button>
     </div>
   );
@@ -84,32 +87,37 @@ export function ModeToggle({
   mode: EditMode;
   onToggle: (mode: EditMode) => void;
 }) {
-  const isEdit = mode === "edit";
+  const tabs = [
+    { mode: "edit", label: "Edit", Icon: Pencil },
+    { mode: "preview", label: "Preview", Icon: Eye },
+  ] as const;
 
+  // Underlined tabs on a hairline; they also title the body field.
   return (
-    <div className="flex bg-gray-100 p-1 rounded-lg">
-      <button
-        type="button"
-        onClick={() => onToggle("edit")}
-        className={`flex items-center px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-          isEdit
-            ? "bg-white text-foreground shadow-sm"
-            : "text-muted hover:text-foreground"
-        }`}
-      >
-        <Pencil className="size-3 mr-1.5" />
-        Edit
-      </button>
-      <button
-        type="button"
-        onClick={() => onToggle("preview")}
-        className={`flex items-center px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-          !isEdit ? "bg-white text-foreground shadow-sm" : "text-muted"
-        }`}
-      >
-        <Eye className="size-3 mr-1.5" />
-        Preview
-      </button>
+    <div className="flex gap-6 border-b border-gray-200">
+      {tabs.map(({ mode: tabMode, label, Icon }) => {
+        const isCurrent = mode === tabMode;
+        return (
+          <button
+            key={tabMode}
+            type="button"
+            aria-pressed={isCurrent}
+            onClick={() => onToggle(tabMode)}
+            className={`-mb-px flex items-center gap-2 border-b py-2.5 text-[11px] uppercase tracking-[0.18em] transition-colors cursor-pointer ${
+              isCurrent
+                ? "border-foreground text-foreground"
+                : "border-transparent text-muted hover:text-sky-600"
+            }`}
+          >
+            <Icon
+              className="size-[13px]"
+              strokeWidth={1.5}
+              aria-hidden="true"
+            />
+            {label}
+          </button>
+        );
+      })}
     </div>
   );
 }

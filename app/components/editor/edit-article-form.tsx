@@ -99,15 +99,14 @@ export function EditArticleForm({
 
       <MarkdownField value={currentContent} onChange={setCurrentContent} />
 
-      <div className="pt-6 border-t border-gray-200 flex justify-end space-x-4">
+      <div className="flex justify-end gap-3">
         {!published && (
           <Button
             type="submit"
             name="intent"
             value="draft"
             icon={FileText}
-            variant="outline"
-            className="px-8 py-3"
+            variant="round"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Saving..." : "Save Draft"}
@@ -118,8 +117,7 @@ export function EditArticleForm({
           name="intent"
           value="publish"
           icon={published ? Save : Check}
-          variant="primary"
-          className="px-10 py-3"
+          variant="roundStrong"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Saving..." : publishLabel}

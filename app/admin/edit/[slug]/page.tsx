@@ -54,9 +54,7 @@ export default async function EditArticlePage({
 
   return (
     <main className="space-y-8">
-      <PageHeading className="mb-8">
-        Edit Article: {detail.metadata.title}
-      </PageHeading>
+      <PageHeading className="mb-8">Edit</PageHeading>
       <EditArticleForm
         metadata={detail.metadata}
         content={detail.content}
