@@ -29,7 +29,7 @@ const LINKS = [
   },
 ];
 
-const ICON_BUTTON = "text-muted hover:text-foreground";
+const ICON_BUTTON = "text-muted hover:text-sky-600";
 
 /**
  * Footer icon links, plus an envelope opening a dialog with the "[at]" address
@@ -52,10 +52,7 @@ export function SocialLinks() {
 
   return (
     <>
-      <nav
-        aria-label="Social links"
-        className="flex items-center justify-center gap-6 mb-4"
-      >
+      <nav aria-label="Social links" className="flex items-center gap-5">
         {LINKS.slice(0, 1).map(renderLink)}
         <button
           type="button"

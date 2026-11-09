@@ -7,7 +7,7 @@ export function AuthorLine({ profile }: { profile: GitHubProfile }) {
   const { login, name, bio, location, avatarUrl } = profile;
 
   return (
-    <p className="mb-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+    <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
       <span className="inline-flex items-center gap-2">
         Written by
         <Image

@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { Images, Pencil, Plus, type LucideIcon } from "lucide-react";
+import { Images, LogOut, Pencil, Plus, type LucideIcon } from "lucide-react";
 import { PageHeading } from "@/app/components/ui/page-heading";
+import { PageNav } from "@/app/components/ui/page-nav";
+import { logoutAction } from "@/app/lib/auth/auth-actions";
 
 const LINKS: { href: string; label: string; Icon: LucideIcon }[] = [
   { href: "/admin/create", label: "Create", Icon: Plus },
@@ -28,6 +30,19 @@ export default function AdminPage() {
           </Link>
         ))}
       </div>
+
+      {/* Styled as a PageNavLink, but a form: logging out is a POST. */}
+      <PageNav label="Admin navigation">
+        <form action={logoutAction} className="ml-auto">
+          <button
+            type="submit"
+            className="flex items-center gap-2 text-sm font-medium text-muted hover:text-sky-600 hover:underline underline-offset-2 transition-colors cursor-pointer"
+          >
+            Logout
+            <LogOut className="size-4" aria-hidden="true" />
+          </button>
+        </form>
+      </PageNav>
     </main>
   );
 }

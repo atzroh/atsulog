@@ -1,15 +1,13 @@
-import { Home, Search, User, type LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { Murecho } from "next/font/google";
 import Link from "next/link";
-import Image from "next/image";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { siteConfig } from "@/app/lib/site-config";
 import { isAuthenticated } from "@/app/lib/auth/auth";
-import { AdminMenu } from "@/app/components/ui/admin-menu";
 import { GaOptOut } from "@/app/components/analytics/ga-opt-out";
 import { SocialLinks } from "@/app/components/ui/social-links";
 import { AuthorLine } from "@/app/components/ui/author-line";
+import { NavLink } from "@/app/components/ui/nav-link";
 import { getGitHubProfile } from "@/app/lib/github/github-profile";
 import "./globals.css";
 
@@ -43,39 +41,40 @@ export default async function RootLayout({
   return (
     <html lang={siteConfig.htmlLang} className={murecho.variable}>
       <body className="min-h-screen flex flex-col">
-        <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200">
-          <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md">
+          {/* The rule spans the text column, not the window. */}
+          <div className="max-w-3xl mx-auto px-6">
+            <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-2 border-b border-gray-200 pt-6 pb-4 text-[13px] uppercase tracking-[0.18em]">
               <Link
                 href="/"
-                className="group flex items-center text-xl font-bold tracking-tight transition-colors"
+                className="font-medium text-foreground hover:text-sky-600 transition-colors"
               >
-                <Image
-                  src="/favicon.ico"
-                  alt="Site Icon"
-                  width={20}
-                  height={20}
-                  className="mr-1"
-                />
-                <span className="group-hover:text-muted lowercase">
-                  {siteConfig.title}
-                </span>
+                {siteConfig.title}
               </Link>
               {authenticated && (
-                <div className="flex items-center border-l border-gray-200 pl-4">
-                  <AdminMenu />
-                </div>
+                <>
+                  <span aria-hidden="true" className="text-gray-300">
+                    /
+                  </span>
+                  <NavLink href="/admin">Admin</NavLink>
+                </>
               )}
-            </div>
-
-            <div className="flex items-center space-x-6">
-              <NavLink href="/" icon={Home} label="Home" />
-              <NavLink
-                href={`/articles/${siteConfig.aboutSlug}`}
-                icon={User}
-                label="About"
-              />
-              <NavLink href="/articles" icon={Search} label="Search" />
+              <nav
+                aria-label="Main"
+                className="ml-auto flex items-baseline gap-3.5"
+              >
+                <NavLink href="/">Home</NavLink>
+                <span aria-hidden="true" className="text-gray-300">
+                  ·
+                </span>
+                <NavLink href={`/articles/${siteConfig.aboutSlug}`}>
+                  About
+                </NavLink>
+                <span aria-hidden="true" className="text-gray-300">
+                  ·
+                </span>
+                <NavLink href="/articles">Search</NavLink>
+              </nav>
             </div>
           </div>
         </header>
@@ -83,37 +82,27 @@ export default async function RootLayout({
         <div className="flex-1 max-w-3xl mx-auto w-full px-6 py-12">
           <main>{children}</main>
         </div>
-        <footer className="max-w-3xl mx-auto w-full px-6 py-8 border-t border-gray-200 text-sm text-muted text-center">
+        <footer className="max-w-3xl mx-auto w-full px-6 py-8 border-t border-gray-200 text-sm text-muted text-center flex flex-col items-center gap-4">
           {profile && <AuthorLine profile={profile} />}
-          <SocialLinks />
-          <Link href="/privacy" className="block mb-2 hover:text-foreground">
-            Privacy Policy
-          </Link>
-          &copy; {currentYear} {siteConfig.title}
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            <SocialLinks />
+            <span aria-hidden="true" className="text-gray-300">
+              |
+            </span>
+            <Link
+              href="/privacy"
+              className="hover:text-sky-600 hover:underline underline-offset-2"
+            >
+              Privacy Policy
+            </Link>
+            <span>
+              &copy; {currentYear} {siteConfig.title}
+            </span>
+          </div>
         </footer>
         {gaId && <GaOptOut gaId={gaId} disabled={authenticated} />}
       </body>
       {gaId && !authenticated && <GoogleAnalytics gaId={gaId} />}
     </html>
-  );
-}
-
-function NavLink({
-  href,
-  icon: Icon,
-  label,
-}: {
-  href: string;
-  icon: LucideIcon;
-  label: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="text-sm font-medium text-muted hover:text-foreground transition-colors flex items-center"
-    >
-      <Icon className="size-4.5 md:size-4 md:mr-1.5" />
-      <span className="hidden md:inline">{label}</span>
-    </Link>
   );
 }
