@@ -13,10 +13,17 @@ export default async function ImagesPage() {
     ...image,
     users: users.get(image.hash) ?? [],
   }));
+  const unused = images.filter((image) => image.users.length === 0).length;
 
   return (
-    <main className="space-y-8">
-      <PageHeading className="mb-8">Images ({images.length})</PageHeading>
+    <main>
+      <div className="mb-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <PageHeading>Images</PageHeading>
+        <span className="text-[13px] text-muted tabular-nums">
+          {images.length} {images.length === 1 ? "image" : "images"} · {unused}{" "}
+          unused
+        </span>
+      </div>
       <ImageList images={images} />
       <PageNav label="Images navigation">
         <PageNavLink href="/admin" icon={ArrowLeft}>

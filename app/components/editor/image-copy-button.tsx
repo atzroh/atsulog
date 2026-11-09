@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 
-import { Button } from "@/app/components/ui/button";
+import { RING_BUTTON } from "@/app/components/editor/image-list-styles";
 
 /** Copies a Markdown reference to the image; the alt text is left empty. */
 export function ImageCopyButton({ url }: { url: string }) {
@@ -19,13 +19,15 @@ export function ImageCopyButton({ url }: { url: string }) {
     }
   };
 
+  const Icon = copied ? Check : Copy;
   return (
-    <Button
-      variant="outline"
-      icon={copied ? Check : Copy}
+    <button
+      type="button"
+      aria-label={copied ? "Copied" : "Copy Markdown"}
       onClick={handleClick}
+      className={`${RING_BUTTON} hover:border-sky-600 hover:text-sky-600`}
     >
-      {copied ? "Copied" : "Copy"}
-    </Button>
+      <Icon className="size-[15px]" strokeWidth={1.5} aria-hidden="true" />
+    </button>
   );
 }
