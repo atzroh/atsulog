@@ -23,16 +23,17 @@ type PaginationNavProps = {
  * `edge` (first/last, icon-only) and `step` (prev/next, labelled) also differ
  * in resting colour, so the split is not merely cosmetic.
  */
+const ENABLED =
+  "rounded-lg transition-colors text-muted hover:text-foreground hover:bg-gray-50";
+
 const VARIANTS = {
   edge: {
     base: "p-2",
-    enabled:
-      "rounded-lg transition-colors text-muted hover:text-foreground hover:bg-gray-50",
+    enabled: ENABLED,
   },
   step: {
     base: "p-2 px-3 text-sm font-medium flex items-center",
-    enabled:
-      "rounded-lg transition-colors text-muted hover:text-foreground hover:bg-gray-50 border border-transparent hover:border-gray-300",
+    enabled: `${ENABLED} border border-transparent hover:border-gray-300`,
   },
 };
 

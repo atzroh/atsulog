@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { MUTED_LINK } from "@/app/components/ui/arrow-link";
 
 /** The row of links that closes a page, set off by space alone. */
 export function PageNav({
@@ -30,10 +31,7 @@ export function PageNavLink({
   children: ReactNode;
 }) {
   return (
-    <Link
-      href={href}
-      className="flex items-center gap-2 text-sm font-medium text-muted hover:text-sky-600 hover:underline underline-offset-2 transition-colors"
-    >
+    <Link href={href} className={`flex items-center gap-2 ${MUTED_LINK}`}>
       {!iconAfter && <Icon className="size-4" aria-hidden="true" />}
       {children}
       {iconAfter && <Icon className="size-4" aria-hidden="true" />}

@@ -8,9 +8,7 @@ type ArticleTaxonomiesProps = {
   className?: string;
 };
 
-/**
- * Renders a list of clickable taxonomy tags (Category, Series, and Tags) for an article.
- */
+/** The article's series, category and tags, each linking to its filtered list. */
 export function ArticleTaxonomies({
   article,
   basePath = "/articles",

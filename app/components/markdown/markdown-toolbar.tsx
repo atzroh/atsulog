@@ -6,6 +6,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { TOOLBAR_GROUPS } from "@/app/components/markdown/toolbar-items";
+import { THIN_CAPS } from "@/app/components/ui/label-styles";
 import type { EditMode } from "@/app/lib/markdown/use-markdown-field";
 
 const BUTTON_STYLES =
@@ -103,7 +104,7 @@ export function ModeToggle({
             type="button"
             aria-pressed={isCurrent}
             onClick={() => onToggle(tabMode)}
-            className={`-mb-px flex items-center gap-2 border-b py-2.5 text-[11px] uppercase tracking-[0.18em] transition-colors cursor-pointer ${
+            className={`-mb-px flex items-center gap-2 border-b py-2.5 ${THIN_CAPS} transition-colors cursor-pointer ${
               isCurrent
                 ? "border-foreground text-foreground"
                 : "border-transparent text-muted hover:text-sky-600"

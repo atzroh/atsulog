@@ -1,13 +1,14 @@
 "use client";
 
 import { Check, Copy, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   FeedIcon,
   GitHubIcon,
   MailIcon,
 } from "@/app/components/ui/social-icons";
 import { siteConfig } from "@/app/lib/site-config";
+import { useClipboardCopy } from "@/app/lib/use-clipboard-copy";
 
 /**
  * Footer links in display order. siteConfig holds bare handles, so hosts are
@@ -37,20 +38,10 @@ const ICON_BUTTON = "text-muted hover:text-sky-600";
  */
 export function SocialLinks() {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [copied, setCopied] = useState(false);
+  const { copied, copy, reset } = useClipboardCopy();
 
-  const copyEmail = async () => {
-    try {
-      // The page only ever holds "[at]"; the real address exists on copy.
-      await navigator.clipboard.writeText(
-        siteConfig.email.replace("[at]", "@"),
-      );
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard blocked; the address is still selectable in the dialog.
-    }
-  };
+  // The page only ever holds "[at]"; the real address exists on copy.
+  const copyEmail = () => copy(siteConfig.email.replace("[at]", "@"));
 
   return (
     <>
@@ -73,7 +64,7 @@ export function SocialLinks() {
         onClick={(e) => {
           if (e.target === dialogRef.current) dialogRef.current.close();
         }}
-        onClose={() => setCopied(false)}
+        onClose={reset}
         className="m-auto max-w-[calc(100%-2rem)] rounded-lg bg-background p-0 text-foreground normal-case tracking-normal backdrop:bg-gray-900/25"
       >
         <div className="flex flex-col gap-5 px-8 pt-7 pb-6">

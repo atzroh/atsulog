@@ -3,12 +3,11 @@ import Link from "next/link";
 
 import { ImageCopyButton } from "@/app/components/editor/image-copy-button";
 import { ImageDeleteButton } from "@/app/components/editor/image-delete-button";
+import { THIN_CAPS } from "@/app/components/ui/label-styles";
 import type { ImageSummary } from "@/app/lib/image/image-store";
 import type { ImageUser } from "@/app/lib/image/image-usage";
 
 type ImageEntry = ImageSummary & { users: ImageUser[] };
-
-const SECTION_LABEL = "text-[11px] uppercase tracking-[0.18em]";
 
 function formatSize(bytes: number): string {
   return bytes < 1024 * 1024
@@ -74,7 +73,7 @@ function ImageSection({
   if (images.length === 0) return null;
   return (
     <section className="flex flex-col gap-4">
-      <h2 className={`${SECTION_LABEL} ${className}`}>
+      <h2 className={`${THIN_CAPS} ${className}`}>
         {label} · {images.length}
       </h2>
       <ul className="grid grid-cols-1 gap-x-5 gap-y-7 sm:grid-cols-3">

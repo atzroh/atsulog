@@ -14,6 +14,7 @@ import {
   getSortConfig,
 } from "@/app/lib/article/article-utils";
 import { PageHeading } from "@/app/components/ui/page-heading";
+import { MUTED_LINK } from "@/app/components/ui/arrow-link";
 
 type PaginatedArticleListProps = {
   page: ArticlePage;
@@ -100,7 +101,7 @@ function NoArticles({
             series: null,
             page: null,
           })}
-          className="inline-flex items-center gap-1 text-sm font-medium text-muted hover:text-sky-600 hover:underline underline-offset-2 transition-colors"
+          className={`inline-flex items-center gap-1 ${MUTED_LINK}`}
         >
           <X className="size-3.5" aria-hidden="true" />
           Clear search
