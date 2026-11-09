@@ -1,6 +1,6 @@
 import { Home, Search, User, UserCog } from "lucide-react";
 import type { Metadata } from "next";
-import { Murecho } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
 import Link from "next/link";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { siteConfig } from "@/app/lib/site-config";
@@ -13,9 +13,9 @@ import { getGitHubProfile } from "@/app/lib/github/github-profile";
 import "./globals.css";
 
 // Variable font, so every weight from 100 to 900 is available.
-const murecho = Murecho({
+const notoSansJp = Noto_Sans_JP({
   subsets: ["latin"],
-  variable: "--font-murecho",
+  variable: "--font-noto-sans-jp",
   display: "swap",
 });
 
@@ -40,7 +40,7 @@ export default async function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
-    <html lang={siteConfig.htmlLang} className={murecho.variable}>
+    <html lang={siteConfig.htmlLang} className={notoSansJp.variable}>
       <body className="min-h-screen flex flex-col">
         <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md">
           {/* The rule spans the text column, not the window. */}

@@ -53,7 +53,7 @@ function ArticleListItem({
         href={`${basePath}/${article.slug}`}
         className="group flex flex-col gap-1"
       >
-        <h2 className="text-lg font-medium leading-snug group-hover:text-sky-600 transition-colors">
+        <h2 className="text-base font-medium leading-snug group-hover:text-sky-600 transition-colors">
           {article.title}
         </h2>
         <time dateTime={date} className="text-sm text-muted tabular-nums">

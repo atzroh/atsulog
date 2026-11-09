@@ -20,7 +20,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family:
-    var(--font-murecho),
+    var(--font-noto-sans-jp),
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -66,24 +66,27 @@ body {
     @apply prose max-w-none prose-sky;
 
     /* Headings
-       Light, like the article title above them; size and the rule carry the
+       Regular weight, like the article title above them; size and the rule carry the
        hierarchy.
-       `#` and `##` carry a short sky rule at the bottom left, the one accent
-       a heading gets. `#` is capped below the 36px article title in
+       `#` and `##` carry a short emerald rule at the bottom left, the one accent
+       a heading gets. `#` is capped below the 26px article title in
        articles/[slug]/page.tsx. */
     & :is(h1, h2) {
-      @apply font-light mt-14 mb-5 pb-2;
-      background: linear-gradient(var(--color-sky-300), var(--color-sky-300))
+      @apply font-normal mt-14 mb-5 pb-2;
+      background: linear-gradient(
+          var(--color-emerald-600),
+          var(--color-emerald-600)
+        )
         left bottom / 2.5rem 2px no-repeat;
     }
     & h1 {
-      @apply text-[1.75rem];
+      @apply text-[1.375rem];
     }
     & h2 {
-      @apply text-[1.625rem];
+      @apply text-xl;
     }
     & h3 {
-      @apply text-xl font-normal mt-10 mb-3;
+      @apply text-[1.0625rem] font-medium mt-10 mb-3;
     }
     & h4 {
       @apply text-base font-bold mt-7 mb-2;

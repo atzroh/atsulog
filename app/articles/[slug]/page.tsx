@@ -64,7 +64,7 @@ export default async function ArticlePage({
     <article>
       <header className="mb-12">
         {/* PageHeading's size and weight, without the uppercase. */}
-        <h1 className="mb-3 text-4xl font-light leading-snug tracking-tight">
+        <h1 className="mb-3 text-[1.625rem] font-normal leading-snug tracking-tight">
           {article.title}
         </h1>
 
